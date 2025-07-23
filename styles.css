@@ -148,7 +148,7 @@ nav a:hover {
     transform: translateX(-3px);
 }
 
-/* 为移动设备优化 */
+/* 移动端、小屏优化 */
 @media (max-width: 768px) {
     .dropdown-menu {
         width: 160px;
