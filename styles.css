@@ -1,13 +1,13 @@
 :root {
-    --primary-color:#b6ade6;
-    --secondary-color:#2c3e50;
+    --primary-color:#9e94d8;
+    --secondary-color:#333333;
     --background-color:#f0e6d2;
-    --card-bg:#f8f9fa;
-    --text-color:#333;
-    --online-color:#27ae60;
-    --nav-bg:rgba(46, 64, 83, 0.9);
+    --card-bg:#FAFAFA;
+    --text-color:#444444;
+    --online-color:#00BFA6;
+    --nav-bg:rgba(109, 91, 154, 0.8);
     --nav-bg-scroll:rgba(44, 62, 80, 1);
-    --button-hover:#b7b7a4;
+    --button-hover:#b6ade6;
 }
 
 * {
@@ -245,6 +245,7 @@ header {
     display: inline-block;
     padding: 12px 30px;
     margin-bottom: 30px;
+    margin-top: 20px;
         
     font-size: clamp(1em, 3vw, 1.3em);
     background: rgba(0,0,0,0.5);
@@ -258,7 +259,7 @@ header {
 
 .join-btn-header:hover {
     transform: scale(1.1); 
-    background: #f8c3cd;
+    background: #c4919a;
     box-shadow: 0 8px 18px rgba(0,0,0,0.2);
 }
 
@@ -311,9 +312,6 @@ h2 {
     background: var(--primary-color);
     border-radius: 2px;
 }
-#status h2::after {
-    display: none;
-}
 
 /* 特点这一块/. */
 .Integrated {
@@ -361,6 +359,11 @@ h2 {
 }
 
 /* 服务器状态 */
+.status {
+    font-size: 1.2em;
+    margin: 15px 0;
+    color: #b7b7a4;
+}
 .status-box {
     position: relative;
     padding: 40px 250px;
@@ -368,6 +371,12 @@ h2 {
     box-shadow: 0 8px 25px rgba(0,0,0,0.05);
     text-align: center;
     overflow: hidden;
+}
+#status h2::after {
+    display: none;
+}
+.player-nub{
+    color: (--card-bg);
 }
  .status-box::after{ /*我是渐变装饰线 */
     content: '';
@@ -405,11 +414,7 @@ h2 {
     z-index: -1;
 }
 
-.status {
-    font-size: 1.2em;
-    margin: 15px 0;
-    color: #b7b7a4;
-}
+
 
 .online {
     position: relative;
