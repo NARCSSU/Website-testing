@@ -57,28 +57,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // 随机背景图片
     const header = document.getElementById('header');
     const backgroundImages = [
-    '/images/3cda066bccaefea3eb268d4ca10f018a.webp',
-    '/images/Image_585028843869744.webp',
-    '/images/Image_585018650004905.webp',
-    '/images/Image_585012522922876.webp',
-    '/images/Image_585006053756264.webp',
-    '/images/Image_585000138805953.webp',
-    '/images/Image_584991582604759.webp',
-    '/images/Image_669234245588716.webp',
-    '/images/Image_669226165759604.webp',
-    '/images/Image_669218057352159.webp',
-    '/images/Image_669214276923463.webp',
-    '/images/Image_669203224465863.webp',
-    '/images/Image_669202127295447.webp',
-    '/images/Image_669192564244096.webp',
-    '/images/Image_669027140045097.webp',
-    '/images/Image_585061010780930.webp',
-    '/images/Image_585054865315151.webp',
-    '/images/Image_585036168830575.webp',
-    '/images/Image_585018650004905.webp',
-    '/images/Image_585006053756264.webp',
-    '/images/9ae17d2b-8fb3-4f05-8a75-48c40de55bd0.webp',
-    '/images/Image_669276986426772.webp',
+        '/images/3cda066bccaefea3eb268d4ca10f018a.webp',
+        '/images/Image_585028843869744.webp',
+        '/images/Image_585018650004905.webp',
+        '/images/Image_585012522922876.webp',
+        '/images/Image_585006053756264.webp',
+        '/images/Image_585000138805953.webp',
+        '/images/Image_584991582604759.webp',
+        '/images/Image_669234245588716.webp',
+        '/images/Image_669226165759604.webp',
+        '/images/Image_669218057352159.webp',
+        '/images/Image_669214276923463.webp',
+        '/images/Image_669203224465863.webp',
+        '/images/Image_669202127295447.webp',
+        '/images/Image_669192564244096.webp',
+        '/images/Image_669027140045097.webp',
+        '/images/Image_585061010780930.webp',
+        '/images/Image_585054865315151.webp',
+        '/images/Image_585036168830575.webp',
+        '/images/Image_585018650004905.webp',
+        '/images/Image_585006053756264.webp',
+        '/images/9ae17d2b-8fb3-4f05-8a75-48c40de55bd0.webp',
+        '/images/Image_669276986426772.webp',
     ];
     const randomIndex = Math.floor(Math.random() * backgroundImages.length);
     const randomImage = backgroundImages[randomIndex];
@@ -90,4 +90,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const newRandomImage = backgroundImages[newRandomIndex];
         header.style.backgroundImage = `url(${newRandomImage})`;
     }, 5000); // 每5秒更换一次图片
+
+
 });
