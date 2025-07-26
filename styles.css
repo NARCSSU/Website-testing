@@ -199,6 +199,11 @@ header {
     text-align: center;
     padding: 0 20px;
 }
+.header-content svg{
+    width: 18px;
+    height: 18px;
+    margin-left: 8px;
+}
 
 
 
@@ -635,7 +640,7 @@ footer p {
     margin-left: 8px;
     
 }
-/*页脚链接样式
+/* 页脚链接样式 */
 .footer-links {
     display: flex;
     justify-content: center;
@@ -672,7 +677,7 @@ footer p {
     width: 18px;
     height: 18px;
     margin-left: 8px;
-}*/
+}
 /*版权*/
 .copyright-info {
     margin-top: 20px;
@@ -684,6 +689,11 @@ footer p {
 
 .copyright-info p {
     margin: 8px 0;
+}
+.copyright-info svg{
+    width: 12px;
+    height: 12px;
+    margin-left: 8px;
 }
     
 @media (max-width: 768px) {
