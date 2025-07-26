@@ -690,6 +690,12 @@ footer p {
 .copyright-info p {
     margin: 8px 0;
 }
+.copyright-info a:any-link{
+    color: #aaa;
+}
+.copyright-info a:hover{
+    color: var(--primary-color)
+}
 .copyright-info svg{
     width: 12px;
     height: 12px;
