@@ -20,7 +20,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'MiSans VF', sans-serif;
+    font-family: 'Arial', sans-serif;
 }
 
 body {
@@ -28,7 +28,8 @@ body {
     color: var(--text-color);
     line-height: 1.6;
 }
-a{
+
+a {
     text-decoration: none;
 }
 
@@ -36,21 +37,24 @@ a{
 nav {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 5.5px 18px;
+    padding: 15px 20px;
     background-color: rgba(0, 0, 0, 0.7);
     position: fixed;
     width: 100%;
     z-index: 100;
+    top: 0;
 }
 
 nav.scrolled {
+    height: 81px;
     background: var(--nav-bg-scroll);
     box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
-
+/* 导航链接通用样式 */
+nav a:hover {
+    color: var(--button-hover);
+}
 nav a {
-    
     display: inline-block;
     margin:  20px;
     color: white;
@@ -62,6 +66,172 @@ nav a {
 nav a:hover {
     color: var(--button-hover);
 }
+/* 桌面端导航布局 */
+@media (min-width: 769px) {
+    nav {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+    }
+    nav > a[href="/"] {
+        order: -3;
+        margin: 0 15px 0 20px; /* 主页：左边界 20px，与服务器规则 15px */
+    }
+    nav > .dropdown:first-of-type {
+        order: -2;
+        margin: 0 15px; /* 服务器规则：与主页 15px，与支持我们 15px */
+    }
+    nav > a[href="/support"] {
+        order: -1;
+        margin: 0 15px; /* 支持我们：与服务器规则 15px，与 LuminolMC 15px */
+    }
+    .logo-container {
+        display: flex;
+        align-items: center;
+        order: 0;
+    }
+    nav > .right-align {
+        order: 1;
+        margin-left: auto;
+        margin-right: 20px;
+    }
+}
+
+/* 移动端汉堡菜单 */
+@media (max-width: 768px) {
+    .menu-button {
+        display: block;
+        position: absolute;
+        right: 20px;
+        top: 15px;
+        color: white;
+        font-size: 1.5em;
+        cursor: pointer;
+        z-index: 102;
+    }
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: var(--nav-bg-scroll);
+        padding: 20px;
+        flex-direction: column;
+        z-index: 101;
+    }
+    .menu-toggle:checked ~ .nav-links {
+        display: flex;
+    }
+    .nav-links a:not(.dropdown-toggle):not(.dropdown-item) {
+        display: block;
+        margin: 10px 0;
+        color: white;
+        font-size: 1.4em; /* 主页大标题 */
+        font-weight: bold;
+        text-align: left;
+        pointer-events: auto;
+    }
+    .nav-links .dropdown {
+        display: block;
+        margin: 10px 0;
+    }
+    .nav-links .dropdown-toggle {
+        display: block;
+        color: white;
+        font-size: 1.4em; /* 服务器规则大标题 */
+        font-weight: bold;
+        padding: 10px 0;
+        pointer-events: none; /* 禁用点击，因为是标题 */
+    }
+    .nav-links .dropdown-toggle .menu-icon {
+        display: none; /* 隐藏下拉箭头 */
+    }
+    .nav-links .dropdown-menu {
+        display: block; /* 直接显示子项 */
+        position: static;
+        transform: none;
+        width: 100%;
+        background: transparent; /* 无背景，与主菜单融合 */
+        box-shadow: none;
+        margin: 0;
+        opacity: 1;
+        visibility: visible;
+        transform: scaleY(1);
+    }
+    .nav-links .dropdown-item {
+        display: block;
+        padding: 8px 0 8px 15px; /* 缩进 15px */
+        color: white;
+        font-size: 1.2em; /* 小标题 */
+        font-weight: normal;
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+    .nav-links .dropdown-item svg {
+        display: none; /* 隐藏子项箭头 */
+    }
+}
+
+/* 移动端汉堡菜单修复 */
+@media (max-width: 768px) {
+    .menu-button {
+        display: block;
+        position: absolute;
+        right: 20px;
+        top: 15px;
+        color: white;
+        font-size: 1.5em;
+        cursor: pointer;
+        z-index: 102;
+    }
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: var(--nav-bg-scroll);
+        padding: 20px;
+        flex-direction: column;
+        z-index: 101;
+    }
+    .menu-toggle:checked ~ .nav-links {
+        display: flex; /* checkbox 选中时显示 */
+    }
+    .nav-links a, .nav-links .dropdown {
+        display: block;
+        margin: 10px 0;
+        color: white;
+        font-size: 1.2em;
+        text-align: left;
+        pointer-events: auto;
+    }
+    .nav-links .dropdown-toggle {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+    }
+    .nav-links .dropdown-menu {
+        position: static;
+        transform: none;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+        margin-top: 5px;
+        opacity: 1;
+        visibility: visible;
+        transform: scaleY(1);
+    }
+    .nav-links .dropdown-item {
+        padding: 10px 15px;
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+
 
 /* 下拉菜单样式 */
 .dropdown {
@@ -72,7 +242,6 @@ nav a:hover {
 .dropdown-toggle {
     display: inline-flex;
     align-items: center;
-    margin:20px;
     color: white;
     text-decoration: none;
     font-size: 1.1em;
@@ -91,6 +260,7 @@ nav a:hover {
 }
 
 
+
 /* .dropdown:hover .menu-icon {鼠标悬停时旋转图标实际上图标本身就是倒过来的。。
     transform: rotate(90deg);
 } */
@@ -98,21 +268,17 @@ nav a:hover {
 .dropdown-menu {
     position: absolute;
     top: 100%;
-
-    left: 50%;
-
-    transform: translateX(-50%);
+    left: 0; /* Align left edge with parent */
     width: 150px;
     background: var(--nav-bg-scroll);
     border-radius: 5px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     opacity: 0;
-
     visibility: hidden;
     transition: all 0.4s ease-out;
     z-index: 101;
-    transform-origin: top center;
-    transform: scaleY(0.8) translateX(-50%);
+    transform-origin: top left;
+    transform: scaleY(0.8);
 }
 /* 最喜欢的效果之一 */
  .dropdown:hover .dropdown-menu {/*当鼠标悬停在.dropdown上的时候.dropdown-menu就会哈气 */
@@ -154,27 +320,15 @@ nav a:hover {
     transform: translateX(-3px);
 }
 
-/* 移动端、小屏优化 */
-@media (max-width: 768px) {
-    .dropdown-menu {
-        width: 160px;
-    }
-    
-    .dropdown-item {
-        padding: 8px 12px;
-        font-size: 0.95em;
-    }
-    
-    .menu-icon {
-        width: 16px;
-        height: 16px;
-    }
-    
-    .item-icon {
-        width: 14px;
-        height: 14px;
-    }
+
+.logo-and-text.right-align {
+    margin-left: auto; /* 将 LuminolMC 推到右侧 */
+    margin-right: 20px;
 }
+.LuminolMC{
+    width: 130px;
+}
+
 /* banner */
 header {
     display: flex;
@@ -182,6 +336,7 @@ header {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    padding-top: 70px;
     background-image: url(/images/Image_669276986426772.png);
     background-size: cover;
     background-position: center;
@@ -634,6 +789,7 @@ footer p {
 .logo-and-text {
     display: flex;
     align-items: center;
+    
     color: white;
     font-size: 1.1em;
     text-decoration: none;
@@ -696,21 +852,20 @@ footer p {
 .copyright-info p {
     margin: 8px 0;
 }
-.copyright-info a:any-link{
+
+.copyright-info a:any-link {
     color: #aaa;
 }
-.copyright-info a:hover{
-    color: var(--primary-color)
+
+.copyright-info a:hover {
+    color: var(--primary-color);
 }
-.copyright-info svg{
+
+.copyright-info svg {
     width: 12px;
     height: 12px;
     margin-left: 8px;
 }
-    
-@media (max-width: 768px) {
-    .logo-container {
-        width: 35px;
-        height: 35px;
-    }
-}
+
+
+
