@@ -4,48 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LuminolCraft 服务器 - 加入我们的冒险</title>
+    <link rel="icon" href="path_to_icon/favicon.ico">
+    <!-- 确保 styles.css 路径正确，文件应在项目根目录 -->
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="images/favicon.ico">
-    <script src="script.js" defer></script>
-    
+    <!-- 确保 mobile.css 路径正确，文件应在项目根目录 -->
+    <link rel="stylesheet" href="mobile.css" media="(max-width: 768px)">
+    <!-- Font Awesome CDN 用于汉堡菜单图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- 确保 script.js 路径正确，文件应在项目根目录 -->
+    <script src="script.js"></script>
 
     <meta name='description' content='LuminolCraft 是 LuminolMC 附属的 Minecraft 服务器，拥有综合生存与纯净生存两个子服，管理活跃，欢迎加入我们！'>
 </head>
 <body>
     <!--banner-header-->
     <nav>
-        <!-- <div class="menu-button" onclick="toggleMenu()">☰</div> -->
         <div class="logo-container">
-            <img src="/images/c25a955166388e1257c23d01c78a62e6.webp" alt="logo">
+        <img src="/images/c25a955166388e1257c23d01c78a62e6.webp" alt="logo">
+    </div>
+        <div class="menu-button">
+            <i class="fas fa-bars"></i>
         </div>
-        <a  href="#status">主页</a>
-        <!-- <a href="#Pure">纯净生存</a> -->
-        <!-- <a href="#Integrated">综合生存</a> -->
-        
-        <div class="dropdown">
-            <a href="#rules" class="dropdown-toggle">
-                服务器规则
-                <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4 fill-gray-700 dark:fill-gray-300" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 0 1 1.414 0L10 10.586l3.293-3.293a1 1 0 1 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 0 1 0-1.414" clip-rule="evenodd"></path></svg>
-            </a>
-            <div class="dropdown-menu">
-                <a href="https://docs.qq.com/pdf/DQWFKcE52RmZpTUJN?" class="dropdown-item">
-                    简洁版
-                    <svg  xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg>
-                    
+        <div class="nav-links">
+            <a href="#home">主页</a>
+            <div class="dropdown">
+                <a href="#" class="dropdown-toggle">服务器规则
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
                 </a>
-                <a href="https://docs.qq.com/pdf/DQVBFSUdweHh5ckV2?client=qqclient_online" class="dropdown-item">
-                    详细版
-                    <svg  xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg>
-                    
-                </a>
+                <div class="dropdown-menu">
+                    <a href="https://docs.qq.com/pdf/DQWFKcE52RmZpTUJN?" class="dropdown-item">简洁版
+                        <svg class="item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 18l6-6-6-6"/>
+                        </svg>
+                    </a>
+                    <a href="https://docs.qq.com/pdf/DQVBFSUdweHh5ckV2?client=qqclient_online" class="dropdown-item">详细版
+                        <svg class="item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 18l6-6-6-6"/>
+                        </svg>
+                    </a>
+                </div>
             </div>
+            
         </div>
-        <!-- <a href="https://qm.qq.com/q/39rZKHurJe">支持我们</a> -->
-        <div class="logo-and-text right-align">
-            <a class="LuminolMC" href="https://luminolsuki.moe/">LuminolMC
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg>
-            </a>
-        </div>
+        <a href="#">支持我们</a>
+        <a href="https://luminolsuki.moe/" class="logo-and-text LuminolMC right-align">LuminolMC
+            <svg class="item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18l6-6-6-6"/>
+            </svg>
+        </a>
     </nav>
     <!--banner-->
     <header id="header">
@@ -106,7 +114,7 @@
                 
                 <div class="Integrated-box">
                     <div class="Integrated-img">
-                        <i class="fa fa-paint-brush"></i>
+                        <!-- <i class="fa fa-paint-brush"></i> -->
                         <span>活跃</span>
                     </div>
                     <h3>响应迅速</h3>
@@ -114,7 +122,7 @@
                 </div>
                 <div class="Integrated-box">
                     <div class="Integrated-img">
-                        <i class="fa fa-tree"></i>
+                        <!-- <i class="fa fa-tree"></i> -->
                         <span>互通</span>
                     </div>
                     <h3>多端畅玩</h3>
@@ -122,7 +130,7 @@
                 </div>
                 <div class="Integrated-box">
                     <div class="Integrated-img">
-                        <i class="fa fa-users"></i>
+                        <!-- <i class="fa fa-users"></i> -->
                         <span>稳定</span>
                     </div>
                     <h3>安全可靠</h3>
