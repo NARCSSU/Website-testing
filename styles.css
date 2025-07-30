@@ -104,7 +104,7 @@ nav a:hover {
         right: 20px;
         top: 15px;
         color: white;
-        font-size: 1.5em;
+        font-size: 1.1em;
         cursor: pointer;
         z-index: 102;
     }
@@ -126,7 +126,7 @@ nav a:hover {
         display: block;
         margin: 10px 0;
         color: white;
-        font-size: 1.4em; /* 主页大标题 */
+        font-size: 1.2em; /* 主页大标题 */
         font-weight: bold;
         text-align: left;
         pointer-events: auto;
@@ -138,7 +138,7 @@ nav a:hover {
     .nav-links .dropdown-toggle {
         display: block;
         color: white;
-        font-size: 1.4em; /* 服务器规则大标题 */
+        font-size: 1.2em; /* 服务器规则大标题 */
         font-weight: bold;
         padding: 10px 0;
         pointer-events: none; /* 禁用点击，因为是标题 */
@@ -162,14 +162,11 @@ nav a:hover {
         display: block;
         padding: 8px 0 8px 15px; /* 缩进 15px */
         color: white;
-        font-size: 1.2em; /* 小标题 */
+        font-size: 0.8em; /* 小标题 */
         font-weight: normal;
         opacity: 1;
         transform: translateY(0);
         pointer-events: auto;
-    }
-    .nav-links .dropdown-item svg {
-        display: none; /* 隐藏子项箭头 */
     }
 }
 
@@ -181,7 +178,7 @@ nav a:hover {
         right: 20px;
         top: 15px;
         color: white;
-        font-size: 1.5em;
+        font-size: 1.1em;
         cursor: pointer;
         z-index: 102;
     }
