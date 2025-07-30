@@ -1,6 +1,106 @@
-// script.js
-
 document.addEventListener('DOMContentLoaded', function() {
+    // 初始化汉堡菜单功能
+    function initHamburgerMenu() {
+        const menuButton = document.querySelector('.menu-button');
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (menuButton && navLinks) {
+            menuButton.addEventListener('click', function() {
+                navLinks.classList.toggle('responsive');
+                
+                const icon = menuButton.querySelector('i');
+                if (navLinks.classList.contains('responsive')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+            
+            const navItems = navLinks.querySelectorAll('a');
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    if (navLinks.classList.contains('responsive')) {
+                        navLinks.classList.remove('responsive');
+                        
+                        const icon = menuButton.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            });
+        }
+    }
+    
+    initHamburgerMenu();
+
+    // 初始化下拉菜单
+    function initDropdowns() {
+        const dropdowns = document.querySelectorAll('.dropdown');
+        
+        dropdowns.forEach(dropdown => {
+            const toggle = dropdown.querySelector('.dropdown-toggle');
+            const menu = dropdown.querySelector('.dropdown-menu');
+            
+            dropdown.addEventListener('mouseenter', function() {
+                if (window.innerWidth >= 768) {
+                    menu.style.display = 'block';
+                    setTimeout(() => {
+                        menu.style.opacity = '1';
+                        menu.style.transform = 'translateY(0)';
+                    }, 10);
+                }
+            });
+            
+            dropdown.addEventListener('mouseleave', function() {
+                if (window.innerWidth >= 768) {
+                    menu.style.opacity = '0';
+                    menu.style.transform = 'translateY(10px)';
+                    setTimeout(() => {
+                        menu.style.display = 'none';
+                    }, 300);
+                }
+            });
+            
+            toggle.addEventListener('click', function(e) {
+                if (window.innerWidth < 768) {
+                    e.preventDefault();
+                    
+                    document.querySelectorAll('.dropdown-menu').forEach(otherMenu => {
+                        if (otherMenu !== menu) {
+                            otherMenu.style.display = 'none';
+                        }
+                    });
+                    
+                    if (menu.style.display === 'block') {
+                        menu.style.opacity = '0';
+                        menu.style.transform = 'translateY(10px)';
+                        setTimeout(() => {
+                            menu.style.display = 'none';
+                        }, 300);
+                    } else {
+                        menu.style.display = 'block';
+                        setTimeout(() => {
+                            menu.style.opacity = '1';
+                            menu.style.transform = 'translateY(0)';
+                        }, 10);
+                    }
+                }
+            });
+        });
+        
+        window.addEventListener('resize', function() {
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                menu.style.display = '';
+                menu.style.opacity = '';
+                menu.style.transform = '';
+            });
+        });
+    }
+    
+    initDropdowns();
+
     // 导航栏滚动效果
     window.addEventListener('scroll', function() {
         const nav = document.querySelector('nav');
@@ -10,12 +110,6 @@ document.addEventListener('DOMContentLoaded', function() {
             nav.classList.remove('scrolled');
         }
     });
-
-    // 移动菜单切换
-    function toggleMenu() {
-        const nav = document.querySelector('nav');
-        nav.classList.toggle('responsive');
-    }
 
     // 滚动显示动画
     const observer = new IntersectionObserver((entries) => {
@@ -32,20 +126,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 平滑滚动
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
+        anchor.addEventListener('click', function(e) {
             e.preventDefault();
             
             const targetId = this.getAttribute('href');
             const targetElement = document.querySelector(targetId);
             
             if (targetElement) {
-                // 关闭移动菜单（如果打开）
-                const nav = document.querySelector('nav');
-                if (nav.classList.contains('responsive')) {
-                    nav.classList.remove('responsive');
-                }
-                
-                // 滚动到目标位置
                 window.scrollTo({
                     top: targetElement.offsetTop - 60,
                     behavior: 'smooth'
@@ -88,8 +175,6 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(() => {
         const newRandomIndex = Math.floor(Math.random() * backgroundImages.length);
         const newRandomImage = backgroundImages[newRandomIndex];
-        header.style.backgroundImage = `url(${newRandomImage})`;
-    }, 5000); // 每5秒更换一次图片
-
-
+        header.style.backgroundImage = `url(${newRandomImage})`; // 修复：使用 newRandomImage
+    }, 5000);
 });
