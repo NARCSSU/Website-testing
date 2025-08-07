@@ -40,12 +40,6 @@
 7. **游戏截图**：展示服务器实际游戏画面
 8. **页脚**：包含联系方式、宣传贴链接及版权信息
 
-## 本地运行
-
-1. 将项目文件克隆到本地
-2. 确保文件结构完整（包含images目录、styles.css、mobile.css、script.js）
-3. 直接在浏览器中打开index.html文件即可查看网站
-
 ## 版权信息
 
 - 网站使用的字体为 [MiSans](https://hyperos.mi.com/font/)
