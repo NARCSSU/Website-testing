@@ -1,0 +1,170 @@
+/* 导入字体 */
+@import url("https://cdn-font.hyperos.mi.com/font/css?family=MiSans_Latin_VF:VF:Latin&display=swap");
+@import url("https://cdn-font.hyperos.mi.com/font/css?family=MiSans_VF:VF:Chinese_Simplify,Latin&display=swap");
+@import url("https://cdn-font.hyperos.mi.com/font/css?family=MiSans:100,200,300,400,450,500,600,650,700,900:Chinese_Simplify,Latin&display=swap");
+@import url("https://cdn-font.hyperos.mi.com/font/css?family=Misans_TC_VF:VF:Chinese_Traditional_TW&display=swap");
+
+:root {
+    --primary-color:#9e94d8;
+    --secondary-color:#333333;
+    --background-color:#f2eefc;
+    --card-bg:#FAFAFA;
+    --text-color:#444444;
+    --online-color:#00BFA6;
+    --nav-bg:rgba(109, 91, 154, 0.8);
+    --nav-bg-scroll:rgba(44, 62, 80, 1);
+    --button-hover:#b6ade6;
+}
+
+/* 基础样式 */
+body {
+    font-family: "MiSans", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.8;
+    color: var(--text-color);
+    background-color: var(--background-color);
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 头部样式 */
+header {
+    background-color: var(--nav-bg);
+    color: white;
+    padding: 30px 0;
+    text-align: center;
+}
+
+/* 主要内容样式 */
+main {
+    padding: 40px 0;
+}
+
+.intro {
+    text-align: center;
+    margin-bottom: 50px;
+    padding: 0 20px;
+}
+
+.intro h2 {
+    color: var(--secondary-color);
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+/* 赞助方式样式 */
+.sponsorship-methods {
+    margin-bottom: 60px;
+}
+
+.method-item {
+    background: var(--card-bg);
+    padding: 25px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.method-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.method-icon {
+    font-size: 32px;
+    color: var(--primary-color);
+    margin-right: 20px;
+    min-width: 40px;
+    text-align: center;
+}
+
+.method-title {
+    margin: 0;
+    color: var(--secondary-color);
+    font-size: 20px;
+}
+
+.method-desc {
+    margin: 0 0 15px 60px; /* 左侧留出图标的位置 */
+    color: var(--text-color);
+}
+
+.btn {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 8px 18px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+    margin-left: 60px; /* 左侧留出图标的位置 */
+}
+
+.btn:hover {
+    background-color: var(--button-hover);
+}
+
+/* 分隔线 */
+.divider {
+    height: 1px;
+    background-color: rgba(0,0,0,0.05);
+    margin: 20px 0;
+}
+
+/* 感谢区域样式 */
+.thank-you {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    margin-bottom: 40px;
+}
+
+.thank-you h3 {
+    color: var(--secondary-color);
+    font-size: 24px;
+    margin-top: 0;
+}
+
+
+/* 页脚链接样式 */
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 30px 0;
+    flex-wrap: wrap;
+    text-align: center;
+}
+
+/*版权*/
+.copyright-info {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.9em;
+    color: #aaa;
+}
+
+.copyright-info a:any-link {
+    color: #aaa;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.copyright-info a:hover {
+    color: var(--primary-color);
+}
+
+.copyright-info svg {
+    width: 12px;
+    height: 12px;
+    margin-left: 8px;
+}
+
