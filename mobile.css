@@ -6,15 +6,15 @@
 @import url("https://cdn-font.hyperos.mi.com/font/css?family=Misans_TC_VF:VF:Chinese_Traditional_TW&display=swap");
 
 :root {
-    --primary-color: #9e94d8;
-    --secondary-color: #333333;
-    --background-color: #f0e6d2;
-    --card-bg: #FAFAFA;
-    --text-color: #444444;
-    --online-color: #00BFA6;
-    --nav-bg: rgba(109, 91, 154, 0.8);
-    --nav-bg-scroll: rgba(44, 62, 80, 1);
-    --button-hover: #b6ade6;
+    --primary-color:#9e94d8;
+    --secondary-color:#333333;
+    --background-color:#f2eefc;
+    --card-bg:#FAFAFA;
+    --text-color:#444444;
+    --online-color:#00BFA6;
+    --nav-bg:rgba(109, 91, 154, 0.8);
+    --nav-bg-scroll:rgba(44, 62, 80, 1);
+    --button-hover:#b6ade6;
 }
 
 /* 基础重置 */
@@ -65,7 +65,7 @@ nav a {
     display: none;
     position: absolute;
     right: 20px;
-    top: 15px;
+    top: 19.4px;
     color: white;
     font-size: 1.5em;
     cursor: pointer;
@@ -112,7 +112,8 @@ nav > a:first-of-type, nav > .dropdown:first-of-type {
     margin-left: 5px; /* 减小“主页”与 logo 的间距 */
 }
 .logo-container img {
-    height: 40px;
+    height: 35px;
+    width: 35px;
 }
 
 /* 调整banner区域，避免被导航栏覆盖 */
