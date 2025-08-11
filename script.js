@@ -39,6 +39,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function initDropdowns() {
         const dropdowns = document.querySelectorAll('.dropdown');
         
+
+        
         dropdowns.forEach(dropdown => {
             const toggle = dropdown.querySelector('.dropdown-toggle');
             const menu = dropdown.querySelector('.dropdown-menu');
@@ -141,40 +143,94 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 随机背景图片
-    const header = document.getElementById('header');
-    const backgroundImages = [
-        '/images/3cda066bccaefea3eb268d4ca10f018a.webp',
-        '/images/Image_585028843869744.webp',
-        '/images/Image_585018650004905.webp',
-        '/images/Image_585012522922876.webp',
-        '/images/Image_585006053756264.webp',
-        '/images/Image_585000138805953.webp',
-        '/images/Image_584991582604759.webp',
-        '/images/Image_669234245588716.webp',
-        '/images/Image_669226165759604.webp',
-        '/images/Image_669218057352159.webp',
-        '/images/Image_669214276923463.webp',
-        '/images/Image_669203224465863.webp',
-        '/images/Image_669202127295447.webp',
-        '/images/Image_669192564244096.webp',
-        '/images/Image_669027140045097.webp',
-        '/images/Image_585061010780930.webp',
-        '/images/Image_585054865315151.webp',
-        '/images/Image_585036168830575.webp',
-        '/images/Image_585018650004905.webp',
-        '/images/Image_585006053756264.webp',
-        '/images/9ae17d2b-8fb3-4f05-8a75-48c40de55bd0.webp',
-        '/images/Image_669276986426772.webp',
-    ];
-    const randomIndex = Math.floor(Math.random() * backgroundImages.length);
-    const randomImage = backgroundImages[randomIndex];
-    header.style.backgroundImage = `url(${randomImage})`;
+    function initBackgroundSlider() {
+        // 背景图片数组 - 替换为你的实际图片路径
+        const backgroundImages = [
+            '/images/3cda066bccaefea3eb268d4ca10f018a.webp',
+            '/images/Image_585028843869744.webp',
+            '/images/Image_585018650004905.webp',
+            '/images/Image_585012522922876.webp',
+            '/images/Image_585006053756264.webp',
+            '/images/Image_585000138805953.webp',
+            '/images/Image_584991582604759.webp',
+            '/images/Image_669234245588716.webp',
+            '/images/Image_669226165759604.webp',
+            '/images/Image_669218057352159.webp',
+            '/images/Image_669214276923463.webp',
+            '/images/Image_669203224465863.webp',
+            '/images/Image_669202127295447.webp',
+            '/images/Image_669192564244096.webp',
+            '/images/Image_669027140045097.webp',
+            '/images/Image_585061010780930.webp',
+            '/images/Image_585054865315151.webp',
+            '/images/Image_585036168830575.webp',
+            '/images/Image_585018650004905.webp',
+            '/images/Image_585006053756264.webp',
+            '/images/9ae17d2b-8fb3-4f05-8a75-48c40de55bd0.webp',
+            '/images/Image_669276986426772.webp',
+        ];
+        
+        const header = document.querySelector('header');
+        // 初始索引设为随机值，实现每次刷新不同背景
+        let currentIndex = Math.floor(Math.random() * backgroundImages.length);
 
-    // 定时更换背景图片
-    setInterval(() => {
-        const newRandomIndex = Math.floor(Math.random() * backgroundImages.length);
-        const newRandomImage = backgroundImages[newRandomIndex];
-        header.style.backgroundImage = `url(${newRandomImage})`; // 修复：使用 newRandomImage
-    }, 5000);
+        // 创建初始背景（使用随机选中的图片）
+        let background = document.createElement('div');
+        background.className = 'header-background fade-in';
+        background.style.backgroundImage = `url(${backgroundImages[currentIndex]})`;
+        header.appendChild(background);
+
+        // 随机获取下一张图片索引（不重复当前）
+        function getNextIndex() {
+          if (backgroundImages.length <= 1) return 0;
+        
+          let nextIndex;
+          do {
+            nextIndex = Math.floor(Math.random() * backgroundImages.length);
+          } while (nextIndex === currentIndex);
+
+          return nextIndex;
+        }
+
+        // 切换背景图片
+        function switchBackground() {
+          const nextIndex = getNextIndex();
+        
+          // 创建新背景元素
+          const newBackground = document.createElement('div');
+          newBackground.className = 'header-background new-background';
+          newBackground.style.backgroundImage = `url(${backgroundImages[nextIndex]})`;
+          header.appendChild(newBackground);
+        
+          // 触发当前背景的淡出动画
+          background.classList.remove('fade-in');
+          background.classList.add('fade-out');
+        
+          // 稍微延迟后触发新背景的淡入动画
+          setTimeout(() => {
+            newBackground.classList.remove('new-background');
+            newBackground.classList.add('fade-in');
+          }, 200); // 小延迟让动画更有层次感
+
+          // 动画完成后清理旧背景
+          setTimeout(() => {
+            background.remove();
+            background = newBackground;
+            currentIndex = nextIndex;
+          }, 1200); // 与CSS过渡时间保持一致
+        }
+  
+  
+        // 每3.6秒切换一次背景
+        setInterval(switchBackground, 3600);
+    }
+
+    // 页面加载完成后初始化
+    window.addEventListener('load', () => {
+        // 保留你原有的其他初始化函数
+        initBackgroundSlider(); // 初始化背景切换
+    });
+
+      
+    
 });
