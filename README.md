@@ -46,6 +46,11 @@
 - "Minecraft" 以及"我的世界"为 Mojang AB 的商标，本服务器与 Mojang 及 Microsoft 无从属关系
 - 网站内容 © 2025 Luminol Team 保留所有权利
 
+## 许可证
+
+本项目源代码采用 GNU Affero General Public License v3.0（AGPL3）授权，详情参见：  
+[https://www.gnu.org/licenses/agpl-3.0.html](https://www.gnu.org/licenses/agpl-3.0.html)
+
 ## 联系方式
 
 - GitHub: [https://github.com/LuminolCraft/](https://github.com/LuminolCraft/)
