@@ -105,11 +105,14 @@ nav a {
     flex-grow: 1; 
 }
 nav > a, nav > .dropdown {
-    order: 1; /* 将“主页”和“服务器规则”放在 logo-container 之后 */
-    margin: 0 10px; /* 调整间距以靠近 logo */
+    /* 将“主页”和“服务器规则”放在 logo-container 之后 */
+    order: 1; 
+    /* 调整间距以靠近 logo */
+    margin: 0 10px; 
 }
 nav > a:first-of-type, nav > .dropdown:first-of-type {
-    margin-left: 5px; /* 减小“主页”与 logo 的间距 */
+    /* 减小“主页”与 logo 的间距 */
+    margin-left: 5px; 
 }
 .logo-container img {
     height: 35px;
