@@ -5,15 +5,15 @@
 @import url("https://cdn-font.hyperos.mi.com/font/css?family=Misans_TC_VF:VF:Chinese_Traditional_TW&display=swap");
 
 :root {
-    --primary-color:#9e94d8;
-    --secondary-color:#333333;
-    --background-color:#f2eefc;
-    --card-bg:#FAFAFA;
-    --text-color:#444444;
-    --online-color:#00BFA6;
-    --nav-bg:rgba(109, 91, 154, 0.8);
-    --nav-bg-scroll:rgba(44, 62, 80, 1);
-    --button-hover:#b6ade6;
+    --primary-color: #9e94d8;
+    --secondary-color: #333333;
+    --background-color: #f2eefc;
+    --card-bg: #FAFAFA;
+    --text-color: #444444;
+    --online-color: #00BFA6;
+    --nav-bg: rgba(109, 91, 154, 0.8);
+    --nav-bg-scroll: rgba(44, 62, 80, 1);
+    --button-hover: #b6ade6;
 }
 
 /* 基础样式 */
@@ -27,7 +27,7 @@ body {
 }
 
 .container {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
 }
@@ -40,14 +40,14 @@ header {
     text-align: center;
 }
 
-/* 主要内容样式 */
+/* 内容样式 */
 main {
     padding: 40px 0;
 }
 
 .intro {
     text-align: center;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
     padding: 0 20px;
 }
 
@@ -57,59 +57,84 @@ main {
     margin-bottom: 15px;
 }
 
-/* 赞助方式样式 */
+/* 请为我打钱 */
 .sponsorship-methods {
     margin-bottom: 60px;
 }
 
+.methods-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
 .method-item {
     background: var(--card-bg);
-    padding: 25px;
-    margin-bottom: 20px;
+    padding: 20px;
     border-radius: 8px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.method-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 .method-header {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .method-icon {
-    font-size: 32px;
+    font-size: 28px;
     color: var(--primary-color);
-    margin-right: 20px;
-    min-width: 40px;
+    margin-right: 15px;
+    min-width: 30px;
     text-align: center;
 }
 
 .method-title {
     margin: 0;
     color: var(--secondary-color);
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .method-desc {
-    margin: 0 0 15px 60px; /* 左侧留出图标的位置 */
+    margin: 0 0 10px 0;
     color: var(--text-color);
+    font-size: 14px;
 }
 
 .btn {
     display: inline-block;
     background-color: var(--primary-color);
     color: white;
-    padding: 8px 18px;
+    padding: 8px 16px;
     text-decoration: none;
     border-radius: 5px;
     font-weight: 500;
-    transition: background-color 0.3s;
-    margin-left: 60px; /* 左侧留出图标的位置 */
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 .btn:hover {
     background-color: var(--button-hover);
+    transform: scale(1.05);
 }
-
+/* 哈基米叮咚鸡胖宝宝踩踩背搞核酸袋鼠鸡
+一带一段
+栗老师小豌豆蹲方魂原上咪龙抗狼好好汉
+盖伦发发
+在美国叫超人
+在中国叫电棍老爷爷动起来
+我给你踩踩背
+哈哈哈哈基米下下来搞搞核酸
+叮你看你叠操作
+OK前十是谁呢圆头耄耋和牢财
+胖宝宝u好可爱u
+奥小白手套 韭菜盒子吃两个
+缺的营养谁给我补啊
+别吃别吃阿弥诺斯曼波曼波我错啦 */
 /* 分隔线 */
 .divider {
     height: 1px;
@@ -120,7 +145,7 @@ main {
 /* 感谢区域样式 */
 .thank-you {
     text-align: center;
-    padding: 40px 20px;
+    padding: 30px 20px;
     background-color: var(--card-bg);
     border-radius: 8px;
     margin-bottom: 40px;
@@ -128,122 +153,122 @@ main {
 
 .thank-you h3 {
     color: var(--secondary-color);
-    font-size: 24px;
+    font-size: 22px;
     margin-top: 0;
 }
 
-
 /* 页脚链接样式 */
 .footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    margin: 30px 0;
-    flex-wrap: wrap;
+    background-color: #2d3748;
+    color: #ffffff;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
     text-align: center;
 }
-/* ---------------分---割---线---------------- */
 
+
+/* 已注释support.html>.back-to-top ---------------------------------------------------------------------*/
 /* 返回顶部圆形按钮样式 */
 .back-to-top {
-    /* 圆形按钮 */
-    width: 55px;
-    height: 55px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    
-    /* 固定定位在右下角 */
     position: fixed;
-    bottom: 540px;
+    bottom: 100px;
     right: 30px;
-    
-    /* 样式设置 */
     background: var(--primary-color);
     color: white;
     text-align: center;
     text-decoration: none;
-    font-size: 1.5em;
-    
-    /* 居中图标 */
+    font-size: 1.4em;
     display: flex;
     align-items: center;
     justify-content: center;
-    
-    /* 动画和过渡效果 */
     transition: all 0.3s;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
-/* 光效动画 */
+
 .back-to-top::before {
     content: '';
     position: absolute;
     top: 0;
-    left: -100%;
+    /* left: -100%; */
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    /* background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); */
     transition: all 0.5s;
 }
-/* 悬停效果 */
+
 .back-to-top:hover {
     background: #16a085;
     transform: translateY(-4px);
     box-shadow: 0 8px 18px rgba(0,0,0,0.2);
 }
+/* 已注释support.html>.back-to-top ----------------------------------------------------------------------*/
 
-/* ---------------分---割---线---------------- */
 
 /* 返回主页圆形按钮样式 */
 .back-to-home {
-    /* 圆形按钮 */
-    width: 55px;
-    height: 55px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    margin-top: 100px   ;
-    /* 固定定位在右下角 */
     position: fixed;
-    bottom: 660px;
-    right: 30px;
-    /* 样式设置 */
+    bottom: 50%;
+    right: 2px;
     background: var(--primary-color);
     color: white;
     text-align: center;
     text-decoration: none;
-    font-size: 1.5em;
-    /* 居中图标 */
+    font-size: 1.4em;
     display: flex;
     align-items: center;
     justify-content: center;
-    /* 动画和过渡效果 */
     transition: all 0.3s;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
-/* 光效动画 */
+@media (max-width: 768px) {
+    .back-to-home {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        position: fixed;
+        top: 50%;
+        
+        right: 2px;
+        background: var(--primary-color);
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        font-size: 1.4em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+}
+
 .back-to-home::before {
     content: '';
     position: absolute;
     top: 0;
-    left: -100%;
+    /* left: -100%; */
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    /* background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); */
     transition: all 0.5s;
 }
-/* 悬停效果 */
+
 .back-to-home:hover {
     background: #16a085;
     transform: translateY(-4px);
     box-shadow: 0 8px 18px rgba(0,0,0,0.2);
 }
 
-/* ---------------分---割---线---------------- */
-
-
-
-/*版权*/
+/* 版权 */
 .copyright-info {
     margin-top: 20px;
-    padding-top: 20px;
-    /* border-top: 1px solid rgba(255, 255, 255, 0.1); */
+    padding-top: 5px;
     font-size: 0.9em;
     color: #aaa;
 }
@@ -263,4 +288,3 @@ main {
     height: 12px;
     margin-left: 8px;
 }
-
