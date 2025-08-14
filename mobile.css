@@ -211,7 +211,40 @@ header {
     text-align: center;
     overflow: hidden;
 }
+.Pure-h2 {
+    position: relative;
+    margin-bottom: 25px;
+    margin-left: -1%;
+    color: var(--secondary-color);
+    text-align: center;
+    font-size: clamp(1.8em, 5vw, 2.5em);
+}
+.Comprehensive-h2 {
+    position: relative;
+    margin-bottom: 25px;
+    margin-left: -1%;
+    color: var(--secondary-color);
+    text-align: center;
+    font-size: clamp(1.8em, 5vw, 2.5em);
+}
+.Pure-h2::after, .Comprehensive-h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: var(--primary-color);
+    border-radius: 2px;
+}
 
+.section p {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 1.1em;
+}
 /* 移动端样式 */
 @media (max-width: 768px) {
     /* 显示汉堡菜单按钮 */
@@ -265,7 +298,43 @@ header {
         display: none;
     }
 }
+@media (max-width: 768px) {
+    .Pure-h2 {
+        position: relative;
+        margin-bottom: 25px;
+        margin-left: -1%;
+        color: var(--secondary-color);
+        text-align: center;
+        font-size: clamp(1.8em, 5vw, 2.5em);
+    }
+    .Comprehensive-h2 {
+        position: relative;
+        margin-bottom: 25px;
+        margin-left: -1%;
+        color: var(--secondary-color);
+        text-align: center;
+        font-size: clamp(1.8em, 5vw, 2.5em);
+    }
+    .Pure-h2::after, .Comprehensive-h2::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: var(--primary-color);
+        border-radius: 2px;
+    }
+    
+    .section p {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto;
+        font-size: 1.1em;
+    }
 
+}
 /* Commented out previous pure CSS hamburger menu styles */
 /*
 .menu-button {
