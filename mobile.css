@@ -112,14 +112,14 @@ nav > a, nav > .dropdown {
 }
 nav > a:first-of-type, nav > .dropdown:first-of-type {
     /* 减小“主页”与 logo 的间距 */
-    margin-left: 5px; 
+    margin-right: 19px; 
 }
 .logo-container img {
     height: 35px;
     width: 35px;
 }
 
-/* 调整banner区域，避免被导航栏覆盖 */
+
 header {
     padding-top: 311px;
 }
@@ -335,58 +335,3 @@ header {
     }
 
 }
-/* Commented out previous pure CSS hamburger menu styles */
-/*
-.menu-button {
-    display: none;
-    width: 30px;
-    height: 20px;
-    position: relative;
-    cursor: pointer;
-    z-index: 101;
-}
-
-.menu-button span {
-    display: block;
-    position: absolute;
-    height: 3px;
-    width: 100%;
-    background: white;
-    border-radius: 3px;
-    opacity: 1;
-    left: 0;
-    transition: all 0.3s ease;
-}
-
-.menu-button span:nth-child(1) {
-    top: 0;
-}
-
-.menu-button span:nth-child(2) {
-    top: 8px;
-}
-
-.menu-button span:nth-child(3) {
-    top: 16px;
-}
-
-#menu-toggle:checked ~ .nav-links {
-    display: flex;
-}
-
-#menu-toggle:checked ~ .menu-button span:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
-}
-
-#menu-toggle:checked ~ .menu-button span:nth-child(2) {
-    opacity: 0;
-}
-
-#menu-toggle:checked ~ .menu-button span:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -7px);
-}
-
-#menu-toggle {
-    display: none;
-}
-*/
