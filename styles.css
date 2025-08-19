@@ -12,7 +12,7 @@
     --text-color:#444444;
     --online-color:#00BFA6;
     --nav-bg:rgba(109, 91, 154, 0.8);
-    --nav-bg-scroll:rgba(44, 62, 80, 1);
+    --nav-bg-scroll:#424a55;
     --button-hover:#b6ade6;
 }
 
@@ -66,6 +66,9 @@ nav a {
 
 nav a:hover {
     color: var(--button-hover);
+}
+.AAA{
+    margin-right: 1.2em;
 }
 /* 桌面端导航布局 */
 @media (min-width: 769px) {
@@ -338,14 +341,12 @@ nav a:hover {
 }
 
 
-.logo-and-text.right-align {
-    /* 将 LuminolMC 推到右侧 */
-    margin-left: auto; 
-    margin-right: 20px;
-}
-.LuminolMC{
+.logo-and-text {
     width: 130px;
+    margin-right: auto; 
+    margin-left: 20px;
 }
+
 
 /* banner */
 header {
@@ -873,7 +874,7 @@ footer p {
 
 
 .logo-container {
-    margin-right: 100px; /*有“纯净生存”和“综合生存”是auto */
+    
     margin-left: 20px;  
 }
 .logo-container img {
@@ -902,8 +903,8 @@ footer p {
 .logo-and-text svg {
     width: 18px;
     height: 18px;
-    margin-left: 8px;
-    
+    margin-left: 3px;
+    margin-bottom: 3px;
 }
 /* 页脚链接样式 */
 .footer-links {
