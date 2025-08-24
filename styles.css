@@ -455,7 +455,7 @@ header {
 }
 .server-ip:hover {
     transform: scale(1.1); 
-    background: #f8c3cd;
+    background: #f8c3cd;locationbar
     box-shadow: 0 8px 18px rgba(0,0,0,0.2);
 } */
 
@@ -512,7 +512,7 @@ header {
     width: 100%;
     height: 4px;
     background: linear-gradient(90deg, var(--primary-color), var(--online-color));
-     z-index: 1;/*.status-box::before的z—index是-1 */
+    z-index: 1;/*.status-box::before的z—index是-1 */
 }
 .status-h2{
     color: #f8f9fa;
@@ -586,7 +586,7 @@ header {
 }
 
 .section p {
-    text-align: left;
+    
     max-width: 800px;
     margin: 0 auto;
     font-size: 1.1em;
