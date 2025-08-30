@@ -112,7 +112,7 @@ nav > a, nav > .dropdown {
 }
 nav > a:first-of-type, nav > .dropdown:first-of-type {
     /* 减小“主页”与 logo 的间距 */
-    margin-right: 19px; 
+    margin-right: 80%;
 }
 .logo-container img {
     height: 35px;
