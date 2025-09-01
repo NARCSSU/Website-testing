@@ -344,6 +344,7 @@ nav a:hover {
 .logo-and-text {
     width: 130px;
     margin-right: auto; 
+    margin-left: 20px;
 }
 
 
@@ -355,7 +356,6 @@ header {
     align-items: center;
     height: 100vh;
     padding-top: 70px;
-    background-image: url(/images/Image_669276986426772.png);
     background-size: cover;
     background-position: center;
     color: white;
