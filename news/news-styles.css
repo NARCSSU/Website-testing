@@ -543,12 +543,12 @@ nav a:hover {
 }
 
 .news-content::-webkit-scrollbar-thumb {
-    background: rgba(158, 148, 216, 0.5); /* 基于 --primary-color #9e94d8 */
+    background: rgba(158, 148, 216, 0.5); 
     border-radius: 4px;
 }
 
 .news-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(182, 173, 230, 0.7); /* 基于 --button-hover #b6ade6 */
+    background: rgba(182, 173, 230, 0.7); 
 }
 
 /* 水平滚动条样式 for .news-content */
