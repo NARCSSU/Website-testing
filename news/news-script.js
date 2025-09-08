@@ -275,11 +275,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }, '查看详情');
             
             // 添加点击事件
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                // 在实际应用中，这里应该跳转到详情页
-                alert('将跳转到新闻详情: ' + item.id);
-            });
+            // link.addEventListener('click', function(e) {
+            //     e.preventDefault();
+            //     // 在实际应用中，这里应该跳转到详情页
+            //     alert('将跳转到新闻详情: ' + item.id);
+            // });
             
             // 组装新闻项
             newsItem.appendChild(newsImg);
