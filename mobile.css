@@ -185,6 +185,60 @@ header {
     align-items: center;
 }
 
+/* 移动端样式 */
+@media (max-width: 768px) {
+    /* 显示汉堡菜单按钮 */
+    .menu-button {
+        display: block;
+    }
+
+    /* 隐藏导航链接 */
+    .nav-links {
+        display: none;
+    }
+
+    /* 点击汉堡菜单后显示导航链接 */
+    .nav-links.responsive {
+        display: block;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: var(--nav-bg-scroll);
+    }
+
+    /* 调整导航链接样式 */
+    .nav-links.responsive .dropdown {
+        display: block;
+        width: 100%;
+    }
+
+    .nav-links.responsive .dropdown-toggle {
+        display: block;
+        width: 100%;
+        padding: 15px 20px;
+    }
+
+    .nav-links.responsive .dropdown-menu {
+        position: static;
+        width: 100%;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        background-color: transparent;
+    }
+
+    .nav-links.responsive .dropdown-item {
+        padding: 10px 20px;
+    }
+
+    /* 隐藏桌面版导航链接 */
+    nav a:not(.logo-and-text) {
+        display: none;
+    }
+}
+
 .LuminolMC {
     display: inline-flex;
     align-items: center;
@@ -245,59 +299,7 @@ header {
     margin: 0 auto;
     font-size: 1.1em;
 }
-/* 移动端样式 */
-@media (max-width: 768px) {
-    /* 显示汉堡菜单按钮 */
-    .menu-button {
-        display: block;
-    }
 
-    /* 隐藏导航链接 */
-    .nav-links {
-        display: none;
-    }
-
-    /* 点击汉堡菜单后显示导航链接 */
-    .nav-links.responsive {
-        display: block;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        background-color: var(--nav-bg-scroll);
-    }
-
-    /* 调整导航链接样式 */
-    .nav-links.responsive .dropdown {
-        display: block;
-        width: 100%;
-    }
-
-    .nav-links.responsive .dropdown-toggle {
-        display: block;
-        width: 100%;
-        padding: 15px 20px;
-    }
-
-    .nav-links.responsive .dropdown-menu {
-        position: static;
-        width: 100%;
-        opacity: 1;
-        visibility: visible;
-        transform: none;
-        box-shadow: none;
-        background-color: transparent;
-    }
-
-    .nav-links.responsive .dropdown-item {
-        padding: 10px 20px;
-    }
-
-    /* 隐藏桌面版导航链接 */
-    nav a:not(.logo-and-text) {
-        display: none;
-    }
-}
 @media (max-width: 768px) {
     .Pure-h2 {
         position: relative;
