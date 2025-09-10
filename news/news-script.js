@@ -385,7 +385,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        fetch('news.json')
+        fetch('https://raw.githubusercontent.com/LuminolCraft/news.json/refs/heads/main/news.json')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('无法加载新闻数据');
