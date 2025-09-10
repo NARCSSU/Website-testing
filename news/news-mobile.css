@@ -34,6 +34,11 @@ a {
     text-decoration: none;
 }
 
+.news-markdown h1 { font-size: 1.5em; color: var(--secondary-color); }
+.news-markdown ul { padding-left: 20px; }
+.news-markdown strong { color: var(--primary-color); }
+
+
 /* 导航栏样式 */
 nav {
     display: flex;

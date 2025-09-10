@@ -33,6 +33,11 @@ a {
     text-decoration: none;
 }
 
+.news-markdown h1 { font-size: 1.5em; color: var(--secondary-color); }
+.news-markdown ul { padding-left: 20px; }
+.news-markdown strong { color: var(--primary-color); }
+
+
 /* banner-header */
 nav {
     display: flex;
@@ -526,7 +531,7 @@ nav a:hover {
 
 /* 新闻内容区域 */
 .news-content {
-    padding: 15px;
+    padding: 24px;
     height: 150px;
     overflow-x: auto; /* 启用水平滚动 */
     overflow-y: auto; /* 保持垂直滚动 */

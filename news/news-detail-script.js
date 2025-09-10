@@ -111,16 +111,31 @@ document.addEventListener('DOMContentLoaded', function() {
     const cachedNews = JSON.parse(localStorage.getItem('news-cache') || '[]');
     const newsItem = cachedNews.find(item => item.id == newsId);
 
+
+    // 安全的HTML编码函数
+    function encodeHTML(str) {
+        return str.replace(/[&<>"']/g, function(match) {
+          return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+          }[match];
+        });
+      }
+
+
     if (newsItem) {
         newsDetail.innerHTML = `
             ${newsItem.pinned ? '<span class="pinned-icon">📌</span>' : ''}
-            <h2>${newsItem.title}</h2>
-            <span class="news-date">${newsItem.date}</span>
+            <h2>${encodeHTML(newsItem.title)}</h2>
+            <span class="news-date">${encodeHTML(newsItem.date)}</span>
             <div class="news-tags">
-                ${newsItem.tags?.map(tag => `<span class="tag">${tag}</span>`).join('') || ''}
+                ${newsItem.tags?.map(tag => `<span class="tag">${encodeHTML(tag)}</span>`).join('') || ''}
             </div>
-            <div class="news-img" style="background-image: url('${newsItem.image}');"></div>
-            <p>${newsItem.content}</p>
+            <div class="news-img" style="background-image: url('${encodeHTML(newsItem.image)}');"></div>
+            <div>${marked.parse(newsItem.content)}</div>  
         `;
 
         // 渲染画廊图片

@@ -33,6 +33,13 @@ a {
     text-decoration: none;
 }
 
+
+.news-markdown h1 { font-size: 1.5em; color: var(--secondary-color); }
+.news-markdown ul { padding-left: 20px; }
+.news-markdown strong { color: var(--primary-color); }
+
+
+
 /* banner-header */
 nav {
     display: flex;
@@ -365,7 +372,7 @@ nav a:hover {
 
 /* 新闻详情样式 */
 .news-detail-section {
-    padding: 40px 20px;
+    padding: 40px;
     background: var(--card-bg);
     border-radius: 8px;
     margin: 100px auto;

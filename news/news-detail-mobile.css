@@ -34,6 +34,12 @@ a {
     text-decoration: none;
 }
 
+
+.news-markdown h1 { font-size: 1.5em; color: var(--secondary-color); }
+.news-markdown ul { padding-left: 20px; }
+.news-markdown strong { color: var(--primary-color); }
+
+
 /* 导航栏样式 */
 nav {
     display: flex;
@@ -301,7 +307,7 @@ nav > a:first-of-type, nav > .dropdown:first-of-type {
     }
 
     .news-detail-section {
-        padding: 30px 15px;
+        padding: 30px;
     }
 
     .news-detail-section h2 {

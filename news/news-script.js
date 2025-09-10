@@ -109,91 +109,91 @@ document.addEventListener('DOMContentLoaded', function() {
     initDropdowns();
 
     const newsGrid = document.querySelector('#news-grid');
-            const paginationContainer = document.querySelector('#news-pagination');
-            const searchInput = document.querySelector('#news-search-input');
-            const searchBtn = document.querySelector('#news-search-btn');
-            const tagSelect = document.querySelector('#tag-select');
-            let currentPage = 0;
-            const itemsPerPage = 6;
-            let filteredNews = null;
-            const CACHE_DURATION = 30 * 60 * 1000;
+    const paginationContainer = document.querySelector('#news-pagination');
+    const searchInput = document.querySelector('#news-search-input');
+    const searchBtn = document.querySelector('#news-search-btn');
+    const tagSelect = document.querySelector('#tag-select');
+    let currentPage = 0;
+    const itemsPerPage = 6;
+    let filteredNews = null;
+    const CACHE_DURATION = 30 * 60 * 1000;
 
-            // 安全的HTML编码函数
-            function encodeHTML(str) {
-                return str.replace(/[&<>"']/g, function(match) {
-                    return {
-                        '&': '&amp;',
-                        '<': '&lt;',
-                        '>': '&gt;',
-                        '"': '&quot;',
-                        "'": '&#39;'
-                    }[match];
-                });
-            }
+    // 安全的HTML编码函数
+    function encodeHTML(str) {
+        return str.replace(/[&<>"']/g, function(match) {
+            return {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[match];
+        });
+    }
 
-            // 验证新闻数据
-            function validateNewsItem(item) {
-                const requiredFields = ['id', 'title', 'date', 'content', 'image'];
-                for (const field of requiredFields) {
-                    if (!item.hasOwnProperty(field)) {
-                        console.error(`新闻项缺少必需字段: ${field}`);
-                        return false;
-                    }
-                }
-                
-                // 验证ID是数字
-                if (typeof item.id !== 'number') {
-                    console.error('新闻ID必须是数字');
-                    return false;
-                }
-                
-                // 验证图片URL格式
-                if (!item.image.startsWith('https://')) {
-                    console.error('图片URL必须以https开头');
-                    return false;
-                }
-                
-                return true;
+    // 验证新闻数据
+    function validateNewsItem(item) {
+        const requiredFields = ['id', 'title', 'date', 'content', 'image'];
+        for (const field of requiredFields) {
+            if (!item.hasOwnProperty(field)) {
+                console.error(`新闻项缺少必需字段: ${field}`);
+                return false;
             }
+        }
+        
+        // 验证ID是数字
+        if (typeof item.id !== 'number') {
+            console.error('新闻ID必须是数字');
+            return false;
+        }
+        
+        // 验证图片URL格式
+        if (!item.image.startsWith('https://')) {
+            console.error('图片URL必须以https开头');
+            return false;
+        }
+        
+        return true;
+    }
 
-            // 动态生成标签选项
-            function populateTagFilter(newsItems) {
-                const tags = new Set();
-                newsItems.forEach(item => {
-                    if (item.tags) {
-                        item.tags.forEach(tag => tags.add(encodeHTML(tag)));
-                    }
-                });
-                
-                tagSelect.innerHTML = '<option value="">所有标签</option>';
-                tags.forEach(tag => {
-                    const option = document.createElement('option');
-                    option.value = tag;
-                    option.textContent = tag;
-                    tagSelect.appendChild(option);
-                });
+    // 动态生成标签选项
+    function populateTagFilter(newsItems) {
+        const tags = new Set();
+        newsItems.forEach(item => {
+            if (item.tags) {
+                item.tags.forEach(tag => tags.add(encodeHTML(tag)));
             }
+        });
+        
+        tagSelect.innerHTML = '<option value="">所有标签</option>';
+        tags.forEach(tag => {
+            const option = document.createElement('option');
+            option.value = tag;
+            option.textContent = tag;
+            tagSelect.appendChild(option);
+        });
+    }
 
-            // 安全的创建DOM元素
-            function createDOMElement(tag, attributes = {}, textContent = '') {
-                const element = document.createElement(tag);
-                
-                for (const [key, value] of Object.entries(attributes)) {
-                    if (key === 'style' && typeof value === 'object') {
-                        for (const [cssProp, cssValue] of Object.entries(value)) {
-                            element.style[cssProp] = cssValue;
-                        }
-                    } else {
-                        element.setAttribute(key, value);
-                    }
+    // 安全的创建DOM元素
+    function createDOMElement(tag, attributes = {}, textContent = '') {
+        const element = document.createElement(tag);
+        
+        for (const [key, value] of Object.entries(attributes)) {
+            if (key === 'style' && typeof value === 'object') {
+                for (const [cssProp, cssValue] of Object.entries(value)) {
+                    element.style[cssProp] = cssValue;
                 }
-                
-                if (textContent) {
-                    element.textContent = textContent;
-                }
-                
-                return element;
+            } else {
+                element.setAttribute(key, value);
             }
+        }
+        
+        if (textContent) {
+            element.textContent = textContent;
+        }
+        
+        return element;
+    }
 
 
 
@@ -212,83 +212,44 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 动态生成新闻卡片
-    function renderNewsItems(newsItems, append = false) {
-        if (!append) {
-            newsGrid.innerHTML = '';
-        }
-        
-        newsItems.forEach((item, index) => {
-            if (!validateNewsItem(item)) {
-                console.error('无效的新闻项，跳过渲染');
-                return;
-            }
-            
-            const newsItem = createDOMElement('div', {
-                class: 'news-item' + (item.pinned ? ' pinned' : ''),
-                'data-news-id': item.id
-            });
-            
-            // 新闻图片
-            const newsImg = createDOMElement('div', {
-                class: 'news-img',
-                style: { backgroundImage: `url('${encodeHTML(item.image)}')` }
-            });
-            
-            // 新闻内容容器
-            const newsContent = createDOMElement('div', { class: 'news-content' });
-            
-            // 置顶图标（如果需要）
-            if (item.pinned) {
-                const pinnedIcon = createDOMElement('span', { class: 'pinned-icon' }, '📌 ');
-                newsContent.appendChild(pinnedIcon);
-            }
-            
-            // 新闻标题
-            const title = createDOMElement('h3', {}, encodeHTML(item.title));
-            newsContent.appendChild(title);
-            
-            // 新闻日期
-            const date = createDOMElement('span', { class: 'news-date' }, encodeHTML(item.date));
-            newsContent.appendChild(date);
-            
-            // 新闻标签
-            if (item.tags && item.tags.length > 0) {
-                const tagsContainer = createDOMElement('div', { class: 'news-tags' });
-                
-                item.tags.forEach(tag => {
-                    const tagElement = createDOMElement('span', { class: 'tag' }, encodeHTML(tag));
-                    tagsContainer.appendChild(tagElement);
-                });
-                
-                newsContent.appendChild(tagsContainer);
-            }
-            
-            // 新闻内容
-            const content = createDOMElement('p', {}, encodeHTML(item.content));
-            newsContent.appendChild(content);
-            
-            // 查看详情按钮
-            const link = createDOMElement('a', { 
-                href: '#', 
-                class: 'news-btn'
-            }, '查看详情');
-            
-            // 添加点击事件
-            // link.addEventListener('click', function(e) {
-            //     e.preventDefault();
-            //     // 在实际应用中，这里应该跳转到详情页
-            //     alert('将跳转到新闻详情: ' + item.id);
-            // });
-            
-            // 组装新闻项
+    // 渲染新闻项
+    function renderNewsItems(items, isNonPinned = false) {
+        items.forEach(item => {
+            const newsItem = document.createElement('div');
+            newsItem.className = `news-item ${item.pinned ? 'pinned' : ''}`;
+            newsItem.dataset.newsId = item.id;
+
+            const newsImg = document.createElement('div');
+            newsImg.className = 'news-img';
+            newsImg.style.backgroundImage = `url('${encodeHTML(item.image)}')`;
+
+            const newsContent = document.createElement('div');
+            newsContent.className = 'news-content';
+
+            const pinnedIcon = item.pinned ? '<span class="pinned-icon">📌</span>' : '';
+            newsContent.innerHTML = `
+                ${pinnedIcon}
+                <h3>${encodeHTML(item.title)}</h3>
+                <span class="news-date">${encodeHTML(item.date)}</span>
+                <div class="news-tags">
+                    ${item.tags?.map(tag => `<span class="tag">${encodeHTML(tag)}</span>`).join('') || ''}
+                </div>
+                <p>${marked.parse(item.content)}</p>  // 这里修改为渲染Markdown
+            `;
+
+            const link = document.createElement('a');
+            link.href = '#';
+            link.className = 'news-btn';
+            link.textContent = '阅读更多';
+
             newsItem.appendChild(newsImg);
             newsItem.appendChild(newsContent);
             newsItem.appendChild(link);
-            
+
             newsGrid.appendChild(newsItem);
         });
     }
+
     // 渲染分页导航
     function renderPagination(totalNonPinnedItems, totalPages) {
         paginationContainer.innerHTML = '';
@@ -424,7 +385,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        fetch('https://raw.githubusercontent.com/LuminolCraft/news.json/refs/heads/main/news.json')
+        fetch('news.json')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('无法加载新闻数据');
