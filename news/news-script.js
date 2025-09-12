@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="news-tags">
                     ${item.tags?.map(tag => `<span class="tag">${encodeHTML(tag)}</span>`).join('') || ''}
                 </div>
-                <p>${marked.parse(item.content)}</p>  // 这里修改为渲染Markdown
+                <p>${marked.parse(item.content)}</p>  
             `;
 
             const link = document.createElement('a');
