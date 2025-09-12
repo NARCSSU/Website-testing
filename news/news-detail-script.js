@@ -1,4 +1,7 @@
+
+
 document.addEventListener('DOMContentLoaded', async function() {
+    
     // 工具函数：创建 DOM 元素
     function createDOMElement(tag, attributes = {}, content = '') {
         const element = document.createElement(tag);
@@ -44,19 +47,23 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
 
         try {
-            const response = await fetch('./news.json', { cache: 'no-store' });
+            const response = await fetch('./news.json', { cache: 'no-store' });  // 强制无缓存
             if (!response.ok) {
                 throw new Error(`无法加载 news.json: ${response.status} - ${response.statusText}`);
             }
             const data = await response.json();
             console.log('news.json 加载成功:', data);
-            localStorage.setItem('news-cache', JSON.stringify(data));
+            localStorage.setItem('news-cache', JSON.stringify(data));  // 更新缓存
             localStorage.setItem('news-cache-timestamp', new Date().getTime().toString());
         } catch (error) {
             console.error('加载新闻失败:', error.message);
+            // 回退到 localStorage
+            const cached = localStorage.getItem('news-cache');
+            if (cached) {
+                data = JSON.parse(cached);
+            }
         }
     }
-
     // 渲染画廊和 lightbox
     async function renderGallery(item) {
         const galleryGrid = document.querySelector('.gallery-grid');
@@ -156,28 +163,31 @@ document.addEventListener('DOMContentLoaded', async function() {
         const urlParams = new URLSearchParams(window.location.search);
         const newsId = urlParams.get('id');
         const newsDetail = document.querySelector('#news-detail');
-
+    
         if (!newsId || !newsDetail) {
-            console.error('无效的新闻 ID 或未找到详情容器');
+            console.error('无效的新闻 ID 或未找到详情容器', { newsId, newsDetailExists: !!newsDetail });
             newsDetail.innerHTML = '<p class="error-message">无效的新闻 ID</p>';
             return;
         }
-
+    
         const cachedNews = JSON.parse(localStorage.getItem('news-cache') || '[]');
+        console.log('Cached news IDs:', cachedNews.map(item => item.id));  // 新增：打印所有 ID
         const item = cachedNews.find(item => item.id == newsId);
-
+    
         if (!item) {
-            console.error('未找到对应的新闻，ID:', newsId);
-            newsDetail.innerHTML = '<p class="error-message">未找到对应的新闻</p>';
+            console.error('未找到对应的新闻，ID:', newsId, 'Available IDs:', cachedNews.map(item => item.id));
+            newsDetail.innerHTML = '<p class="error-message">未找到对应的新闻 (ID: ' + newsId + ')</p>';
             return;
         }
-
+    
         try {
             const response = await fetch(item.content, { cache: 'no-store' });
             if (!response.ok) {
                 throw new Error(`无法加载 Markdown 内容: ${item.content}`);
             }
             const markdownContent = await response.text();
+    
+            // 渲染结构（仅将 Markdown 内容放到 .news-content 中）
             newsDetail.innerHTML = `
                 <h2>${encodeHTML(item.title)}</h2>
                 <div class="news-date">${item.date}</div>
@@ -186,10 +196,33 @@ document.addEventListener('DOMContentLoaded', async function() {
                     ${item.tags?.map(tag => `<span class="tag">${encodeHTML(tag)}</span>`).join('') || ''}
                 </div>
                 <div class="news-content">${marked.parse(markdownContent)}</div>
-                
             `;
+    
             // 渲染画廊
             await renderGallery(item);
+    
+            // 配置 marked 的高亮（如果未全局配置，在这里设置）
+            marked.setOptions({
+                highlight: function(code, lang) {
+                    if (typeof hljs !== 'undefined') {
+                        const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+                        return hljs.highlight(code, { language }).value;
+                    }
+                    return code; // 回退到无高亮
+                }
+            });
+    
+            // 仅对代码块应用高亮（避免整个容器被高亮）
+            if (typeof hljs !== 'undefined') {
+                const codeBlocks = newsDetail.querySelectorAll('pre code');
+                codeBlocks.forEach(block => {
+                    hljs.highlightElement(block);
+                });
+                console.log(`Highlight.js applied to ${codeBlocks.length} code blocks`);
+            } else {
+                console.error('Highlight.js is not available');
+            }
+    
         } catch (error) {
             console.error(`渲染新闻 ${item.id} 失败: ${error.message}`);
             newsDetail.innerHTML = '<p class="error-message">加载新闻内容失败</p>';

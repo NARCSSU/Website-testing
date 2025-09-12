@@ -42,6 +42,24 @@ a {
 
 
 
+/* 代码高亮 */
+.news-content pre {
+    background: #2d2d2d !important; /* 深色背景 */
+    color: #f8f8f2; /* 默认代码颜色 */
+    padding: 1em;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 1em 0;
+}
+
+.news-content code {
+    font-family: 'MiSans VF', monospace;
+}
+
+/* 高亮类样式（Highlight.js 会添加 hljs-keyword 等） */
+.hljs-keyword { color: #ff79c6; } /* 关键字如 function */
+.hljs-string { color: #f1fa8c; } /* 字符串如 "Hello" */
+.hljs-built_in { color: #50fa7b; } /* 内置如 console */
 
 
 /* 置顶图标样式 */
