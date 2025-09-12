@@ -58,8 +58,12 @@ a {
     padding: 40px;
     background: var(--card-bg);
     border-radius: 8px;
-    margin: 100px auto;
-    max-width: 800px;
+    margin-top: 80px;
+    margin-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    
+    max-width: 900px;
 }
 
 .news-detail-section h2 {
