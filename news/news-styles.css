@@ -535,6 +535,9 @@ nav a:hover {
     height: 150px;
     overflow-x: auto; /* 启用水平滚动 */
     overflow-y: auto; /* 保持垂直滚动 */
+    
+    margin-bottom: 60px; /* 为按钮留出空间 */
+
 }
 
 /* 垂直滚动条样式 for .news-content */
@@ -615,24 +618,28 @@ nav a:hover {
 }
 
 .news-btn {
-    position: absolute;
-    bottom: 5px;
-    left: 50%;
-    transform: translateX(-50%);
+    background: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
     padding: 8px 16px;
-    background: var(--primary-color);
-    color: #fff;
-    text-decoration: none;
     border-radius: 5px;
     font-family: 'MiSans VF', sans-serif;
     font-size: 0.95em;
-    transition: background 0.3s, transform 0.3s;
+    position: absolute;
+    bottom: 10px; /* 增加底部间距，减少紧贴感 */
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.3s;
 }
 
 .news-btn:hover {
-    background: var(--button-hover);
+    background: var(--primary-color);
+    color: #fff;
     transform: translateX(-50%) translateY(-2px);
+    box-shadow: 0 2px 8px rgba(158, 148, 216, 0.3);
 }
+
+
 
 .news-pagination {
     text-align: center;

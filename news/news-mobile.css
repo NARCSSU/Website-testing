@@ -309,7 +309,11 @@ nav > a:first-of-type, nav > .dropdown:first-of-type {
     nav a:not(.logo-and-text) {
         display: none;
     }
+}
 
+
+
+@media (max-width: 768px) {
     .news-search {
         display: flex;
         justify-content: center;
