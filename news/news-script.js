@@ -3,7 +3,7 @@ let currentPage = 0;
 let itemsPerPage = window.innerWidth <= 768 ? 3 : 6; // 移动端3个，桌面端6个
 let filteredNews = null;
 let allNewsWithContent = [];
-const CACHE_DURATION = 30 * 60 * 1000;
+const CACHE_DURATION = 60 * 60 * 1000;
 
 // 监听窗口大小变化以动态调整 itemsPerPage
 window.addEventListener('resize', () => {
