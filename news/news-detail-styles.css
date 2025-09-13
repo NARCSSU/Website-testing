@@ -41,7 +41,12 @@ a {
 
 
 
-
+.loading-message {
+    font-family: 'MiSans VF', sans-serif;
+    font-size: 1.1em;
+    text-align: center;
+    color: var(--text-color);
+}
 /* 代码高亮 */
 .news-content pre {
     background: #2d2d2d !important; /* 深色背景 */
