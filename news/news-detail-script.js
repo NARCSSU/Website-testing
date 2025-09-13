@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
 
         try {
-            const response = await fetch('./news.json', { cache: 'no-store' });  // 强制无缓存
+            const response = await fetch('https://gitee.com/Narcssu/news.json/raw/main/news.json', { cache: 'no-store' });  // 强制无缓存
             if (!response.ok) {
                 throw new Error(`无法加载 news.json: ${response.status} - ${response.statusText}`);
             }
@@ -156,6 +156,90 @@ document.addEventListener('DOMContentLoaded', async function() {
         } else {
             galleryGrid.innerHTML = '<p class="empty-message">暂无更多图片</p>';
         }
+    }
+
+    async function loadNews() {
+        console.time('loadNews'); // 开始计时
+        const newsGrid = document.getElementById('news-grid');
+        if (!newsGrid) {
+            console.error('news-grid 未找到');
+            return;
+        }
+    
+        let items = filteredNews || allNewsWithContent;
+        if (!items || items.length === 0) {
+            newsGrid.innerHTML = '<p class="empty-message">暂无新闻</p>';
+            document.getElementById('news-pagination').innerHTML = '';
+            console.timeEnd('loadNews');
+            return;
+        }
+    
+        const pinnedItems = items.filter(item => item.pinned).sort((a, b) => b.id - a.id);
+        const nonPinnedItems = items.filter(item => !item.pinned).sort((a, b) => b.id - a.id);
+        const totalItems = items.length;
+        const totalPinnedItems = pinnedItems.length;
+        const totalNonPinnedItems = nonPinnedItems.length;
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+    
+        const startIndex = currentPage * itemsPerPage;
+        let endIndex = startIndex + itemsPerPage;
+    
+        let itemsToShow = [];
+        const pinnedStart = Math.min(startIndex, totalPinnedItems);
+        const pinnedEnd = Math.min(endIndex, totalPinnedItems);
+        if (pinnedStart < totalPinnedItems) {
+            itemsToShow = pinnedItems.slice(pinnedStart, pinnedEnd);
+        }
+    
+        const remainingSlots = itemsPerPage - (pinnedEnd - pinnedStart);
+        if (remainingSlots > 0 && endIndex > totalPinnedItems) {
+            const nonPinnedStart = Math.max(0, startIndex - totalPinnedItems);
+            const nonPinnedEnd = Math.min(nonPinnedStart + remainingSlots, totalNonPinnedItems);
+            if (nonPinnedStart < totalNonPinnedItems) {
+                itemsToShow = itemsToShow.concat(nonPinnedItems.slice(nonPinnedStart, nonPinnedEnd));
+            }
+        }
+    
+        newsGrid.innerHTML = '';
+        newsGrid.style.display = 'block !important';
+        newsGrid.style.visibility = 'visible !important';
+        console.log('渲染新闻:', itemsToShow.length, '起始索引:', startIndex, '结束索引:', endIndex);
+        await renderNewsItems(itemsToShow);
+        renderPagination(totalItems, totalPages);
+        console.timeEnd('loadNews'); // 结束计时
+    }
+
+    async function preloadMarkdownContent(newsData) {
+        console.log('预加载 Markdown 内容...');
+        const now = Date.now();
+        const cached = localStorage.getItem('news-full-cache');
+        const timestamp = localStorage.getItem('news-full-cache-timestamp');
+    
+        if (cached && timestamp && (now - parseInt(timestamp)) < CACHE_DURATION) {
+            allNewsWithContent = JSON.parse(cached);
+            console.log('使用缓存的完整新闻数据');
+            return;
+        }
+    
+        // 限制并发请求（例如，5 个同时请求）
+        const batchSize = 5;
+        for (let i = 0; i < newsData.length; i += batchSize) {
+            const batch = newsData.slice(i, i + batchSize);
+            await Promise.all(batch.map(async item => {
+                try {
+                    const response = await fetch(item.content, { cache: 'no-store' });
+                    if (!response.ok) throw new Error(`无法加载: ${item.content}`);
+                    item.markdownContent = await response.text();
+                } catch (error) {
+                    console.error(`预加载 ${item.id} 失败: ${error.message}`);
+                    item.markdownContent = '内容加载失败';
+                }
+            }));
+        }
+        allNewsWithContent = newsData;
+        localStorage.setItem('news-full-cache', JSON.stringify(allNewsWithContent));
+        localStorage.setItem('news-full-cache-timestamp', now.toString());
+        console.log('Markdown 预加载完成');
     }
 
     // 渲染新闻详情
