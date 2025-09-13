@@ -159,38 +159,45 @@ function renderPagination(totalItems, totalPages) {
     paginationContainer.appendChild(nextBtn);
 }
 
-// 加载新闻（分页）
-async function loadNews(append = false) {
+// 加载新闻
+async function loadNews() {
     const newsGrid = document.getElementById('news-grid');
     if (!newsGrid) {
         console.error('news-grid 未找到');
         return;
     }
 
-    // 如果有筛选，优先使用筛选结果
-    let itemsToUse = filteredNews || allNewsWithContent;
+    let items = filteredNews || allNewsWithContent;
+    if (!items || items.length === 0) {
+        newsGrid.innerHTML = '<p class="empty-message">暂无新闻</p>';
+        document.getElementById('news-pagination').innerHTML = '';
+        return;
+    }
 
     // 分离置顶和非置顶新闻
-    const pinnedItems = itemsToUse.filter(item => item.pinned);
-    const nonPinnedItems = itemsToUse.filter(item => !item.pinned);
+    const pinnedItems = items.filter(item => item.pinned).sort((a, b) => b.id - a.id); // 降序排序
+    const nonPinnedItems = items.filter(item => !item.pinned).sort((a, b) => b.id - a.id); // 降序排序
+    const totalItems = items.length;
+    const totalPinnedItems = pinnedItems.length;
     const totalNonPinnedItems = nonPinnedItems.length;
-    const totalItems = pinnedItems.length + totalNonPinnedItems;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
+    // 计算当前页的起始和结束索引
     const startIndex = currentPage * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
+    let endIndex = startIndex + itemsPerPage;
 
+    // 优先显示置顶项
     let itemsToShow = [];
-    const pinnedStart = Math.max(0, startIndex);
-    const pinnedEnd = Math.min(endIndex, pinnedItems.length);
-    if (pinnedStart < pinnedItems.length) {
+    const pinnedStart = Math.min(startIndex, totalPinnedItems);
+    const pinnedEnd = Math.min(endIndex, totalPinnedItems);
+    if (pinnedStart < totalPinnedItems) {
         itemsToShow = pinnedItems.slice(pinnedStart, pinnedEnd);
     }
 
     const remainingSlots = itemsPerPage - (pinnedEnd - pinnedStart);
-    if (remainingSlots > 0 && endIndex > pinnedItems.length) {
-        const nonPinnedStart = Math.max(0, startIndex - pinnedItems.length);
-        const nonPinnedEnd = Math.min(nonPinnedStart + remainingSlots, totalNonPinnedItems); // 修正括号
+    if (remainingSlots > 0 && endIndex > totalPinnedItems) {
+        const nonPinnedStart = Math.max(0, startIndex - totalPinnedItems);
+        const nonPinnedEnd = Math.min(nonPinnedStart + remainingSlots, totalNonPinnedItems);
         if (nonPinnedStart < totalNonPinnedItems) {
             itemsToShow = itemsToShow.concat(nonPinnedItems.slice(nonPinnedStart, nonPinnedEnd));
         }
@@ -203,6 +210,7 @@ async function loadNews(append = false) {
     await renderNewsItems(itemsToShow);
     renderPagination(totalItems, totalPages);
 }
+
 // 筛选新闻
 async function filterNews() {
     const searchInput = document.querySelector('#news-search-input');
@@ -259,11 +267,18 @@ function debounce(func, delay) {
 
 // 初始化应用
 async function initializeApp() {
+    const newsGrid = document.getElementById('news-grid');
     console.log('检查 DOM 元素:', {
-        newsGrid: !!document.querySelector('#news-grid'),
+        newsGrid: !!newsGrid,
         paginationContainer: !!document.querySelector('#news-pagination'),
         newsDetail: !!document.querySelector('#news-detail')
     });
+
+    if (!newsGrid) {
+        console.error('news-grid 未找到');
+        return;
+    }
+    newsGrid.innerHTML = '<p class="loading-message">加载中...</p>';
 
     try {
         const response = await fetch('https://raw.githubusercontent.com/LuminolCraft/news.json/refs/heads/main/news.json', { cache: 'no-store' });
@@ -276,8 +291,17 @@ async function initializeApp() {
         localStorage.setItem('news-cache-timestamp', new Date().getTime().toString());
 
         await preloadMarkdownContent(data);
+        newsGrid.innerHTML = ''; // 清除加载提示
     } catch (error) {
         console.error('加载新闻失败:', error.message);
+        const cached = localStorage.getItem('news-cache');
+        if (cached) {
+            allNewsWithContent = JSON.parse(cached);
+            await preloadMarkdownContent(allNewsWithContent);
+            newsGrid.innerHTML = ''; // 清除加载提示
+        } else {
+            newsGrid.innerHTML = '<p class="error-message">无法加载新闻，请稍后重试</p>';
+        }
     }
 }
 
