@@ -1,14 +1,16 @@
 // 全局变量
 let currentPage = 0;
-let itemsPerPage = window.innerWidth <= 768 ? 3 : 6; // 移动端3个，桌面端6个
+let itemsPerPage = window.innerWidth <= 768 ? 3 : 6;
 let filteredNews = null;
 let allNewsWithContent = [];
 const CACHE_DURATION = 60 * 60 * 1000;
+const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';  // GitHub Raw 基础 URL（用于 MD）
+const GITEJSON_URL = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';  // 切换到 GitHub Raw
 
 // 监听窗口大小变化以动态调整 itemsPerPage
 window.addEventListener('resize', () => {
     itemsPerPage = window.innerWidth <= 768 ? 3 : 6;
-    loadNews(); // 重新加载新闻以应用新的分页
+    loadNews();
 });
 
 // 辅助函数：获取唯一标签
@@ -46,8 +48,10 @@ async function preloadMarkdownContent(newsData) {
 
     for (const item of newsData) {
         try {
-            const response = await fetch(item.content, { cache: 'no-store' });
-            if (!response.ok) throw new Error(`无法加载: ${item.content}`);
+            const fullContentUrl = item.content.startsWith('http') ? item.content : GITHUB_RAW_BASE + item.content;
+            console.log(`加载 Markdown: ${fullContentUrl}`);
+            const response = await fetch(fullContentUrl, { cache: 'no-store' });
+            if (!response.ok) throw new Error(`无法加载: ${fullContentUrl} (Status: ${response.status})`);
             const markdownContent = await response.text();
             item.markdownContent = markdownContent;
         } catch (error) {
@@ -61,6 +65,45 @@ async function preloadMarkdownContent(newsData) {
     console.log('Markdown 预加载完成');
 }
 
+// 初始化应用
+async function initializeApp() {
+    const newsGrid = document.getElementById('news-grid');
+    console.log('检查 DOM 元素:', {
+        newsGrid: !!newsGrid,
+        paginationContainer: !!document.querySelector('#news-pagination'),
+        newsDetail: !!document.querySelector('#news-detail')
+    });
+
+    if (!newsGrid) {
+        console.error('news-grid 未找到');
+        return;
+    }
+    newsGrid.innerHTML = '<p class="loading-message">加载中...</p>';
+
+    try {
+        const response = await fetch(GITEJSON_URL, { cache: 'no-store' });
+        if (!response.ok) {
+            throw new Error(`无法加载 news.json: ${response.status} - ${response.statusText}`);
+        }
+        const data = await response.json();
+        console.log('news.json 加载成功:', data);
+        localStorage.setItem('news-cache', JSON.stringify(data));
+        localStorage.setItem('news-cache-timestamp', new Date().getTime().toString());
+
+        await preloadMarkdownContent(data);
+        newsGrid.innerHTML = '';
+    } catch (error) {
+        console.error('加载新闻失败:', error.message);
+        const cached = localStorage.getItem('news-cache');
+        if (cached) {
+            allNewsWithContent = JSON.parse(cached);
+            await preloadMarkdownContent(allNewsWithContent);
+            newsGrid.innerHTML = '';
+        } else {
+            newsGrid.innerHTML = '<p class="error-message">无法加载新闻，请稍后重试</p>';
+        }
+    }
+}
 // 渲染新闻项
 async function renderNewsItems(items, append = false) {
     const newsGrid = document.getElementById('news-grid');
@@ -281,7 +324,8 @@ async function initializeApp() {
     newsGrid.innerHTML = '<p class="loading-message">加载中...</p>';
 
     try {
-        const response = await fetch('https://raw.githubusercontent.com/LuminolCraft/news.json/refs/heads/main/news.json', { cache: 'no-store' });
+        // 修改：从 Gitee 加载 news.json
+        const response = await fetch(GITEJSON_URL, { cache: 'no-store' });
         if (!response.ok) {
             throw new Error(`无法加载 news.json: ${response.status} - ${response.statusText}`);
         }

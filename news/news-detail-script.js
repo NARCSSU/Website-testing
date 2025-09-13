@@ -1,4 +1,11 @@
+// 全局常量（在 DOMLoaded 外）
+const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/';  // GitHub Raw 基础 URL（用于 MD）
+const GITEJSON_URL = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';  // 切换到 GitHub Raw
 
+let currentPage = 0;
+const itemsPerPage = 6;
+let filteredNews = null;
+const CACHE_DURATION = 60 * 60 * 1000;
 
 document.addEventListener('DOMContentLoaded', async function() {
     
@@ -47,21 +54,68 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
 
         try {
-            const response = await fetch('https://gitee.com/Narcssu/news.json/raw/main/news.json', { cache: 'no-store' });  // 强制无缓存
+            const response = await fetch(GITEJSON_URL, { cache: 'no-store' });
             if (!response.ok) {
                 throw new Error(`无法加载 news.json: ${response.status} - ${response.statusText}`);
             }
             const data = await response.json();
             console.log('news.json 加载成功:', data);
-            localStorage.setItem('news-cache', JSON.stringify(data));  // 更新缓存
+            localStorage.setItem('news-cache', JSON.stringify(data));
             localStorage.setItem('news-cache-timestamp', new Date().getTime().toString());
         } catch (error) {
             console.error('加载新闻失败:', error.message);
-            // 回退到 localStorage
             const cached = localStorage.getItem('news-cache');
             if (cached) {
                 data = JSON.parse(cached);
             }
+        }
+    }
+
+    // 渲染新闻详情
+    async function renderNewsDetail() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const newsId = urlParams.get('id');
+        const newsDetail = document.querySelector('#news-detail');
+
+        if (!newsId || !newsDetail) {
+            console.error('无效的新闻 ID 或未找到详情容器', { newsId, newsDetailExists: !!newsDetail });
+            newsDetail.innerHTML = '<p class="error-message">无效的新闻 ID</p>';
+            return;
+        }
+
+        const cachedNews = JSON.parse(localStorage.getItem('news-cache') || '[]');
+        console.log('Cached news IDs:', cachedNews.map(item => item.id));
+        const item = cachedNews.find(item => item.id == newsId);
+
+        if (!item) {
+            console.error('未找到对应的新闻，ID:', newsId, 'Available IDs:', cachedNews.map(item => item.id));
+            newsDetail.innerHTML = '<p class="error-message">未找到对应的新闻 (ID: ' + newsId + ')</p>';
+            return;
+        }
+
+        try {
+            const fullContentUrl = item.content.startsWith('http') ? item.content : GITHUB_RAW_BASE + item.content;
+            console.log(`加载详情 Markdown: ${fullContentUrl}`);
+            const response = await fetch(fullContentUrl, { cache: 'no-store' });
+            if (!response.ok) {
+                throw new Error(`无法加载 Markdown 内容: ${fullContentUrl} (Status: ${response.status})`);
+            }
+            const markdownContent = await response.text();
+
+            newsDetail.innerHTML = `
+                <h2>${encodeHTML(item.title)}</h2>
+                <div class="news-date">${item.date}</div>
+                <img class="news-img" src="${item.image}" alt="${encodeHTML(item.title)}" onerror="this.src='./images/fallback-image.jpg'; this.alt='主图片加载失败';">
+                <div class="news-tags">
+                    ${item.tags?.map(tag => `<span class="tag">${encodeHTML(tag)}</span>`).join('') || ''}
+                </div>
+                <div class="news-content">${marked.parse(markdownContent)}</div>
+            `;
+
+            await renderGallery(item);
+        } catch (error) {
+            console.error(`渲染新闻 ${item.id} 失败: ${error.message}`);
+            newsDetail.innerHTML = '<p class="error-message">加载新闻内容失败</p>';
         }
     }
     // 渲染画廊和 lightbox
@@ -265,9 +319,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     
         try {
-            const response = await fetch(item.content, { cache: 'no-store' });
+            const fullContentUrl = item.content.startsWith('http') ? item.content : GITHUB_RAW_BASE + item.content;
+            console.log(`加载详情 Markdown: ${fullContentUrl}`);
+            const response = await fetch(fullContentUrl, { cache: 'no-store' });
             if (!response.ok) {
-                throw new Error(`无法加载 Markdown 内容: ${item.content}`);
+                throw new Error(`无法加载 Markdown 内容: ${fullContentUrl} (Status: ${response.status})`);
             }
             const markdownContent = await response.text();
     
@@ -394,7 +450,4 @@ document.addEventListener('DOMContentLoaded', async function() {
     initDropdowns();
 });
 
-let currentPage = 0;
-const itemsPerPage = 6;
-let filteredNews = null;
-const CACHE_DURATION = 30 * 60 * 1000;
+
