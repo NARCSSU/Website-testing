@@ -1,6 +1,7 @@
 // 全局常量（在 DOMLoaded 外）
-const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/';  // GitHub Raw 基础 URL（用于 MD）
+const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';  // GitHub Raw 基础 URL（用于 MD）
 const GITEJSON_URL = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';  // 切换到 GitHub Raw
+
 
 let currentPage = 0;
 const itemsPerPage = 6;
