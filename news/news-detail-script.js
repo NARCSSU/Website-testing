@@ -8,7 +8,19 @@ const itemsPerPage = 6;
 let filteredNews = null;
 const CACHE_DURATION = 60 * 60 * 1000;
 
-// 预加载 Markdown 内容
+function isValidUrl(url) {
+    try {
+        new URL(url);
+        return url.startsWith('http://') || url.startsWith('https://');
+    } catch (e) {
+        return false;
+    }
+}
+
+// 限制日志重复
+let errorLogged = new Set();
+
+/// 预加载 Markdown 和图片
 async function preloadMarkdownContent(newsData) {
     console.log('预加载 Markdown 内容...');
     const now = Date.now();
@@ -31,15 +43,24 @@ async function preloadMarkdownContent(newsData) {
             if (!response.ok) throw new Error(`无法加载: ${fullContentUrl} (状态: ${response.status})`);
             const markdownContent = await response.text();
             item.markdownContent = markdownContent;
-            // 检查空图像字段，使用远程占位符
-            if (!item.image || item.image.trim() === '' || item.image === '""') {
+
+            // 检查主图片
+            if (!item.image || item.image.trim() === '' || item.image === '""' || !isValidUrl(item.image)) {
+                console.warn(`新闻ID ${item.id} 的主图片无效: ${item.image}，使用占位符`);
                 item.image = 'https://via.placeholder.com/300x200/9e94d8/ffffff?text=Luminol+News';
             }
-            item.additionalImages = item.additionalImages.filter(url => url && url.trim() !== '');
+
+            // 检查附加图片
+            item.additionalImages = item.additionalImages.filter(url => {
+                if (!url || url.trim() === '' || !isValidUrl(url)) {
+                    console.warn(`新闻ID ${item.id} 的附加图片无效: ${url}，已过滤`);
+                    return false;
+                }
+                return true;
+            });
         } catch (error) {
-            console.error(`预加载新闻 ${item.id} 失败: ${error.message}, URL: ${fullContentUrl}`);
+            console.error(`预加载新闻ID ${item.id} 失败: ${error.message}, URL: ${fullContentUrl}`);
             item.markdownContent = '内容加载失败';
-            // 使用远程占位符作为回退
             item.image = 'https://via.placeholder.com/300x200/9e94d8/ffffff?text=Luminol+News';
         }
     }
@@ -282,7 +303,7 @@ async function renderNewsDetail() {
 
     const backBtn = document.createElement('a');
     backBtn.className = 'back-to-news';
-    backBtn.href = '../news.html';
+    backBtn.href = '/news.html';
     backBtn.textContent = '返回新闻列表';
 
     newsDetail.appendChild(title);
