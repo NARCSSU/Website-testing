@@ -285,16 +285,6 @@ if (typeof document !== 'undefined') {
             }
         }
 
-        const backBtn = document.querySelector('.back-to-news');
-        if (backBtn) {
-            backBtn.addEventListener('click', function(e) {
-                e.preventDefault();  // 阻止默认跳转
-                window.history.back();  // 回退到上一页
-            });
-            // 可选：移除 href 以防点击失效
-            backBtn.href = 'javascript:void(0)';
-        }
-
         function initHamburgerMenu() {
             const menuButton = document.querySelector('.menu-button');
             const navLinks = document.querySelector('.nav-links');
