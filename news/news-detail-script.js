@@ -123,17 +123,7 @@ if (typeof document !== 'undefined') {
                 particleMaterial.size = 0.15;
                 setTimeout(() => { particleMaterial.size = 0.1; }, 100);
             };
-            document.addEventListener('mousemove', updateInteraction);
-            document.addEventListener('touchmove', (e) => {
-                e.preventDefault();
-                updateInteraction(e);
-            }, { passive: false });
-
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
+            
 
             animate();
         }
@@ -293,6 +283,16 @@ if (typeof document !== 'undefined') {
                 console.error(`渲染新闻 ${item.id} 失败: ${error.message}`);
                 newsDetail.innerHTML = '<p class="error-message">加载新闻内容失败</p>';
             }
+        }
+
+        const backBtn = document.querySelector('.back-to-news');
+        if (backBtn) {
+            backBtn.addEventListener('click', function(e) {
+                e.preventDefault();  // 阻止默认跳转
+                window.history.back();  // 回退到上一页
+            });
+            // 可选：移除 href 以防点击失效
+            backBtn.href = 'javascript:void(0)';
         }
 
         function initHamburgerMenu() {
