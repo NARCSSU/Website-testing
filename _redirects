@@ -1,0 +1,4 @@
+# 处理所有 .html 404 为 clean URL
+/*.html    /:splat    200
+# 强制 .html 服务
+/news.html    /news.html    200
