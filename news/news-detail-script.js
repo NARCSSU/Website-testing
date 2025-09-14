@@ -2,13 +2,6 @@ const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/LuminolCraft/news.jso
 const GITEJSON_URL = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';
 const SITE_DOMAIN = window.location.hostname || '';
 
-
-
-const backLink = document.querySelector('.back-to-news');
-if (backLink) {
-    backLink.href = '/news/news.html';  // 强制根路径
-}
-
 function initializeMarked() {
     if (typeof document === 'undefined') {
         console.error('document 未定义，可能在非浏览器环境运行或 DOM 未加载');
