@@ -1,7 +1,55 @@
-const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';
+// 全局变量
+let allNewsWithContent = [];
+const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/';
 const GITEJSON_URL = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';
 const SITE_DOMAIN = window.location.hostname || '';
+let currentPage = 0;
+const itemsPerPage = 6;
+let filteredNews = null;
+const CACHE_DURATION = 60 * 60 * 1000;
 
+// 预加载 Markdown 内容
+async function preloadMarkdownContent(newsData) {
+    console.log('预加载 Markdown 内容...');
+    const now = Date.now();
+    const cached = localStorage.getItem('news-full-cache');
+    const timestamp = localStorage.getItem('news-full-cache-timestamp');
+
+    if (cached && timestamp && (now - parseInt(timestamp)) < CACHE_DURATION) {
+        allNewsWithContent = JSON.parse(cached);
+        console.log('使用缓存的完整新闻数据');
+        return;
+    }
+
+    for (const item of newsData) {
+        try {
+            const fullContentUrl = item.content.startsWith('http') 
+                ? item.content 
+                : `${GITHUB_RAW_BASE}${item.content}`;
+            console.log(`加载 Markdown: ${fullContentUrl}`);
+            const response = await fetch(fullContentUrl, { cache: 'no-store' });
+            if (!response.ok) throw new Error(`无法加载: ${fullContentUrl} (状态: ${response.status})`);
+            const markdownContent = await response.text();
+            item.markdownContent = markdownContent;
+            // 检查空图像字段，使用远程占位符
+            if (!item.image || item.image.trim() === '' || item.image === '""') {
+                item.image = 'https://via.placeholder.com/300x200/9e94d8/ffffff?text=Luminol+News';
+            }
+            item.additionalImages = item.additionalImages.filter(url => url && url.trim() !== '');
+        } catch (error) {
+            console.error(`预加载新闻 ${item.id} 失败: ${error.message}, URL: ${fullContentUrl}`);
+            item.markdownContent = '内容加载失败';
+            // 使用远程占位符作为回退
+            item.image = 'https://via.placeholder.com/300x200/9e94d8/ffffff?text=Luminol+News';
+        }
+    }
+    allNewsWithContent = newsData;
+    localStorage.setItem('news-full-cache', JSON.stringify(allNewsWithContent));
+    localStorage.setItem('news-full-cache-timestamp', now.toString());
+    console.log('Markdown 预加载完成');
+}
+
+// 初始化 marked 库
 function initializeMarked() {
     if (typeof document === 'undefined') {
         console.error('document 未定义，可能在非浏览器环境运行或 DOM 未加载');
@@ -14,13 +62,10 @@ function initializeMarked() {
     console.log('marked 库加载成功，版本:', marked.version || '未知');
     const renderer = new marked.Renderer();
     renderer.link = (href, title, text) => {
-        // 调试：记录详细的链接信息
         console.log('渲染链接:', { href, hrefType: typeof href, title, text });
-        // 全面检查 href
         const isValidHref = href !== null && href !== undefined && typeof href === 'string' && href.trim() !== '';
         const isExternal = isValidHref && !href.startsWith('/') && !href.includes(SITE_DOMAIN) && !href.startsWith('#');
         const svgIcon = isExternal ? `<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg>` : '';
-        // 若 href 无效，返回纯文本并记录警告
         if (!isValidHref) {
             console.warn(`无效的 href: ${JSON.stringify(href)}，返回纯文本: ${text}`);
             return `<span class="invalid-link">${text}</span>`;
@@ -31,6 +76,7 @@ function initializeMarked() {
     return true;
 }
 
+// 延迟初始化 marked
 function tryInitializeMarked(attempts = 5, delay = 100) {
     if (initializeMarked()) return;
     if (attempts <= 0) {
@@ -40,352 +86,308 @@ function tryInitializeMarked(attempts = 5, delay = 100) {
     setTimeout(() => tryInitializeMarked(attempts - 1, delay * 2), delay);
 }
 
-let currentPage = 0;
-const itemsPerPage = 6;
-let filteredNews = null;
-const CACHE_DURATION = 60 * 60 * 1000;
+// 初始化 Three.js 粒子系统
+let scene, camera, renderer;
+function initThreeJS() {
+    const container = document.getElementById('three-canvas-container');
+    if (!container) {
+        console.warn('未找到 three-canvas-container，跳过 Three.js 初始化');
+        return false;
+    }
+    if (typeof THREE === 'undefined') {
+        console.error('Three.js 未加载，请确保 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"> 已包含');
+        return false;
+    }
 
+    // 初始化 Three.js
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    container.appendChild(renderer.domElement);
+
+    camera.position.z = 5;
+
+    // 创建粒子
+    const particlesCount = 100;
+    const positions = new Float32Array(particlesCount * 3);
+    const velocities = new Float32Array(particlesCount * 3).fill(0);
+    const colors = new Float32Array(particlesCount * 3);
+
+    for (let i = 0; i < particlesCount * 3; i += 3) {
+        positions[i] = (Math.random() - 0.5) * 10;
+        positions[i + 1] = (Math.random() - 0.5) * 10;
+        positions[i + 2] = (Math.random() - 0.5) * 10;
+        velocities[i] = (Math.random() - 0.5) * 0.02;
+        velocities[i + 1] = (Math.random() - 0.5) * 0.02;
+        velocities[i + 2] = (Math.random() - 0.5) * 0.02;
+
+        const r = Math.random() < 0.8 ? Math.random() * 0.2 + 0.6 : Math.random() * 0.4;
+        const g = Math.random() < 0.8 ? Math.random() * 0.2 : Math.random() * 0.87;
+        const b = Math.random() < 0.8 ? Math.random() * 0.4 : Math.random();
+        colors[i] = r;
+        colors[i + 1] = g;
+        colors[i + 2] = b;
+    }
+
+    const particlesGeometry = new THREE.BufferGeometry();
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.1,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.8
+    });
+
+    const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particles);
+
+    // 动画函数
+    function animate() {
+        requestAnimationFrame(animate);
+        const positions = particlesGeometry.attributes.position.array;
+        for (let i = 0; i < positions.length; i += 3) {
+            positions[i] += velocities[i];
+            positions[i + 1] += velocities[i + 1];
+            positions[i + 2] += velocities[i + 2];
+            if (Math.abs(positions[i]) > 5) velocities[i] *= -1;
+            if (Math.abs(positions[i + 1]) > 5) velocities[i + 1] *= -1;
+            if (Math.abs(positions[i + 2]) > 5) velocities[i + 2] *= -1;
+        }
+        particlesGeometry.attributes.position.needsUpdate = true;
+        renderer.render(scene, camera);
+    }
+
+    animate();
+    return true;
+}
+
+// 初始化应用
+async function initializeApp() {
+    console.log('检查 DOM 元素:', {
+        newsGrid: !!document.querySelector('#news-grid'),
+        paginationContainer: !!document.querySelector('#news-pagination'),
+        newsDetail: !!document.querySelector('#news-detail'),
+        galleryGrid: !!document.querySelector('.gallery-grid'),
+        lightbox: !!document.querySelector('.lightbox')
+    });
+
+    try {
+        const response = await fetch(GITEJSON_URL, { cache: 'no-store' });
+        if (!response.ok) {
+            throw new Error(`无法加载 news.json: ${response.status} - ${response.statusText}`);
+        }
+        const data = await response.json();
+        console.log('news.json 加载成功:', data);
+        localStorage.setItem('news-cache', JSON.stringify(data));
+        localStorage.setItem('news-cache-timestamp', new Date().getTime().toString());
+        await preloadMarkdownContent(data);
+        console.log('allNewsWithContent:', allNewsWithContent);
+    } catch (error) {
+        console.error('初始化加载 news.json 失败:', error.message);
+        document.querySelector('#news-detail').innerHTML = `
+            <p class="error-message">
+                无法加载新闻数据，请检查网络或稍后重试
+                <button onclick="initializeApp(); renderNewsDetail();">重试</button>
+            </p>`;
+    }
+}
+
+// 渲染新闻详情
+async function renderNewsDetail() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = parseInt(urlParams.get('id'));
+    if (!id || !allNewsWithContent.length) {
+        document.getElementById('news-detail').innerHTML = '<p class="error-message">新闻未找到</p>';
+        return;
+    }
+    const newsItem = allNewsWithContent.find(item => item.id === id);
+    if (!newsItem) {
+        document.getElementById('news-detail').innerHTML = '<p class="error-message">新闻未找到</p>';
+        return;
+    }
+
+    const newsDetail = document.getElementById('news-detail');
+    newsDetail.innerHTML = ''; // 清空加载中提示
+
+    
+    const title = document.createElement('h2');
+    title.textContent = newsItem.pinned ? `📌 ${newsItem.title}` : newsItem.title;
+    const date = document.createElement('div');
+    date.className = 'news-date';
+    date.textContent = new Date(newsItem.date).toLocaleDateString('zh-CN');
+    const tags = document.createElement('div');
+    tags.className = 'news-tags';
+    newsItem.tags.forEach(tag => {
+        const tagEl = document.createElement('span');
+        tagEl.className = 'tag';
+        tagEl.textContent = tag;
+        tags.appendChild(tagEl);
+    });
+
+    
+
+    const newsImgContainer = document.createElement('div');
+    newsImgContainer.className = 'news-img';
+    const img = document.createElement('img');
+    img.src = newsItem.image;
+    img.alt = newsItem.title;
+    // 添加 onerror 处理
+    img.onerror = () => {
+        img.src = 'https://via.placeholder.com/300x200/9e94d8/ffffff?text=图片不可用';
+        console.warn(`图片加载失败: ${newsItem.image}，使用占位符`);
+    };
+    newsImgContainer.appendChild(img);
+
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'news-content';
+    contentDiv.innerHTML = marked.parse(newsItem.markdownContent || '');
+
+    const gallerySection = document.createElement('div');
+    gallerySection.className = 'gallery-section';
+    const galleryTitle = document.createElement('h3');
+    galleryTitle.textContent = '附加图片';
+    gallerySection.appendChild(galleryTitle);
+    const galleryGrid = document.createElement('div');
+    galleryGrid.className = 'gallery-grid';
+    if (newsItem.additionalImages && newsItem.additionalImages.length > 0) {
+        newsItem.additionalImages.forEach(imgUrl => {
+            const galleryItem = document.createElement('div');
+            galleryItem.className = 'gallery-item';
+            const galleryImg = document.createElement('img');
+            galleryImg.src = imgUrl;
+            galleryImg.alt = '附加图片';
+            // 为附加图片添加 onerror 处理
+            galleryImg.onerror = () => {
+                galleryImg.src = 'https://via.placeholder.com/200x150/9e94d8/ffffff?text=附加图片不可用';
+                console.warn(`附加图片加载失败: ${imgUrl}，使用占位符`);
+            };
+            galleryItem.appendChild(galleryImg);
+            galleryGrid.appendChild(galleryItem);
+            galleryImg.addEventListener('click', () => {
+                const lightbox = document.querySelector('.lightbox');
+                const lightboxImg = document.querySelector('.lightbox-image');
+                lightboxImg.src = imgUrl;
+                lightboxImg.onerror = () => {
+                    lightboxImg.src = 'https://via.placeholder.com/300x200/9e94d8/ffffff?text=图片不可用';
+                };
+                lightbox.style.display = 'flex';
+            });
+        });
+    } else {
+        galleryGrid.innerHTML = '<p class="empty-message">暂无附加图片</p>';
+    }
+    gallerySection.appendChild(galleryGrid);
+
+    const backBtn = document.createElement('a');
+    backBtn.className = 'back-to-news';
+    backBtn.href = '../news.html';
+    backBtn.textContent = '返回新闻列表';
+
+    newsDetail.appendChild(title);
+    newsDetail.appendChild(date);
+    newsDetail.appendChild(tags);
+    newsDetail.appendChild(newsImgContainer);
+    newsDetail.appendChild(contentDiv);
+    newsDetail.appendChild(gallerySection);
+    newsDetail.appendChild(backBtn);
+
+    const lightbox = document.querySelector('.lightbox');
+    if (lightbox) {
+        document.querySelector('.lightbox-close').addEventListener('click', () => {
+            lightbox.style.display = 'none';
+        });
+    }
+}
+
+// 初始化汉堡菜单
+function initHamburgerMenu() {
+    const menuButton = document.querySelector('.menu-button');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if (menuButton && navLinks) {
+        menuButton.addEventListener('click', function() {
+            navLinks.classList.toggle('responsive');
+            const icon = menuButton.querySelector('i');
+            if (navLinks.classList.contains('responsive')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+        
+        const navItems = navLinks.querySelectorAll('a');
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                if (navLinks.classList.contains('responsive')) {
+                    navLinks.classList.remove('responsive');
+                    const icon = menuButton.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+        });
+    }
+}
+
+// 初始化下拉菜单
+function initDropdowns() {
+    const dropdowns = document.querySelectorAll('.dropdown');
+    
+    dropdowns.forEach(dropdown => {
+        const toggle = dropdown.querySelector('.dropdown-toggle');
+        const menu = dropdown.querySelector('.dropdown-menu');
+        
+        dropdown.addEventListener('mouseenter', function() {
+            if (window.innerWidth >= 768) {
+                menu.style.display = 'block';
+                setTimeout(() => {
+                    menu.style.opacity = '1';
+                    menu.style.transform = 'translateY(0)';
+                }, 10);
+            }
+        });
+        
+        dropdown.addEventListener('mouseleave', function() {
+            if (window.innerWidth >= 768) {
+                menu.style.opacity = '0';
+                menu.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    menu.style.display = 'none';
+                }, 300);
+            }
+        });
+        
+        toggle.addEventListener('click', function(e) {
+            if (window.innerWidth < 768) {
+                e.preventDefault();
+                menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+                menu.style.opacity = menu.style.display === 'block' ? '1' : '0';
+                menu.style.transform = menu.style.display === 'block' ? 'translateY(0)' : 'translateY(10px)';
+            }
+        });
+    });
+}
+
+// DOM 加载完成
 if (typeof document !== 'undefined') {
     document.addEventListener('DOMContentLoaded', async function() {
-        console.log('JS Loaded');
+        console.log('DOM 加载完成，开始初始化');
         console.log('当前域名 (SITE_DOMAIN):', SITE_DOMAIN);
-
+        
         tryInitializeMarked();
-
-        const container = document.getElementById('three-canvas-container');
-        if (container) {
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            container.appendChild(renderer.domElement);
-
-            camera.position.z = 5;
-
-            const colors = [];
-            const particleMaterial = new THREE.PointsMaterial({
-                size: 0.1,
-                transparent: true,
-                opacity: 0.8,
-                vertexColors: true,
-                blending: THREE.AdditiveBlending
-            });
-
-            const particlesGeometry = new THREE.BufferGeometry();
-            const particlesCount = 100;
-            const positions = new Float32Array(particlesCount * 3);
-            const velocities = new Float32Array(particlesCount * 3).fill(0);
-
-            for (let i = 0; i < particlesCount * 3; i += 3) {
-                positions[i] = (Math.random() - 0.5) * 10;
-                positions[i + 1] = (Math.random() - 0.5) * 10;
-                positions[i + 2] = (Math.random() - 0.5) * 10;
-                velocities[i] = (Math.random() - 0.5) * 0.02;
-                velocities[i + 1] = (Math.random() - 0.5) * 0.02;
-                velocities[i + 2] = (Math.random() - 0.5) * 0.02;
-
-                const r = Math.random() < 0.8 ? Math.random() * 0.2 + 0.6 : Math.random() * 0.4;
-                const g = Math.random() < 0.8 ? Math.random() * 0.2 : Math.random() * 0.87;
-                const b = Math.random() < 0.8 ? Math.random() * 0.2 + 0.6 : Math.random() * 0.92;
-                colors.push(r, g, b);
-            }
-
-            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            particlesGeometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
-            const particles = new THREE.Points(particlesGeometry, particleMaterial);
-            scene.add(particles);
-
-            function animate() {
-                requestAnimationFrame(animate);
-
-                for (let i = 0; i < particlesCount * 3; i += 3) {
-                    positions[i] += velocities[i];
-                    positions[i + 1] += velocities[i + 1];
-                    positions[i + 2] += velocities[i + 2];
-
-                    if (positions[i] > 5 || positions[i] < -5) velocities[i] *= -1;
-                    if (positions[i + 1] > 5 || positions[i + 1] < -5) velocities[i + 1] *= -1;
-                    if (positions[i + 2] > 5 || positions[i + 2] < -5) velocities[i + 2] *= -1;
-                }
-
-                particlesGeometry.attributes.position.needsUpdate = true;
-                particles.rotation.y += 0.002;
-                renderer.render(scene, camera);
-            }
-
-            const updateInteraction = (e) => {
-                if (!e) return;
-                const rect = container.getBoundingClientRect();
-                const x = ((e.clientX || e.touches[0]?.clientX) - rect.left) / rect.width * 2 - 1;
-                const y = -((e.clientY || e.touches[0]?.clientY) - rect.top) / rect.height * 2 + 1;
-                camera.position.x = x * 2;
-                camera.position.y = y * 2;
-                particleMaterial.size = 0.15;
-                setTimeout(() => { particleMaterial.size = 0.1; }, 100);
-            };
-            
-
-            animate();
-        }
-
-        function createDOMElement(tag, attributes = {}, content = '') {
-            const element = document.createElement(tag);
-            Object.entries(attributes).forEach(([key, value]) => {
-                element.setAttribute(key, value);
-            });
-            if (content) element.innerHTML = content;
-            return element;
-        }
-
-        function encodeHTML(str) {
-            return str.replace(/[&<>"']/g, match => ({
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#39;'
-            }[match]));
-        }
-
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        async function renderGallery(item) {
-            const galleryGrid = document.querySelector('.gallery-grid');
-            if (!galleryGrid) return;
-
-            galleryGrid.innerHTML = '';
-            const images = item.additionalImages || [];
-            if (images.length === 0) {
-                galleryGrid.parentElement.style.display = 'none';
-                return;
-            }
-
-            images.forEach((imgSrc, index) => {
-                const galleryItem = createDOMElement('div', { class: 'gallery-item' });
-                const img = createDOMElement('img', {
-                    src: imgSrc,
-                    alt: `Gallery image ${index + 1}`,
-                    'data-index': index
-                });
-                galleryItem.appendChild(img);
-                galleryGrid.appendChild(galleryItem);
-            });
-
-            const lightbox = document.querySelector('.lightbox');
-            const lightboxImage = document.querySelector('.lightbox-image');
-            const lightboxClose = document.querySelector('.lightbox-close');
-            const lightboxPrev = document.querySelector('.lightbox-prev');
-            const lightboxNext = document.querySelector('.lightbox-next');
-            let currentImageIndex = 0;
-
-            galleryGrid.querySelectorAll('.gallery-item img').forEach(img => {
-                img.addEventListener('click', () => {
-                    currentImageIndex = parseInt(img.dataset.index);
-                    lightboxImage.src = images[currentImageIndex];
-                    lightbox.style.display = 'flex';
-                });
-            });
-
-            lightboxClose.addEventListener('click', () => {
-                lightbox.style.display = 'none';
-            });
-
-            lightboxPrev.addEventListener('click', () => {
-                currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-                lightboxImage.src = images[currentImageIndex];
-            });
-
-            lightboxNext.addEventListener('click', () => {
-                currentImageIndex = (currentImageIndex + 1) % images.length;
-                lightboxImage.src = images[currentImageIndex];
-            });
-        }
-
-        async function renderNewsDetail() {
-            const newsDetail = document.getElementById('news-detail');
-            if (!newsDetail) {
-                console.error('news-detail 未找到');
-                return;
-            }
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const newsId = urlParams.get('id');
-            if (!newsId) {
-                newsDetail.innerHTML = '<p class="error-message">无效的新闻 ID</p>';
-                return;
-            }
-
-            const cachedNews = JSON.parse(localStorage.getItem('news-cache') || '[]');
-            console.log('Cached news IDs:', cachedNews.map(item => item.id));
-            const item = cachedNews.find(item => item.id == newsId);
-
-            if (!item) {
-                console.error('未找到对应的新闻，ID:', newsId, 'Available IDs:', cachedNews.map(item => item.id));
-                newsDetail.innerHTML = '<p class="error-message">未找到对应的新闻 (ID: ' + newsId + ')</p>';
-                return;
-            }
-
-            try {
-                const fullContentUrl = item.content.startsWith('http') ? item.content : GITHUB_RAW_BASE + item.content;
-                console.log(`加载详情 Markdown: ${fullContentUrl}`);
-                const response = await fetch(fullContentUrl, { cache: 'no-store' });
-                if (!response.ok) {
-                    throw new Error(`无法加载 Markdown 内容: ${fullContentUrl} (Status: ${response.status})`);
-                }
-                const markdownContent = await response.text();
-
-                newsDetail.innerHTML = `
-                    ${item.pinned ? '<span class="pinned-icon">📌</span>' : ''}
-                    <h2>${encodeHTML(item.title)}</h2>
-                    <div class="news-date">${item.date}</div>
-                    <img class="news-img" src="${item.image}" alt="${encodeHTML(item.title)}" onerror="this.src='./images/fallback-image.jpg'; this.alt='主图片加载失败';">
-                    <div class="news-tags">
-                        ${item.tags?.map(tag => `<span class="tag">${encodeHTML(tag)}</span>`).join('') || ''}
-                    </div>
-                    <div class="news-content">${typeof marked !== 'undefined' ? marked.parse(markdownContent) : markdownContent}</div>
-                `;
-
-                await renderGallery(item);
-
-                if (typeof marked !== 'undefined') {
-                    marked.setOptions({
-                        highlight: function(code, lang) {
-                            if (typeof hljs !== 'undefined') {
-                                const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-                                return hljs.highlight(code, { language }).value;
-                            }
-                            return code;
-                        }
-                    });
-                }
-
-                if (typeof hljs !== 'undefined') {
-                    const codeBlocks = newsDetail.querySelectorAll('pre code');
-                    codeBlocks.forEach(block => {
-                        hljs.highlightElement(block);
-                    });
-                    console.log(`Highlight.js applied to ${codeBlocks.length} code blocks`);
-                } else {
-                    console.error('Highlight.js is not available');
-                }
-
-            } catch (error) {
-                console.error(`渲染新闻 ${item.id} 失败: ${error.message}`);
-                newsDetail.innerHTML = '<p class="error-message">加载新闻内容失败</p>';
-            }
-        }
-
-        function initHamburgerMenu() {
-            const menuButton = document.querySelector('.menu-button');
-            const navLinks = document.querySelector('.nav-links');
-            
-            if (menuButton && navLinks) {
-                menuButton.addEventListener('click', function() {
-                    navLinks.classList.toggle('responsive');
-                    
-                    const icon = menuButton.querySelector('i');
-                    if (navLinks.classList.contains('responsive')) {
-                        icon.classList.remove('fa-bars');
-                        icon.classList.add('fa-times');
-                    } else {
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-                
-                const navItems = navLinks.querySelectorAll('a');
-                navItems.forEach(item => {
-                    item.addEventListener('click', function() {
-                        if (navLinks.classList.contains('responsive')) {
-                            navLinks.classList.remove('responsive');
-                            const icon = menuButton.querySelector('i');
-                            icon.classList.remove('fa-times');
-                            icon.classList.add('fa-bars');
-                        }
-                    });
-                });
-            }
-        }
-
-        function initDropdowns() {
-            const dropdowns = document.querySelectorAll('.dropdown');
-            
-            dropdowns.forEach(dropdown => {
-                const toggle = dropdown.querySelector('.dropdown-toggle');
-                const menu = dropdown.querySelector('.dropdown-menu');
-                
-                dropdown.addEventListener('mouseenter', function() {
-                    if (window.innerWidth >= 768) {
-                        menu.style.display = 'block';
-                        setTimeout(() => {
-                            menu.style.opacity = '1';
-                            menu.style.transform = 'translateY(0)';
-                        }, 10);
-                    }
-                });
-                
-                dropdown.addEventListener('mouseleave', function() {
-                    if (window.innerWidth >= 768) {
-                        menu.style.opacity = '0';
-                        menu.style.transform = 'translateY(10px)';
-                        setTimeout(() => {
-                            menu.style.display = 'none';
-                        }, 300);
-                    }
-                });
-                
-                toggle.addEventListener('click', function(e) {
-                    if (window.innerWidth < 768) {
-                        e.preventDefault();
-                        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-                        menu.style.opacity = menu.style.display === 'block' ? '1' : '0';
-                        menu.style.transform = menu.style.display === 'block' ? 'translateY(0)' : 'translateY(10px)';
-                    }
-                });
-            });
-        }
-
-        async function initializeApp() {
-            console.log('检查 DOM 元素:', {
-                newsGrid: !!document.querySelector('#news-grid'),
-                paginationContainer: !!document.querySelector('#news-pagination'),
-                newsDetail: !!document.querySelector('#news-detail'),
-                galleryGrid: !!document.querySelector('.gallery-grid'),
-                lightbox: !!document.querySelector('.lightbox')
-            });
-
-            const cached = localStorage.getItem('news-cache');
-            if (!cached) {
-                try {
-                    const response = await fetch(GITEJSON_URL, { cache: 'no-store' });
-                    if (!response.ok) {
-                        throw new Error(`无法加载 news.json: ${response.status} - ${response.statusText}`);
-                    }
-                    const data = await response.json();
-                    localStorage.setItem('news-cache', JSON.stringify(data));
-                    localStorage.setItem('news-cache-timestamp', new Date().getTime().toString());
-                } catch (error) {
-                    console.error('初始化加载 news.json 失败:', error.message);
-                }
-            }
-        }
-
         await initializeApp();
+        initThreeJS(); // 初始化 Three.js
         if (window.location.pathname.includes('news-detail.html')) {
             await renderNewsDetail();
         }
         initHamburgerMenu();
         initDropdowns();
+        console.log('初始化完成');
     });
 } else {
     console.error('document 未定义，无法绑定 DOMContentLoaded 事件');
