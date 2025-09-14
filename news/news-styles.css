@@ -37,7 +37,12 @@ a {
 .news-markdown ul { padding-left: 20px; }
 .news-markdown strong { color: var(--primary-color); }
 
-
+.news-content a.external-link svg {
+    width: 18px;
+    height: 18px;
+    margin-left: 8px;
+    vertical-align: sub; /* 保持对齐 */
+}
 /* banner-header */
 nav {
     display: flex;
@@ -307,8 +312,7 @@ nav a:hover {
      visibility: visible;
     /*垂直缩放元素 */
      transform: scaleY(1)
-     /*向左移动自身宽度的 50%从而实现水平居中对齐 */
-        translateX(-50%);
+
        
 }
 

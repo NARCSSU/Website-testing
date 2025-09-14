@@ -1,19 +1,62 @@
+
 // 全局变量
 let currentPage = 0;
 let itemsPerPage = window.innerWidth <= 768 ? 3 : 6;
 let filteredNews = null;
 let allNewsWithContent = [];
 const CACHE_DURATION = 60 * 60 * 1000;
-const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';  // GitHub Raw 基础 URL（用于 MD）
-const GITEJSON_URL = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';  // 切换到 GitHub Raw
+const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';
+const GITEJSON_URL = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';
+const SITE_DOMAIN = window.location.hostname || '';
 
-// 监听窗口大小变化以动态调整 itemsPerPage
-window.addEventListener('resize', () => {
-    itemsPerPage = window.innerWidth <= 768 ? 3 : 6;
-    loadNews();
-});
+// 检查 document 和 marked 是否可用
+function initializeMarked() {
+    if (typeof document === 'undefined') {
+        console.error('document 未定义，可能在非浏览器环境运行或 DOM 未加载');
+        return false;
+    }
+    if (typeof marked === 'undefined') {
+        console.error('marked 库未加载，请确保 <script src="https://cdn.jsdelivr.net/npm/marked@4.0.0/marked.min.js"> 在 news-script.js 之前');
+        return false;
+    }
+    console.log('marked 库加载成功，版本:', marked.version || '未知');
+    const renderer = new marked.Renderer();
+    renderer.link = (href, title, text) => {
+        // 调试：记录 href 值
+        console.log('渲染链接:', { href, title, text });
+        // 检查 href 是否为字符串
+        const isValidHref = typeof href === 'string' && href.trim() !== '';
+        const isExternal = isValidHref && !href.startsWith('/') && !href.includes(SITE_DOMAIN) && !href.startsWith('#');
+        const svgIcon = isExternal ? `<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg>` : '';
+        // 若 href 无效，返回纯文本
+        if (!isValidHref) {
+            console.warn(`无效的 href: ${href}，返回纯文本: ${text}`);
+            return text;
+        }
+        return `<a href="${href}" ${title ? `title="${title}"` : ''} class="${isExternal ? 'external-link' : ''}">${text}${svgIcon}</a>`;
+    };
+    marked.setOptions({ renderer });
+    return true;
+}
 
-// 辅助函数：获取唯一标签
+// 延迟初始化 marked
+function tryInitializeMarked(attempts = 5, delay = 100) {
+    if (initializeMarked()) return;
+    if (attempts <= 0) {
+        console.error('多次尝试后仍无法加载 marked，放弃初始化');
+        return;
+    }
+    setTimeout(() => tryInitializeMarked(attempts - 1, delay * 2), delay);
+}
+
+// 监听窗口大小变化
+if (typeof window !== 'undefined') {
+    window.addEventListener('resize', () => {
+        itemsPerPage = window.innerWidth <= 768 ? 3 : 6;
+        loadNews();
+    });
+}
+
 function getUniqueTags(newsData) {
     const tagsSet = new Set();
     newsData.forEach(item => {
@@ -24,7 +67,6 @@ function getUniqueTags(newsData) {
     return Array.from(tagsSet).sort();
 }
 
-// 辅助函数：转义 HTML（防止 XSS）
 function encodeHTML(str) {
     return str.replace(/&/g, '&amp;')
               .replace(/</g, '&lt;')
@@ -33,7 +75,6 @@ function encodeHTML(str) {
               .replace(/'/g, '&#39;');
 }
 
-// 预加载 Markdown 内容
 async function preloadMarkdownContent(newsData) {
     console.log('预加载 Markdown 内容...');
     const now = Date.now();
@@ -65,8 +106,11 @@ async function preloadMarkdownContent(newsData) {
     console.log('Markdown 预加载完成');
 }
 
-// 初始化应用
 async function initializeApp() {
+    if (typeof document === 'undefined') {
+        console.error('document 未定义，无法初始化应用');
+        return;
+    }
     const newsGrid = document.getElementById('news-grid');
     console.log('检查 DOM 元素:', {
         newsGrid: !!newsGrid,
@@ -99,13 +143,18 @@ async function initializeApp() {
             allNewsWithContent = JSON.parse(cached);
             await preloadMarkdownContent(allNewsWithContent);
             newsGrid.innerHTML = '';
+            console.log('使用缓存数据初始化');
         } else {
             newsGrid.innerHTML = '<p class="error-message">无法加载新闻，请稍后重试</p>';
         }
     }
 }
-// 渲染新闻项
+
 async function renderNewsItems(items, append = false) {
+    if (typeof document === 'undefined') {
+        console.error('document 未定义，无法渲染新闻');
+        return;
+    }
     const newsGrid = document.getElementById('news-grid');
     if (!newsGrid) {
         console.error('news-grid 未找到');
@@ -137,33 +186,29 @@ async function renderNewsItems(items, append = false) {
                     ${item.tags?.map(tag => `<span class="tag">${encodeHTML(tag)}</span>`).join('') || ''}
                 </div>
                 <div class="news-img" style="background-image: url('${imageUrl}');"></div>
-                <div class="news-content">${marked.parse(markdownContent)}</div>
+                <div class="news-content">${typeof marked !== 'undefined' ? marked.parse(markdownContent) : markdownContent}</div>
             `;
 
             newsGrid.appendChild(newsItemDiv);
             console.log(`新闻 ${item.id} 渲染完成`);
         } catch (error) {
-            console.error(`渲染新闻 ${item.id} 失败: ${error.message}`);
+            console.error(`渲染新闻 ${item.id} 失败:`, error.message);
         }
     }
-    console.log('渲染新闻项完成');
 }
 
-// 渲染分页
 function renderPagination(totalItems, totalPages) {
+    if (typeof document === 'undefined') return;
     const paginationContainer = document.getElementById('news-pagination');
     if (!paginationContainer) return;
+
     paginationContainer.innerHTML = '';
-    if (totalItems === 0 && !filteredNews?.some(item => item.pinned)) {
-        return;
-    }
+    if (totalPages <= 1) return;
 
     const prevBtn = document.createElement('button');
-    prevBtn.className = 'pagination-btn' + (currentPage === 0 ? ' disabled' : '');
-    prevBtn.disabled = currentPage === 0;
+    prevBtn.className = `pagination-btn ${currentPage === 0 ? 'disabled' : ''}`;
     prevBtn.textContent = '上一页';
-    prevBtn.addEventListener('click', (e) => {
-        e.preventDefault();
+    prevBtn.addEventListener('click', () => {
         if (currentPage > 0) {
             currentPage--;
             loadNews();
@@ -171,29 +216,21 @@ function renderPagination(totalItems, totalPages) {
     });
     paginationContainer.appendChild(prevBtn);
 
-    const maxVisiblePages = 5;
-    let startPage = Math.max(0, currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(totalPages - 1, startPage + maxVisiblePages - 1);
-    startPage = Math.max(0, endPage - maxVisiblePages + 1);
-
-    for (let i = startPage; i <= endPage; i++) {
-        const pageBtn = document.createElement('button');
-        pageBtn.className = 'pagination-btn' + (i === currentPage ? ' active' : '');
-        pageBtn.textContent = (i + 1).toString();
-        pageBtn.addEventListener('click', (e) => {
-            e.preventDefault();
+    for (let i = 0; i < totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
+        btn.textContent = i + 1;
+        btn.addEventListener('click', () => {
             currentPage = i;
             loadNews();
         });
-        paginationContainer.appendChild(pageBtn);
+        paginationContainer.appendChild(btn);
     }
 
     const nextBtn = document.createElement('button');
-    nextBtn.className = 'pagination-btn' + (currentPage === totalPages - 1 ? ' disabled' : '');
-    nextBtn.disabled = currentPage === totalPages - 1;
+    nextBtn.className = `pagination-btn ${currentPage === totalPages - 1 ? 'disabled' : ''}`;
     nextBtn.textContent = '下一页';
-    nextBtn.addEventListener('click', (e) => {
-        e.preventDefault();
+    nextBtn.addEventListener('click', () => {
         if (currentPage < totalPages - 1) {
             currentPage++;
             loadNews();
@@ -202,60 +239,31 @@ function renderPagination(totalItems, totalPages) {
     paginationContainer.appendChild(nextBtn);
 }
 
-// 加载新闻
 async function loadNews() {
-    const newsGrid = document.getElementById('news-grid');
-    if (!newsGrid) {
-        console.error('news-grid 未找到');
-        return;
-    }
-
-    let items = filteredNews || allNewsWithContent;
-    if (!items || items.length === 0) {
-        newsGrid.innerHTML = '<p class="empty-message">暂无新闻</p>';
-        document.getElementById('news-pagination').innerHTML = '';
-        return;
-    }
-
-    // 分离置顶和非置顶新闻
-    const pinnedItems = items.filter(item => item.pinned).sort((a, b) => b.id - a.id); // 降序排序
-    const nonPinnedItems = items.filter(item => !item.pinned).sort((a, b) => b.id - a.id); // 降序排序
-    const totalItems = items.length;
-    const totalPinnedItems = pinnedItems.length;
-    const totalNonPinnedItems = nonPinnedItems.length;
+    const newsToDisplay = filteredNews || allNewsWithContent;
+    const totalItems = newsToDisplay.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-    // 计算当前页的起始和结束索引
+    currentPage = Math.max(0, Math.min(currentPage, totalPages - 1));
     const startIndex = currentPage * itemsPerPage;
-    let endIndex = startIndex + itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const itemsToShow = newsToDisplay.slice(startIndex, endIndex);
 
-    // 优先显示置顶项
-    let itemsToShow = [];
-    const pinnedStart = Math.min(startIndex, totalPinnedItems);
-    const pinnedEnd = Math.min(endIndex, totalPinnedItems);
-    if (pinnedStart < totalPinnedItems) {
-        itemsToShow = pinnedItems.slice(pinnedStart, pinnedEnd);
-    }
-
-    const remainingSlots = itemsPerPage - (pinnedEnd - pinnedStart);
-    if (remainingSlots > 0 && endIndex > totalPinnedItems) {
-        const nonPinnedStart = Math.max(0, startIndex - totalPinnedItems);
-        const nonPinnedEnd = Math.min(nonPinnedStart + remainingSlots, totalNonPinnedItems);
-        if (nonPinnedStart < totalNonPinnedItems) {
-            itemsToShow = itemsToShow.concat(nonPinnedItems.slice(nonPinnedStart, nonPinnedEnd));
+    if (typeof document !== 'undefined') {
+        const newsGrid = document.getElementById('news-grid');
+        if (newsGrid) {
+            newsGrid.style.display = 'block !important';
+            newsGrid.style.visibility = 'visible !important';
         }
     }
 
-    newsGrid.innerHTML = '';
-    newsGrid.style.display = 'block !important';
-    newsGrid.style.visibility = 'visible !important';
-    console.log('渲染新闻:', itemsToShow.length, '起始索引:', startIndex, '结束索引:', endIndex);
+    console.log('渲染新闻:', itemsToShow.length, '起始索引:', startIndex, '结束索引:', endIndex, '总页:', totalPages);
     await renderNewsItems(itemsToShow);
     renderPagination(totalItems, totalPages);
 }
 
-// 筛选新闻
 async function filterNews() {
+    if (typeof document === 'undefined') return;
     const searchInput = document.querySelector('#news-search-input');
     const tagSelect = document.querySelector('#tag-select');
     const query = searchInput?.value.trim().toLowerCase() || '';
@@ -299,7 +307,6 @@ async function filterNews() {
     await loadNews();
 }
 
-// 防抖函数
 function debounce(func, delay) {
     let timeoutId;
     return function (...args) {
@@ -308,49 +315,8 @@ function debounce(func, delay) {
     };
 }
 
-// 初始化应用
-async function initializeApp() {
-    const newsGrid = document.getElementById('news-grid');
-    console.log('检查 DOM 元素:', {
-        newsGrid: !!newsGrid,
-        paginationContainer: !!document.querySelector('#news-pagination'),
-        newsDetail: !!document.querySelector('#news-detail')
-    });
-
-    if (!newsGrid) {
-        console.error('news-grid 未找到');
-        return;
-    }
-    newsGrid.innerHTML = '<p class="loading-message">加载中...</p>';
-
-    try {
-        // 修改：从 Gitee 加载 news.json
-        const response = await fetch(GITEJSON_URL, { cache: 'no-store' });
-        if (!response.ok) {
-            throw new Error(`无法加载 news.json: ${response.status} - ${response.statusText}`);
-        }
-        const data = await response.json();
-        console.log('news.json 加载成功:', data);
-        localStorage.setItem('news-cache', JSON.stringify(data));
-        localStorage.setItem('news-cache-timestamp', new Date().getTime().toString());
-
-        await preloadMarkdownContent(data);
-        newsGrid.innerHTML = ''; // 清除加载提示
-    } catch (error) {
-        console.error('加载新闻失败:', error.message);
-        const cached = localStorage.getItem('news-cache');
-        if (cached) {
-            allNewsWithContent = JSON.parse(cached);
-            await preloadMarkdownContent(allNewsWithContent);
-            newsGrid.innerHTML = ''; // 清除加载提示
-        } else {
-            newsGrid.innerHTML = '<p class="error-message">无法加载新闻，请稍后重试</p>';
-        }
-    }
-}
-
-// 汉堡菜单
 function initHamburgerMenu() {
+    if (typeof document === 'undefined') return;
     const menuButton = document.querySelector('.menu-button');
     const navLinks = document.querySelector('.nav-links');
     
@@ -383,32 +349,45 @@ function initHamburgerMenu() {
 }
 
 // DOM 加载完成
-document.addEventListener('DOMContentLoaded', async function() {
-    const tagSelect = document.getElementById('tag-select');
-    const searchInput = document.getElementById('news-search-input');
-    if (tagSelect) {
-        tagSelect.addEventListener('change', filterNews);
-    }
-    if (searchInput) {
-        searchInput.addEventListener('input', debounce(filterNews, 300));
-    }
+if (typeof document !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', async function() {
+        console.log('DOM 加载完成，开始初始化');
+        console.log('当前域名 (SITE_DOMAIN):', SITE_DOMAIN);
+        
+        // 尝试初始化 marked
+        tryInitializeMarked();
+        
+        const tagSelect = document.getElementById('tag-select');
+        const searchInput = document.getElementById('news-search-input');
+        
+        if (tagSelect) {
+            tagSelect.addEventListener('change', filterNews);
+        }
+        if (searchInput) {
+            searchInput.addEventListener('input', debounce(filterNews, 300));
+        }
 
-    await initializeApp();
+        await initializeApp();
 
-    // 填充标签筛选下拉菜单
-    if (tagSelect && allNewsWithContent.length > 0) {
-        const uniqueTags = getUniqueTags(allNewsWithContent);
-        tagSelect.innerHTML = '<option value="">所有标签</option>';
-        uniqueTags.forEach(tag => {
-            const option = document.createElement('option');
-            option.value = tag;
-            option.textContent = tag;
-            tagSelect.appendChild(option);
-        });
-    }
+        if (tagSelect && allNewsWithContent.length > 0) {
+            const uniqueTags = getUniqueTags(allNewsWithContent);
+            tagSelect.innerHTML = '<option value="">所有标签</option>';
+            uniqueTags.forEach(tag => {
+                const option = document.createElement('option');
+                option.value = tag;
+                option.textContent = tag;
+                tagSelect.appendChild(option);
+            });
+            console.log('标签下拉菜单填充完成:', uniqueTags);
+        }
 
-    if (window.location.pathname.includes('news.html')) {
-        await loadNews();
-    }
-    initHamburgerMenu();
-});
+        if (window.location.pathname.includes('news.html')) {
+            await loadNews();
+        }
+
+        initHamburgerMenu();
+        console.log('初始化完成');
+    });
+} else {
+    console.error('document 未定义，无法绑定 DOMContentLoaded 事件');
+}

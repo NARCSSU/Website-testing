@@ -7,38 +7,31 @@
     <title>LuminolCraft 服务器 - 加入我们的冒险</title>
     <meta name='description' content='LuminolCraft 是 LuminolMC 附属的 Minecraft 服务器，拥有综合生存与纯净生存两个子服，管理活跃，欢迎加入我们！'>
     <meta name="referrer" content="no-referrer" />
-    <!-- 标题需要更改成当前新闻的标题 -->
     <link rel="icon" href="https://gitee.com/Narcssu/craft.luminolsuki.moe-imagehosting/raw/master/images/favicon.ico">
     <link rel="icon" href="https://gitee.com/Narcssu/craft.luminolsuki.moe-imagehosting/raw/master/images/favicon.png" type="image/png">
-    <!-- 确保 styles.css 路径正确，文件应在项目根目录 -->
     <link rel="stylesheet" href="news-detail-styles.css">
-    <!-- 确保 news-mobile.css 路径正确，文件应在项目根目录 -->
     <link rel="stylesheet" href="news-detail-mobile.css" media="(max-width: 768px)">
+    <script src="news-detail-script.js"></script>
+
     <!-- 这是 Font Awesome 的 CDN 链接网页中的部分icon 最新CDN（https://cdnjs.com/libraries/font-awesome） -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
-    
-    <!-- 确保 script.js 路径正确，文件应在项目根目录 -->
-    <script src="news-detail-script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked@16.2.1/lib/marked.umd.min.js"></script>
+    <!-- 添加 marked 库 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@7.0.0/marked.min.js" defer></script>
     <!-- 代码高亮库 -->
     <script src="https://cdn.jsdelivr.net/npm/marked@14.1.2/lib/marked.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <!-- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-        if (typeof hljs !== 'undefined') {
-            hljs.highlightAll(); // 初始化高亮
-            console.log('Highlight.js initialized');
-        } else {
-            console.error('Highlight.js is not loaded');
-        }
-    });
-    </script> -->
+    <!-- Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/nord.min.css">
 
     
 </head>
 <body>
-
+    <!-- 3D 粒子背景 -->
+    <div id="three-canvas-container"></div>
 
     <section class="news-detail-section">
         <div id="news-detail"></div>
