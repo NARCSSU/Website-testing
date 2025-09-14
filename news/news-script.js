@@ -9,13 +9,6 @@ const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/LuminolCraft/news.jso
 const GITEJSON_URL = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';
 const SITE_DOMAIN = window.location.hostname || '';
 
-document.addEventListener('DOMContentLoaded', function() {
-    if (window.location.pathname.includes('/news/news')) {
-        console.warn('检测到错误 URL，重定向到 /news.html');
-        window.location.href = '/news.html';
-    }
-});
-
 // 检查 document 和 marked 是否可用
 function initializeMarked() {
     if (typeof document === 'undefined') {

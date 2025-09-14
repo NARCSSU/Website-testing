@@ -2,19 +2,6 @@ const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/LuminolCraft/news.jso
 const GITEJSON_URL = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';
 const SITE_DOMAIN = window.location.hostname || '';
 
-document.addEventListener('DOMContentLoaded', function() {
-    const backButton = document.querySelector('.back-to-news');
-    if (backButton) {
-        console.log('返回按钮 href:', backButton.getAttribute('href')); // 应为 "news.html"
-        backButton.addEventListener('click', function(e) {
-            console.log('点击返回按钮，目标 URL:', backButton.href);
-            // 强制导航
-            // e.preventDefault();
-            // window.location.href = '/news.html';
-        });
-    }
-});
-
 function initializeMarked() {
     if (typeof document === 'undefined') {
         console.error('document 未定义，可能在非浏览器环境运行或 DOM 未加载');
