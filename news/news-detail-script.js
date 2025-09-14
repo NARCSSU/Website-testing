@@ -228,7 +228,6 @@ async function renderNewsDetail() {
     });
 
     
-
     const newsImgContainer = document.createElement('div');
     newsImgContainer.className = 'news-img';
     const img = document.createElement('img');
