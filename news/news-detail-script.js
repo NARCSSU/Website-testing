@@ -6,7 +6,7 @@ const SITE_DOMAIN = window.location.hostname || '';
 
 const backLink = document.querySelector('.back-to-news');
 if (backLink) {
-    backLink.href = '/news.html';  // 强制根路径
+    backLink.href = '/news/news.html';  // 强制根路径
 }
 
 function initializeMarked() {
