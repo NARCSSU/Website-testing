@@ -1,0 +1,131 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name='description' content='LuminolCraft 是 LuminolMC 附属的 Minecraft 服务器，拥有综合生存与纯净生存两个子服，管理活跃，欢迎加入我们！'>
+    <meta name="referrer" content="no-referrer" />
+    <title>LuminolCraft 服务器 - 了解服务器的最新资讯</title>
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="icon" href="https://gitee.com/Narcssu/craft.luminolsuki.moe-imagehosting/raw/master/images/favicon.png" type="image/png">
+    <link rel="stylesheet" href="news-styles.css">
+    <link rel="stylesheet" href="news-mobile.css" media="(max-width: 768px)">
+    <!-- 这是 Font Awesome 的 CDN 链接网页中的部分icon 最新CDN（https://cdnjs.com/libraries/font-awesome） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+    <script src="news-script.js"></script>
+    <!-- 添加 marked 库 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@7.0.0/marked.min.js" defer></script>
+</head>
+<body>
+    <!--banner-header-->
+    <nav>
+        <div class="logo-container">
+            <img src="https://gitee.com/Narcssu/craft.luminolsuki.moe-imagehosting/raw/master/images/c25a955166388e1257c23d01c78a62e6.webp" alt="logo">
+        </div>
+        <div class="menu-button">
+            <i class="fas fa-bars"></i>
+        </div>
+        <a href="https://luminolsuki.moe/" target="_blank" rel="noopener noreferrer" class="logo-and-text ">LuminolMC
+            <svg  xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg>
+        </a>
+        <div class="AAA">
+            <div class="nav-links">
+                <a href="/index.html">主页</a>
+            
+                <div class="dropdown">
+                    <a href="#" class="dropdown-toggle">服务器规则
+                        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a  href="https://docs.qq.com/pdf/DQWFKcE52RmZpTUJN?" target="_blank" rel="noopener noreferrer" class="dropdown-item">简洁版
+                            <svg  xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg>
+                        </a>
+                        <a href="https://docs.qq.com/pdf/DQVBFSUdweHh5ckV2?client=qqclient_online" target="_blank" rel="noopener noreferrer" class="dropdown-item">详细版
+                            <svg  xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg>
+                        </a>
+                    </div>
+                </div>
+                <a href="/support.html" >支持我们</a>
+                <a href="/news/news.html " >新闻</a>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <section class="news-section">
+            <div class="intro">
+                <h2>服务器新闻</h2>
+                <p>发现 LuminolCraft 的最新动态与社区精彩故事</p>
+            </div>
+            <div class="news-search">
+                <input type="text" id="news-search-input" placeholder="搜索新闻...">
+                <button id="news-search-btn"><i class="fas fa-search"></i> 搜索</button>
+            </div>
+            <div class="tag-filter">
+                <label for="tag-select">筛选标签:</label>
+                <select id="tag-select">
+                    <option value="">所有标签</option>
+                </select>
+            </div>
+            <div id="news-grid" class="news-grid"></div>
+            <div id="news-pagination" class="news-pagination"></div>
+        </section>
+    </header>
+
+    
+    <footer>
+        <!-- <div class="social-links">
+            <a href="#" title="Discord"><i class="fa fa-discord"></i></a>
+            <a href="#" title="Twitter"><i class="fa fa-twitter"></i></a>
+            <a href="#" title="YouTube"><i class="fa fa-youtube-play"></i></a>
+            <a href="#" title="Instagram"><i class="fa fa-instagram"></i></a>
+        </div> -->
+        
+        <!-- 新增链接区域 -->
+        <div class="footer-links">
+            <div class="footer-column">
+                <h3>相关链接</h3>
+                <ul>
+                    <li><a href="https://qm.qq.com/q/39rZKHurJe" target="_blank" rel="noopener noreferrer" > QQ 交流群
+                        <svg  xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg>
+                    </a></li>
+                    <li><a href="https://www.mczfw.cn/" target="_blank" rel="noopener noreferrer" >我的世界找服网
+                        <svg  xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg>
+                    </a></li>
+                    <li><a href="https://afdian.com/a/Luminol" target="_blank" rel="noopener noreferrer" >爱发电
+                        <svg  xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg>
+                    </a></li>
+                    <li><a href="https://github.com/LuminolCraft/" target="_blank" rel="noopener noreferrer" >GitHub
+                        <svg  xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg>
+                    </a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>宣传贴</h3>
+                <ul>
+                    <!-- <li><a href="#">GitHub<svg  xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg></a></li>
+                     -->
+                    <li><a href="https://www.minebbs.com/threads/luminolcraft.35730/" target="_blank" rel="noopener noreferrer" >MineBBS<svg  xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg></a></li>
+                    <li><a href="https://play.mcmod.cn/sv20188263.html" target="_blank" rel="noopener noreferrer" >mcmod 找服玩<svg  xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg></a></li>
+                    <li><a href="https://www.mcshuo.com/thread-3298-1-1.html" target="_blank" rel="noopener noreferrer" >McFun<svg  xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg></a></li>
+                    <li><a href="https://klpbbs.com/thread-162318-1-1.html" target="_blank" rel="noopener noreferrer" >Klpbbs<svg  xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg></a></li>
+                </ul>
+            </div>
+        </div>
+       
+
+        <div class="copyright-info">
+            <p>&copy; 2025 Luminol Team - 保留所有权利</p>
+            <!--宇宙免责声明-->
+            <p> "Minecraft" 以及"我的世界"为 Mojang AB 的商标，LuminolCraft 与 Mojang 以及 Microsoft 没有任何从属关系。LuminolCraft 不是 Minecraft 官方的服务器。</p>
+            <p> 本网站使用的字体为 <a href="https://hyperos.mi.com/font/" target="_blank" rel="noopener noreferrer" >MiSans
+                <svg  xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg>
+            </a></p>
+            <p> Powered by <a href="https://www.netlify.com/" target="_blank" rel="noopener noreferrer" >Netlify
+                <svg  xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg>
+            </a></p>
+        </div>
+    </footer>
+    
+</body>
+</html>
