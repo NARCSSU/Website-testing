@@ -583,8 +583,6 @@ nav a:hover {
     height: 150px;
     overflow-x: auto; /* 启用水平滚动 */
     overflow-y: auto; /* 保持垂直滚动 */
-    
-    margin-bottom: 60px; /* 为按钮留出空间 */
 
 }
 

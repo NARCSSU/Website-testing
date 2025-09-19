@@ -241,20 +241,11 @@ async function loadNews() {
             `;
 
             // 图片容器（条件渲染）
-            let hasImage = false;
+            hasImage = false;
             const imgContainer = document.createElement('div');
             imgContainer.className = 'news-img';
             if (item.image && item.image.trim() !== '' && item.image !== '""') {
-                const img = document.createElement('img');
-                img.src = item.image;
-                img.alt = item.title;
-                img.loading = 'lazy';
-                img.onerror = () => {
-                    img.style.display = 'none';
-                    newsItem.classList.add('no-image');
-                    console.warn(`图片加载失败: ${item.image}`);
-                };
-                imgContainer.appendChild(img);
+                imgContainer.style.backgroundImage = `url('${item.image}')`;
                 hasImage = true;
             }
             if (!hasImage) {
@@ -347,7 +338,9 @@ function initDropdowns() {
         
         toggle.addEventListener('click', function(e) {
             if (window.innerWidth < 768) {
-                e.preventDefault();
+                if (e.target.classList.contains('menu-toggle')) {
+                    e.preventDefault();
+                }
                 menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
                 menu.style.opacity = menu.style.display === 'block' ? '1' : '0';
                 menu.style.transform = menu.style.display === 'block' ? 'translateY(0)' : 'translateY(10px)';

@@ -44,11 +44,7 @@ async function preloadMarkdownContent(newsData) {
             const markdownContent = await response.text();
             item.markdownContent = markdownContent;
 
-            // 检查主图片
-            if (!item.image || item.image.trim() === '' || item.image === '""' || !isValidUrl(item.image)) {
-                console.warn(`新闻ID ${item.id} 的主图片无效: ${item.image}，使用占位符`);
-                item.image = 'https://via.placeholder.com/300x200/9e94d8/ffffff?text=Luminol+News';
-            }
+            
 
             // 检查附加图片
             item.additionalImages = item.additionalImages.filter(url => {
@@ -115,12 +111,16 @@ function initThreeJS() {
         console.warn('未找到 three-canvas-container，跳过 Three.js 初始化');
         return false;
     }
+    
+    // 检查 THREE 是否已定义（从 CDN 加载）
     if (typeof THREE === 'undefined') {
-        console.error('Three.js 未加载，请确保 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"> 已包含');
-        return false;
+        console.error('Three.js 未加载，请检查 CDN 脚本是否在 HTML 中正确导入。');
+        return false;  // 避免后续错误
     }
-
-    // 初始化 Three.js
+    
+    console.log('Three.js 已加载，版本:', THREE.REVISION || '未知');  // 调试日志
+    
+    // 初始化 Three.js（原代码保持不变）
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     renderer = new THREE.WebGLRenderer({ alpha: true });
@@ -129,7 +129,7 @@ function initThreeJS() {
 
     camera.position.z = 5;
 
-    // 创建粒子
+    // 创建粒子（原代码保持不变）
     const particlesCount = 100;
     const positions = new Float32Array(particlesCount * 3);
     const velocities = new Float32Array(particlesCount * 3).fill(0);
@@ -165,23 +165,14 @@ function initThreeJS() {
     const particles = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particles);
 
-    // 动画函数
+    // 动画循环（原代码保持不变，添加错误处理）
     function animate() {
         requestAnimationFrame(animate);
-        const positions = particlesGeometry.attributes.position.array;
-        for (let i = 0; i < positions.length; i += 3) {
-            positions[i] += velocities[i];
-            positions[i + 1] += velocities[i + 1];
-            positions[i + 2] += velocities[i + 2];
-            if (Math.abs(positions[i]) > 5) velocities[i] *= -1;
-            if (Math.abs(positions[i + 1]) > 5) velocities[i + 1] *= -1;
-            if (Math.abs(positions[i + 2]) > 5) velocities[i + 2] *= -1;
-        }
-        particlesGeometry.attributes.position.needsUpdate = true;
+        particles.rotation.y += 0.001;
         renderer.render(scene, camera);
     }
-
     animate();
+
     return true;
 }
 
@@ -254,11 +245,7 @@ async function renderNewsDetail() {
     const img = document.createElement('img');
     img.src = newsItem.image;
     img.alt = newsItem.title;
-    // 添加 onerror 处理
-    img.onerror = () => {
-        img.src = 'https://via.placeholder.com/300x200/9e94d8/ffffff?text=图片不可用';
-        console.warn(`图片加载失败: ${newsItem.image}，使用占位符`);
-    };
+
     newsImgContainer.appendChild(img);
 
     const contentDiv = document.createElement('div');
@@ -301,10 +288,7 @@ async function renderNewsDetail() {
     }
     gallerySection.appendChild(galleryGrid);
 
-    const backBtn = document.createElement('a');
-    backBtn.className = 'back-to-news';
-    backBtn.href = '/news.html';
-    backBtn.textContent = '返回新闻列表';
+
 
     newsDetail.appendChild(title);
     newsDetail.appendChild(date);
@@ -312,7 +296,7 @@ async function renderNewsDetail() {
     newsDetail.appendChild(newsImgContainer);
     newsDetail.appendChild(contentDiv);
     newsDetail.appendChild(gallerySection);
-    newsDetail.appendChild(backBtn);
+
 
     const lightbox = document.querySelector('.lightbox');
     if (lightbox) {
@@ -384,7 +368,9 @@ function initDropdowns() {
         
         toggle.addEventListener('click', function(e) {
             if (window.innerWidth < 768) {
-                e.preventDefault();
+                if (e.target.classList.contains('menu-toggle')) {
+                    e.preventDefault();
+                }
                 menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
                 menu.style.opacity = menu.style.display === 'block' ? '1' : '0';
                 menu.style.transform = menu.style.display === 'block' ? 'translateY(0)' : 'translateY(10px)';

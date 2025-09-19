@@ -77,6 +77,17 @@ a {
     text-align: center;
     color: var(--text-color);
 }
+
+
+
+.news-markdown strong,
+.news-content strong {
+    color: var(--primary-color); /* #9e94d8 */
+    font-weight: bold; /* 保持粗体效果 */
+}
+
+
+
 /* 代码高亮 */
 .news-content pre {
     background: #2d2d2d !important; /* 深色背景 */

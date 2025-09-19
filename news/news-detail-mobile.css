@@ -97,4 +97,7 @@ a {
     .lightbox-next {
         font-size: 1.5em;
     }
+    #three-canvas-container {
+        height: 100vh; /* 确保移动端适配 */
+    }
 }
