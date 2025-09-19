@@ -108,9 +108,11 @@ function filterNews() {
 
     filteredNews = allNewsWithContent.filter(item => {
         const matchesTag = !tag || (item.tags && item.tags.includes(tag));
+        const dateStr = item.date ? new Date(item.date).toLocaleDateString('zh-CN') : '';
         const matchesQuery = !query || 
             (item.title && item.title.toLowerCase().includes(query)) || 
-            (item.markdownContent && item.markdownContent.toLowerCase().includes(query));
+            (item.markdownContent && item.markdownContent.toLowerCase().includes(query)) ||
+            (dateStr.toLowerCase().includes(query));
         return matchesTag && matchesQuery;
     });
 
@@ -159,52 +161,53 @@ function updatePagination(totalItems) {
     const pageCount = Math.ceil(totalItems / itemsPerPage);
     paginationContainer.innerHTML = '';
 
+    // 上一页
     const prevBtn = document.createElement('button');
     prevBtn.className = 'pagination-btn';
-    prevBtn.textContent = '上一页';
-    prevBtn.disabled = currentPage === 0;
-    prevBtn.addEventListener('click', () => {
+    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    prevBtn.onclick = () => {
         if (currentPage > 0) {
             currentPage--;
             loadNews();
         }
-    });
+    };
+    if (currentPage === 0) prevBtn.disabled = true;
     paginationContainer.appendChild(prevBtn);
 
+    // 页码
     for (let i = 0; i < pageCount; i++) {
-        const btn = document.createElement('button');
-        btn.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
-        btn.textContent = i + 1;
-        btn.addEventListener('click', () => {
+        const pageBtn = document.createElement('button');
+        pageBtn.className = 'pagination-btn';
+        pageBtn.textContent = i + 1;
+        pageBtn.onclick = () => {
             currentPage = i;
             loadNews();
-        });
-        paginationContainer.appendChild(btn);
+        };
+        if (i === currentPage) pageBtn.classList.add('active');
+        paginationContainer.appendChild(pageBtn);
     }
 
+    // 下一页
     const nextBtn = document.createElement('button');
     nextBtn.className = 'pagination-btn';
-    nextBtn.textContent = '下一页';
-    nextBtn.disabled = currentPage === pageCount - 1;
-    nextBtn.addEventListener('click', () => {
+    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    nextBtn.onclick = () => {
         if (currentPage < pageCount - 1) {
             currentPage++;
             loadNews();
         }
-    });
+    };
+    if (currentPage === pageCount - 1) nextBtn.disabled = true;
     paginationContainer.appendChild(nextBtn);
 }
 
 async function loadNews() {
-    const newsGrid = document.getElementById('news-grid');
-    if (!newsGrid) {
-        console.error('未找到 news-grid 元素');
-        return;
-    }
-
     try {
-        const newsData = filteredNews || allNewsWithContent;
-        if (!newsData || newsData.length === 0) {
+        const newsGrid = document.querySelector('#news-grid');
+        if (!newsGrid) return;
+
+        let newsData = filteredNews || allNewsWithContent;
+        if (newsData.length === 0) {
             newsGrid.innerHTML = '<p class="empty-message">暂无新闻</p>';
             return;
         }
@@ -378,7 +381,7 @@ if (typeof document !== 'undefined') {
             searchInput.addEventListener('input', debounce(filterNews, 300));
         }
 
-        if (window.location.pathname.includes('news.html')) {
+        if (window.location.pathname.includes('../news.html')) {
             await loadNews();
         }
 

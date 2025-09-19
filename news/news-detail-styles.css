@@ -58,12 +58,6 @@ a {
     background: rgba(250, 250, 250, 0.9); /* 90% 不透明，背景可见 */
 }
 
-/* 移动端优化 */
-@media (max-width: 768px) {
-    #three-canvas-container {
-        height: 100vh; /* 确保移动端适配 */
-    }
-}
 .news-markdown h1 { font-size: 1.5em; color: var(--secondary-color); }
 .news-markdown ul { padding-left: 20px; }
 .news-markdown strong { color: var(--primary-color); }
