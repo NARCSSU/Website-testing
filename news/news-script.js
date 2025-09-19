@@ -388,6 +388,15 @@ if (typeof document !== 'undefined') {
         initDropdowns();
         console.log('初始化完成');
     });
+            // 添加 pageshow 事件监听，确保返回时重新加载
+        window.addEventListener('pageshow', async function(event) {
+            if (event.persisted) {  // 如果是从 BFCache 恢复
+                console.log('从缓存恢复页面，重新加载新闻');
+            }
+            if (window.location.pathname.includes('news.html')) {
+                await loadNews();
+            }
+        });
 } else {
     console.error('document 未定义，无法绑定 DOMContentLoaded 事件');
 }
