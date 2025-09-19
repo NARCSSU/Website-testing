@@ -1,0 +1,5 @@
+# 基础规则：确保单页应用路由正常（如果是SPA）
+/* /index.html 200
+
+# 特殊规则：将所有子目录下的 news.html 请求重写到根目录的 news.html
+/*/news.html /news.html 301

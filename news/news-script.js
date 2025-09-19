@@ -161,53 +161,52 @@ function updatePagination(totalItems) {
     const pageCount = Math.ceil(totalItems / itemsPerPage);
     paginationContainer.innerHTML = '';
 
-    // 上一页
     const prevBtn = document.createElement('button');
     prevBtn.className = 'pagination-btn';
-    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-    prevBtn.onclick = () => {
+    prevBtn.textContent = '上一页';
+    prevBtn.disabled = currentPage === 0;
+    prevBtn.addEventListener('click', () => {
         if (currentPage > 0) {
             currentPage--;
             loadNews();
         }
-    };
-    if (currentPage === 0) prevBtn.disabled = true;
+    });
     paginationContainer.appendChild(prevBtn);
 
-    // 页码
     for (let i = 0; i < pageCount; i++) {
-        const pageBtn = document.createElement('button');
-        pageBtn.className = 'pagination-btn';
-        pageBtn.textContent = i + 1;
-        pageBtn.onclick = () => {
+        const btn = document.createElement('button');
+        btn.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
+        btn.textContent = i + 1;
+        btn.addEventListener('click', () => {
             currentPage = i;
             loadNews();
-        };
-        if (i === currentPage) pageBtn.classList.add('active');
-        paginationContainer.appendChild(pageBtn);
+        });
+        paginationContainer.appendChild(btn);
     }
 
-    // 下一页
     const nextBtn = document.createElement('button');
     nextBtn.className = 'pagination-btn';
-    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-    nextBtn.onclick = () => {
+    nextBtn.textContent = '下一页';
+    nextBtn.disabled = currentPage === pageCount - 1;
+    nextBtn.addEventListener('click', () => {
         if (currentPage < pageCount - 1) {
             currentPage++;
             loadNews();
         }
-    };
-    if (currentPage === pageCount - 1) nextBtn.disabled = true;
+    });
     paginationContainer.appendChild(nextBtn);
 }
 
 async function loadNews() {
-    try {
-        const newsGrid = document.querySelector('#news-grid');
-        if (!newsGrid) return;
+    const newsGrid = document.getElementById('news-grid');
+    if (!newsGrid) {
+        console.error('未找到 news-grid 元素');
+        return;
+    }
 
-        let newsData = filteredNews || allNewsWithContent;
-        if (newsData.length === 0) {
+    try {
+        const newsData = filteredNews || allNewsWithContent;
+        if (!newsData || newsData.length === 0) {
             newsGrid.innerHTML = '<p class="empty-message">暂无新闻</p>';
             return;
         }
@@ -381,7 +380,7 @@ if (typeof document !== 'undefined') {
             searchInput.addEventListener('input', debounce(filterNews, 300));
         }
 
-        if (window.location.pathname.includes('../news.html')) {
+        if (window.location.pathname.includes('news.html')) {
             await loadNews();
         }
 
