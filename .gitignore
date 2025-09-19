@@ -4,3 +4,6 @@
 # 忽略 images.zip 文件
 images.zip
 
+
+# Local Netlify folder
+.netlify
