@@ -198,41 +198,45 @@ function updatePagination(totalItems) {
 }
 
 async function loadNews() {
-    const newsGrid = document.getElementById('news-grid');
-    if (!newsGrid) {
-        console.error('未找到 news-grid 元素');
-        return;
-    }
+    const newsGrid = document.querySelector('#news-grid');
+    if (!newsGrid) return;
 
     try {
-        const newsData = filteredNews || allNewsWithContent;
-        if (!newsData || newsData.length === 0) {
-            newsGrid.innerHTML = '<p class="empty-message">暂无新闻</p>';
-            return;
-        }
+        let newsData = filteredNews !== null ? filteredNews : allNewsWithContent;
 
-        const startIndex = currentPage * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-        const paginatedNews = newsData.slice(startIndex, endIndex);
+        // 修改排序：先按 pinned 降序（true 在前），然后按日期降序
+        newsData = newsData.sort((a, b) => {
+            if (a.pinned && !b.pinned) return -1;  // a 置顶，排前
+            if (!a.pinned && b.pinned) return 1;   // b 置顶，排前
+            return new Date(b.date) - new Date(a.date);  // 同置顶状态，按日期降序
+        });
+
+        // 计算分页
+        const start = currentPage * itemsPerPage;
+        const end = start + itemsPerPage;
+        const paginatedData = newsData.slice(start, end);
 
         newsGrid.innerHTML = '';
+        let hasImage;
 
-        paginatedNews.forEach(item => {
+        paginatedData.forEach(item => {
             const newsItem = document.createElement('div');
             newsItem.className = 'news-item';
-            if (item.pinned) newsItem.classList.add('pinned');
 
-            // 使整个卡片可点击
-            newsItem.style.cursor = 'pointer';
+            // 新增：如果 pinned 为 true，添加 'pinned' 类（应用 CSS 样式）
+            if (item.pinned) {
+                newsItem.classList.add('pinned');
+            }
+
             newsItem.addEventListener('click', () => {
                 window.location.href = `news-detail.html?id=${item.id}`;
             });
 
-            // 标题
+            // 标题（已有 📌 处理）
             const title = document.createElement('h3');
             title.innerHTML = item.pinned ? `📌 ${item.title}` : item.title;
 
-            // 日期和标签
+            // 日期和标签（保持原样）
             const meta = document.createElement('div');
             meta.className = 'news-meta';
             meta.innerHTML = `
@@ -242,7 +246,7 @@ async function loadNews() {
                 </div>
             `;
 
-            // 图片容器（条件渲染）
+            // 图片容器（保持原样）
             hasImage = false;
             const imgContainer = document.createElement('div');
             imgContainer.className = 'news-img';
@@ -254,7 +258,7 @@ async function loadNews() {
                 newsItem.classList.add('no-image');
             }
 
-            // 内容摘要
+            // 内容摘要（保持原样）
             const content = document.createElement('div');
             content.className = 'news-content';
             const shortContent = item.markdownContent
@@ -262,7 +266,7 @@ async function loadNews() {
                 : '暂无内容';
             content.innerHTML = marked.parse(shortContent);
 
-            // 组装卡片
+            // 组装卡片（保持原样）
             newsItem.appendChild(title);
             newsItem.appendChild(meta);
             if (hasImage) newsItem.appendChild(imgContainer);
