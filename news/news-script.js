@@ -3,10 +3,25 @@ let currentPage = 0;
 let itemsPerPage = window.innerWidth <= 768 ? 3 : 6;
 let filteredNews = null;
 let allNewsWithContent = [];
+const NEWS_STORAGE_KEY = 'session_news_data';
 const CACHE_DURATION = 60 * 60 * 1000;
 const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/';
 const GITEJSON_URL = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';
 const SITE_DOMAIN = window.location.hostname || '';
+
+// 新增：从sessionStorage初始化数据（解决刷新丢失问题）
+function initNewsDataFromStorage() {
+    const stored = sessionStorage.getItem(NEWS_STORAGE_KEY);
+    if (stored) {
+        try {
+            allNewsWithContent = JSON.parse(stored);
+            console.log('从sessionStorage恢复新闻数据');
+        } catch (e) {
+            console.error('解析sessionStorage数据失败', e);
+            sessionStorage.removeItem(NEWS_STORAGE_KEY);
+        }
+    }
+}
 
 async function preloadMarkdownContent(newsData) {
     console.log('预加载 Markdown 内容...');
@@ -17,6 +32,8 @@ async function preloadMarkdownContent(newsData) {
     if (cached && timestamp && (now - parseInt(timestamp)) < CACHE_DURATION) {
         allNewsWithContent = JSON.parse(cached);
         console.log('使用缓存的完整新闻数据');
+        // 同步到sessionStorage
+        sessionStorage.setItem(NEWS_STORAGE_KEY, JSON.stringify(allNewsWithContent));
         return;
     }
 
@@ -30,7 +47,7 @@ async function preloadMarkdownContent(newsData) {
             if (!response.ok) throw new Error(`无法加载: ${fullContentUrl} (状态: ${response.status})`);
             const markdownContent = await response.text();
             item.markdownContent = markdownContent || '暂无内容'; // 确保非空
-            item.additionalImages = item.additionalImages.filter(url => url && url.trim() !== '');
+            item.additionalImages = item.additionalImages?.filter(url => url && url.trim() !== '') || [];
         } catch (error) {
             console.error(`预加载新闻 ${item.id} 失败: ${error.message}, URL: ${fullContentUrl}`);
             item.markdownContent = '内容加载失败';
@@ -39,7 +56,8 @@ async function preloadMarkdownContent(newsData) {
     allNewsWithContent = newsData;
     localStorage.setItem('news-full-cache', JSON.stringify(allNewsWithContent));
     localStorage.setItem('news-full-cache-timestamp', now.toString());
-    console.log('Markdown 预加载完成');
+    sessionStorage.setItem(NEWS_STORAGE_KEY, JSON.stringify(allNewsWithContent));
+    console.log('新闻数据加载完成并缓存到sessionStorage');
 }
 
 function initializeMarked() {
@@ -74,10 +92,10 @@ function tryInitializeMarked(attempts = 5, delay = 100) {
 }
 
 if (typeof window !== 'undefined') {
-    window.addEventListener('resize', () => {
+    window.addEventListener('resize', debounce(() => {
         itemsPerPage = window.innerWidth <= 768 ? 3 : 6;
         loadNews();
-    });
+    }, 200)); // 新增防抖，避免频繁触发
 }
 
 function getUniqueTags(newsData) {
@@ -104,7 +122,7 @@ function filterNews() {
     const tag = tagSelect ? tagSelect.value : '';
     const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
-    console.log('筛选条件:', { tag, query }); // 调试日志
+    console.log('筛选条件:', { tag, query });
 
     filteredNews = allNewsWithContent.filter(item => {
         const matchesTag = !tag || (item.tags && item.tags.includes(tag));
@@ -200,18 +218,25 @@ function updatePagination(totalItems) {
 async function loadNews() {
     const newsGrid = document.querySelector('#news-grid');
     if (!newsGrid) return;
+    
+    // 先从sessionStorage恢复数据
+    initNewsDataFromStorage();
+    
+    if (!allNewsWithContent || allNewsWithContent.length === 0) {
+        await initializeApp();
+    }
 
     try {
         let newsData = filteredNews !== null ? filteredNews : allNewsWithContent;
 
-        // 修改排序：先按 pinned 降序（true 在前），然后按日期降序
+        // 排序逻辑保持不变
         newsData = newsData.sort((a, b) => {
-            if (a.pinned && !b.pinned) return -1;  // a 置顶，排前
-            if (!a.pinned && b.pinned) return 1;   // b 置顶，排前
-            return new Date(b.date) - new Date(a.date);  // 同置顶状态，按日期降序
+            if (a.pinned && !b.pinned) return -1;
+            if (!a.pinned && b.pinned) return 1;
+            return new Date(b.date) - new Date(a.date);
         });
 
-        // 计算分页
+        // 分页逻辑保持不变
         const start = currentPage * itemsPerPage;
         const end = start + itemsPerPage;
         const paginatedData = newsData.slice(start, end);
@@ -223,7 +248,6 @@ async function loadNews() {
             const newsItem = document.createElement('div');
             newsItem.className = 'news-item';
 
-            // 新增：如果 pinned 为 true，添加 'pinned' 类（应用 CSS 样式）
             if (item.pinned) {
                 newsItem.classList.add('pinned');
             }
@@ -232,11 +256,9 @@ async function loadNews() {
                 window.location.href = `news-detail.html?id=${item.id}`;
             });
 
-            // 标题（已有 📌 处理）
             const title = document.createElement('h3');
             title.innerHTML = item.pinned ? `📌 ${item.title}` : item.title;
 
-            // 日期和标签（保持原样）
             const meta = document.createElement('div');
             meta.className = 'news-meta';
             meta.innerHTML = `
@@ -246,7 +268,6 @@ async function loadNews() {
                 </div>
             `;
 
-            // 图片容器（保持原样）
             hasImage = false;
             const imgContainer = document.createElement('div');
             imgContainer.className = 'news-img';
@@ -258,7 +279,6 @@ async function loadNews() {
                 newsItem.classList.add('no-image');
             }
 
-            // 内容摘要（保持原样）
             const content = document.createElement('div');
             content.className = 'news-content';
             const shortContent = item.markdownContent
@@ -266,7 +286,6 @@ async function loadNews() {
                 : '暂无内容';
             content.innerHTML = marked.parse(shortContent);
 
-            // 组装卡片（保持原样）
             newsItem.appendChild(title);
             newsItem.appendChild(meta);
             if (hasImage) newsItem.appendChild(imgContainer);
@@ -360,6 +379,9 @@ if (typeof document !== 'undefined') {
         console.log('DOM 加载完成，开始初始化');
         console.log('当前域名 (SITE_DOMAIN):', SITE_DOMAIN);
         
+        // 先从sessionStorage恢复数据
+        initNewsDataFromStorage();
+        
         tryInitializeMarked();
         await initializeApp();
 
@@ -384,23 +406,44 @@ if (typeof document !== 'undefined') {
             searchInput.addEventListener('input', debounce(filterNews, 300));
         }
 
+        // 确保页面加载时自动触发一次筛选（显示所有新闻）
         if (window.location.pathname.includes('news.html')) {
             await loadNews();
+            // 初始状态无筛选条件时显示全部
+            if (filteredNews === null) {
+                filterNews();
+            }
         }
 
         initHamburgerMenu();
         initDropdowns();
         console.log('初始化完成');
     });
-            // 添加 pageshow 事件监听，确保返回时重新加载
-        window.addEventListener('pageshow', async function(event) {
-            if (event.persisted) {  // 如果是从 BFCache 恢复
-                console.log('从缓存恢复页面，重新加载新闻');
-            }
-            if (window.location.pathname.includes('news.html')) {
+
+    window.addEventListener('pageshow', async function(event) {
+        if (event.persisted) {
+            console.log('从缓存恢复页面，重新加载新闻');
+        }
+        if (window.location.pathname.includes('news.html')) {
+            // 从sessionStorage恢复数据
+            initNewsDataFromStorage();
+            
+            if (allNewsWithContent && allNewsWithContent.length > 0) {
                 await loadNews();
+                // 恢复后无筛选条件时显示全部
+                if (filteredNews === null) {
+                    filterNews();
+                }
+            } else if (typeof initializeApp === 'function') {
+                await initializeApp().then(() => {
+                    loadNews();
+                    if (filteredNews === null) {
+                        filterNews();
+                    }
+                });
             }
-        });
+        }
+    });
 } else {
     console.error('document 未定义，无法绑定 DOMContentLoaded 事件');
 }
