@@ -1,5 +1,11 @@
+# 最高优先级：精确匹配新闻列表页
+/news/news.html  /news/news.html  200
 
-/news.html /news.html 200
+# 解决错误路径：将/news/news强制指向实际文件
+/news/news       /news/news.html  301!  # 301!表示强制重定向，忽略其他规则
 
-
-/* /index.html 200
+# 确保所有HTML文件能被正确访问
+/*  /:splat.html  200  # 仅在找不到原路径时生效
+# 操你妈的NETLIFY快给老子匹配真确的文件
+# Netlify爹我求你了，修了快一个月了
+# Netlify爹要是这一次2025年9月22日22：40提交没有问题我就奖励我自己星期四去吃肯德基，还是不行的话我就惩罚我自己麦当劳
