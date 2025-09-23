@@ -130,24 +130,32 @@ async function initializeApp() {
         document.querySelector('#news-detail').innerHTML = `
             <p class="error-message">
                 无法加载新闻数据，请检查网络或稍后重试
-                <button onclick="initializeApp(); renderNewsDetail();">重试</button>
-            </p>`;
+                
+            </p>`;//<button onclick="initializeApp(); renderNewsDetail();">重试</button>
     }
 }
 
 // 渲染新闻详情
 async function renderNewsDetail() {
+
+
+    
     const urlParams = new URLSearchParams(window.location.search);
     const id = parseInt(urlParams.get('id'));
     if (!id || !allNewsWithContent.length) {
         document.getElementById('news-detail').innerHTML = '<p class="error-message">新闻未找到</p>';
+        document.title = '新闻未找到 - LuminolCraft'; // 错误情况下的标题
         return;
     }
     const newsItem = allNewsWithContent.find(item => item.id === id);
     if (!newsItem) {
         document.getElementById('news-detail').innerHTML = '<p class="error-message">新闻未找到</p>';
+        document.title = '新闻未找到 - LuminolCraft'; // 错误情况下的标题
         return;
     }
+
+    // 设置页面标题为新闻标题
+    document.title = `${newsItem.title} - LuminolCraft`;
 
     const newsDetail = document.getElementById('news-detail');
     newsDetail.innerHTML = ''; // 清空加载中提示

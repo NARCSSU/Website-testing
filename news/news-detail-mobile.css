@@ -30,6 +30,13 @@ body {
     line-height: 1.6;
 }
 
+/* 移动端不加载动态背景 */
+@media (max-width: 768px) {
+    body::before, body::after {
+         content: none; /*阻止渲染 */
+    }
+}
+
 a {
     text-decoration: none;
 }

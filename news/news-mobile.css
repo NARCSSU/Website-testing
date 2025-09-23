@@ -27,7 +27,9 @@
 body {
     background: var(--background-color);
     color: var(--text-color);
-    line-height: 1.6;
+    line-height: 1.6;    
+    animation: none !important;
+    /*background: none !important;  停止动画，移除此行以保留静态背景 */
 }
 
 a {
