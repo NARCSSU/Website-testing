@@ -4,7 +4,7 @@ let itemsPerPage = window.innerWidth <= 768 ? 3 : 6;
 let filteredNews = null;
 let allNewsWithContent = [];
 const NEWS_STORAGE_KEY = 'session_news_data';
-const CACHE_DURATION = 60 * 60 * 1000;
+const CACHE_DURATION = 24*60 * 60 * 1000;
 const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/';
 const GITEJSON_URL = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';
 const SITE_DOMAIN = window.location.hostname || '';
