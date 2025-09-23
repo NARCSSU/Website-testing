@@ -54,6 +54,11 @@ a {
         height: 200px;
     }
 
+    /* 无图详情：移动端隐藏图片容器，避免空白 */
+    .no-image .news-img {
+        display: none;
+    }
+
     .news-detail-section p {
         font-size: 1em;
     }

@@ -38,17 +38,50 @@ a {
     margin-left: 8px;
     vertical-align: sub; /* 保持对齐 */
 }
-/* 彩色正方形 3D 背景容器 */
-#three-canvas-container {
+/* /* 动态酷炫背景：柔和渐变 + 光晕漂移 */
+body::before {
+    content: '';
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    inset: 0;
     z-index: -1;
     pointer-events: none;
-    background: #f2eefc; /* 主题背景色 */
-    overflow: hidden;
+    background: linear-gradient(120deg, #f2eefc 0%, #e9e4ff 35%, #e4fff8 65%, #ffffff 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 14s ease-in-out infinite alternate;
+}
+
+/* 漂移光晕层（不随滚动位移） */
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(600px 400px at 18% 22%, rgba(158, 148, 216, 0.28), transparent 60%),
+        radial-gradient(480px 320px at 78% 18%, rgba(0, 191, 166, 0.22), transparent 60%),
+        radial-gradient(520px 360px at 60% 82%, rgba(255, 179, 71, 0.16), transparent 65%);
+    filter: blur(0.2px);
+    animation: blobShift 18s ease-in-out infinite alternate;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes blobShift {
+    0% { background-position: 0% 0%, 100% 0%, 50% 100%; }
+    50% { background-position: 10% 5%, 90% 8%, 55% 90%; }
+    100% { background-position: 0% 0%, 100% 0%, 50% 100%; }
+}
+
+/* 兼容性：用户偏好减少动画时停用 */
+@media (prefers-reduced-motion: reduce) {
+    body::before, body::after {
+        animation: none;
+    }
 }
 
 /* 前景隔离 */
@@ -114,14 +147,17 @@ a {
 /* 新闻详情样式 */
 .news-detail-section {
     padding: 40px;
-    background: var(--card-bg);
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 14px;
     margin-top: 80px;
     margin-bottom: 10px;
     margin-left: auto;
     margin-right: auto;
-    
     max-width: 900px;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.14);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .news-detail-section h2 {
@@ -163,6 +199,11 @@ a {
     border-radius: 8px;
     margin-bottom: 20px;
     text-align: center;
+}
+
+/* 无图详情：移除图片占位，避免标签下方空白 */
+.no-image .news-img {
+    display: none;
 }
 
 .news-detail-section p {

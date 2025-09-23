@@ -103,78 +103,6 @@ function tryInitializeMarked(attempts = 5, delay = 100) {
     setTimeout(() => tryInitializeMarked(attempts - 1, delay * 2), delay);
 }
 
-// 初始化 Three.js 粒子系统
-let scene, camera, renderer;
-function initThreeJS() {
-    const container = document.getElementById('three-canvas-container');
-    if (!container) {
-        console.warn('未找到 three-canvas-container，跳过 Three.js 初始化');
-        return false;
-    }
-    
-    // 检查 THREE 是否已定义（从 CDN 加载）
-    if (typeof THREE === 'undefined') {
-        console.error('Three.js 未加载，请检查 CDN 脚本是否在 HTML 中正确导入。');
-        return false;  // 避免后续错误
-    }
-    
-    console.log('Three.js 已加载，版本:', THREE.REVISION || '未知');  // 调试日志
-    
-    // 初始化 Three.js（原代码保持不变）
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    renderer = new THREE.WebGLRenderer({ alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    container.appendChild(renderer.domElement);
-
-    camera.position.z = 5;
-
-    // 创建粒子（原代码保持不变）
-    const particlesCount = 100;
-    const positions = new Float32Array(particlesCount * 3);
-    const velocities = new Float32Array(particlesCount * 3).fill(0);
-    const colors = new Float32Array(particlesCount * 3);
-
-    for (let i = 0; i < particlesCount * 3; i += 3) {
-        positions[i] = (Math.random() - 0.5) * 10;
-        positions[i + 1] = (Math.random() - 0.5) * 10;
-        positions[i + 2] = (Math.random() - 0.5) * 10;
-        velocities[i] = (Math.random() - 0.5) * 0.02;
-        velocities[i + 1] = (Math.random() - 0.5) * 0.02;
-        velocities[i + 2] = (Math.random() - 0.5) * 0.02;
-
-        const r = Math.random() < 0.8 ? Math.random() * 0.2 + 0.6 : Math.random() * 0.4;
-        const g = Math.random() < 0.8 ? Math.random() * 0.2 : Math.random() * 0.87;
-        const b = Math.random() < 0.8 ? Math.random() * 0.4 : Math.random();
-        colors[i] = r;
-        colors[i + 1] = g;
-        colors[i + 2] = b;
-    }
-
-    const particlesGeometry = new THREE.BufferGeometry();
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-    const particlesMaterial = new THREE.PointsMaterial({
-        size: 0.1,
-        vertexColors: true,
-        transparent: true,
-        opacity: 0.8
-    });
-
-    const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-    scene.add(particles);
-
-    // 动画循环（原代码保持不变，添加错误处理）
-    function animate() {
-        requestAnimationFrame(animate);
-        particles.rotation.y += 0.001;
-        renderer.render(scene, camera);
-    }
-    animate();
-
-    return true;
-}
 
 // 初始化应用
 async function initializeApp() {
@@ -394,7 +322,7 @@ if (typeof document !== 'undefined') {
         
         tryInitializeMarked();
         await initializeApp();
-        initThreeJS(); // 初始化 Three.js
+        // 已移除 Three.js 背景
         if (window.location.pathname.includes('news-detail.html')) {
             await renderNewsDetail();
         }

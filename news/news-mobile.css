@@ -328,6 +328,8 @@ nav > a:first-of-type, nav > .dropdown:first-of-type {
     .news-grid {
         max-height: calc(100vh - 250px);
         grid-template-columns: 1fr;
+        background: transparent;
+        border-radius: 12px;
     }
 
     /* 垂直滚动条样式 for .news-grid */
@@ -362,6 +364,32 @@ nav > a:first-of-type, nav > .dropdown:first-of-type {
 
     .news-item {
         min-height: 360px;
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: 12px;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+    .news-img {
+        height: 140px;
+        background-position: center;
+        background-size: cover;
+    }
+
+    /* 无图新闻：移动端也消除额外空白 */
+    .news-item.no-image {
+        min-height: auto;
+    }
+    .news-item.no-image .news-content {
+        height: auto;
+        max-height: 220px;
+    }
+    .news-item.no-image .news-btn {
+        position: static;
+        left: auto;
+        transform: none;
+        margin-top: 10px;
     }
 
     .news-content {
