@@ -187,6 +187,10 @@ header {
 
 /* 移动端样式 */
 @media (max-width: 768px) {
+    .container {
+        padding: 40px 16px;
+        margin-top: 12px;
+    }
     /* 显示汉堡菜单按钮 */
     .menu-button {
         display: block;
@@ -239,6 +243,135 @@ header {
     }
 }
 
+/* 桌面端导航布局（与移动端样式分离，集中于此文件响应式管理） */
+@media (min-width: 769px) {
+    nav {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+    }
+    nav > a[href="/"] {
+        order: -3;
+        margin: 0 15px 0 20px;
+    }
+    nav > .dropdown:first-of-type {
+        order: -2;
+        margin: 0 15px;
+    }
+    nav > a[href="/support"] {
+        order: -1;
+        margin: 0 15px;
+    }
+    .logo-container {
+        display: flex;
+        align-items: center;
+        order: 0;
+    }
+    nav > .right-align {
+        order: 1;
+        margin-left: auto;
+        margin-right: 20px;
+    }
+}
+
+/* 移动端汉堡菜单 */
+@media (max-width: 768px) {
+    .menu-button {
+        display: block;
+        position: absolute;
+        right: 20px;
+        top: 19.4px;
+        color: white;
+        font-size: 1.1em;
+        cursor: pointer;
+        z-index: 102;
+    }
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: var(--nav-bg-scroll);
+        padding: 20px;
+        flex-direction: column;
+        z-index: 101;
+    }
+    .menu-toggle:checked ~ .nav-links {
+        display: flex;
+    }
+    .nav-links a:not(.dropdown-toggle):not(.dropdown-item) {
+        display: block;
+        margin: 10px 0;
+        color: white;
+        font-size: 1.2em;
+        font-weight: bold;
+        text-align: left;
+        pointer-events: auto;
+    }
+    .nav-links .dropdown {
+        display: block;
+        margin: 10px 0;
+    }
+    .nav-links .dropdown-toggle {
+        display: block;
+        color: white;
+        font-size: 1.2em;
+        font-weight: bold;
+        padding: 10px 0;
+        pointer-events: none;
+    }
+    .nav-links .dropdown-toggle .menu-icon {
+        display: none;
+    }
+    .nav-links .dropdown-menu {
+        display: block;
+        position: static;
+        transform: none;
+        width: 100%;
+        background: transparent;
+        box-shadow: none;
+        margin: 0;
+        opacity: 1;
+        visibility: visible;
+        transform: scaleY(1);
+    }
+    .nav-links .dropdown-item {
+        display: block;
+        padding: 8px 0 8px 15px;
+        color: white;
+        font-size: 0.8em;
+        font-weight: normal;
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+}
+
+/* 移动端汉堡菜单补充 */
+@media (max-width: 768px) {
+    .nav-links .dropdown-toggle {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+    }
+    .nav-links .dropdown-menu {
+        position: static;
+        transform: none;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+        margin-top: 5px;
+        opacity: 1;
+        visibility: visible;
+        transform: scaleY(1);
+    }
+    .nav-links .dropdown-item {
+        padding: 10px 15px;
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .LuminolMC {
     display: inline-flex;
     align-items: center;
@@ -258,8 +391,8 @@ header {
 
 .status-box {
     position: relative;
-    padding: 5px 120px;
-    margin-bottom: 100px;
+    padding: 16px 20px;
+    margin-bottom: 60px;
     border-radius: 10px;
     box-shadow: 0 8px 25px rgba(0,0,0,0.05);
     text-align: center;
@@ -336,4 +469,22 @@ header {
         font-size: 1.1em;
     }
 
+}
+/* 我们团队 */
+@media (max-width: 1024px) {
+    #team .team-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    #team .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    #team .team-grid {
+        grid-template-columns: 1fr;
+    }
 }
