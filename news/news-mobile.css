@@ -456,7 +456,7 @@ nav > a:first-of-type, nav > .dropdown:first-of-type {
 
     /* 置顶新闻样式 */
     .news-item.pinned {
-        background: var(--pinned-bg);
+        
         border: 2px solid var(--pinned-border);
         border-radius: 8px;
     }
@@ -464,7 +464,7 @@ nav > a:first-of-type, nav > .dropdown:first-of-type {
     .pinned-icon {
         display: inline-block;
         font-size: 1.2em;
-        color: var(--pinned-border);
+        
         margin-right: 5px;
         vertical-align: middle;
     }
