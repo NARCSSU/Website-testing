@@ -6,7 +6,7 @@ const SITE_DOMAIN = window.location.hostname || '';
 let currentPage = 0;
 const itemsPerPage = 6;
 let filteredNews = null;
-const CACHE_DURATION = 60 * 60 * 1000;
+const CACHE_DURATION = 24*60 * 60 * 1000;
 
 function isValidUrl(url) {
     try {
