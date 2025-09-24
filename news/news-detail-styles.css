@@ -83,12 +83,7 @@ body::after {
         animation: none;
     }
 }
-/* 移动端不加载动态背景 */
-@media (max-width: 768px) {
-    body::before, body::after {
-         content: none; /*阻止渲染 */
-    }
-}
+
 
 /* 前景隔离 */
 .news-detail-section, .gallery-section, .lightbox {
