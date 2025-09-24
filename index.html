@@ -10,7 +10,7 @@
     <link rel="icon" href="https://gitee.com/Narcssu/craft.luminolsuki.moe-imagehosting/raw/master/images/favicon.png" type="image/png">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="mobile.css" media="(max-width: 768px)">
-    <!-- 这是 Font Awesome 的 CDN 链接网页中的部分icon 最新CDN（https://cdnjs.com/libraries/font-awesome） -->
+    <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
     <script src="script.js"></script>
 
@@ -80,6 +80,46 @@
                 <p class="status">在线玩家: <span class="player-nub" ip="lc.lolicon.fit">加载中...</span></p>
                 
                 <div class="status">版本: 1.21.7/8</div>
+            </div>
+            
+            <!-- 服务器配置信息 -->
+            <div class="server-config-section">
+                <h3 class="server-config-title">服务器配置</h3>
+                <div class="server-config-grid">
+                    <div class="config-item">
+                        <div class="config-icon"><i class="fas fa-memory"></i></div>
+                        <div class="config-label">内存</div>
+                        <div class="config-value">32G RAM</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="config-icon"><i class="fas fa-microchip"></i></div>
+                        <div class="config-label">处理器</div>
+                        <div class="config-value">Intel Xeon E5-2698</div>
+                        <div class="config-sub">2×40核心</div>
+                    </div>
+                    <!-- <div class="config-item">
+                        <div class="config-icon">💿</div>
+                        <div class="config-label">存储</div>
+                        <div class="config-value">128G SSD</div>
+                    </div> -->
+                    <div class="config-item">
+                        <div class="config-icon"><i class="fab fa-ubuntu"></i></div>
+                        <div class="config-label">操作系统</div>
+                        <div class="config-value">Ubuntu Server</div>
+                        <div class="config-sub">24.04 LTS</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="config-icon"><i class="fab fa-java"></i></div>
+                        <div class="config-label">Java环境</div>
+                        <div class="config-value">ZingJDK 21</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="config-icon"><i class="fas fa-server"></i></div>
+                        <div class="config-label">服务端</div>
+                        <div class="config-value">Luminol</div>
+                        <div class="config-sub">1.21.8</div>
+                    </div>
+                </div>
             </div>
         </section>
     </header>
@@ -377,6 +417,7 @@
                 <span>运行 <span id="website-uptime">计算中...</span></span>
             </div>
         </div>
+
 
         <div class="copyright-info">
             <p>&copy; 2025 Luminol Team - 保留所有权利</p>
