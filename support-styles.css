@@ -519,7 +519,7 @@ main {
 
 /* 页脚链接样式 */
 .footer-links {
-    background-color: #2d3748;
+   
     color: #ffffff;
     padding-top: 1rem;
     padding-bottom: 2rem;
@@ -625,18 +625,217 @@ main {
     box-shadow: 0 8px 18px rgba(0,0,0,0.2);
 }
 
-/* 版权 */
+/* 页脚 */
+footer {
+    padding: 60px 20px 30px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: var(--text-color);
+    text-align: center;
+    position: relative;
+    border-top: 1px solid var(--glass-border);
+}
+footer p {
+    text-align: center;
+}
+
+.social-links {
+    margin-bottom: 25px;
+}
+
+.social-links a {
+    display: inline-block;
+    margin: 0 12px;
+    color: white;
+    font-size: 1.3em;
+    transition: all 0.3s;
+}
+
+.social-links a:hover {
+    color: var(--primary-color);
+    transform: translateY(-4px);
+}
+
+
+@keyframes fadeInUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(30px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 滚动动画 */
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* 悬停时的微动画 */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+/* 渐变文字动画 */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+
+
+/* 加入按钮 
+.join-btn {
+    display: block;
+    width: 220px;
+    margin: 50px auto 0;
+    padding: 15px;
+    background: var(--primary-color);
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: clamp(1em, 3vw, 1.2em);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.join-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: all 0.5s;
+}
+
+.join-btn:hover::before {
+    left: 100%;
+}
+
+.join-btn:hover {
+    background: #16a085;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+}
+*/
+/* feet */
+footer {
+    padding: 50px 15px;
+    background: var(--secondary-color);
+    color: white;
+    text-align: center;
+}
+footer p {
+    text-align: center;
+}
+
+.social-links {
+    margin-bottom: 25px;
+}
+
+.social-links a {
+    display: inline-block;
+    margin: 0 12px;
+    color: white;
+    font-size: 1.3em;
+    transition: all 0.3s;
+}
+
+.social-links a:hover {
+    color: var(--primary-color);
+    transform: translateY(-4px);
+}
+
+
+@keyframes fadeIn {/* 页头文字、页头按钮动画 */
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* 页脚链接样式 */
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 30px 0;
+    flex-wrap: wrap;
+}
+
+.footer-column h3 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-column li {
+    margin-bottom: 8px;
+}
+
+.footer-column a {
+    color: #ddd;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-column a:hover {
+    color: var(--primary-color);
+}
+.footer-column svg{
+    width: 18px;
+    height: 18px;
+    margin-left: 8px;
+}
+/*版权*/
 .copyright-info {
     margin-top: 20px;
-    padding-top: 5px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     font-size: 0.9em;
     color: #aaa;
 }
 
+.copyright-info p {
+    margin: 8px 0;
+}
+
 .copyright-info a:any-link {
     color: #aaa;
-    text-decoration: none;
-    transition: color 0.3s;
 }
 
 .copyright-info a:hover {
@@ -648,3 +847,8 @@ main {
     height: 12px;
     margin-left: 8px;
 }
+
+
+
+
+

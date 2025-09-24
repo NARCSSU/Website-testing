@@ -225,10 +225,58 @@ document.addEventListener('DOMContentLoaded', function() {
         setInterval(switchBackground, 3600);
     }
 
+    // 获取网站版本信息
+    function getWebsiteVersion() {
+        const versionElement = document.getElementById('website-version');
+        if (!versionElement) return;
+
+        // 检查是否在Netlify环境
+        if (typeof window !== 'undefined' && window.location.hostname.includes('netlify')) {
+            // 使用Netlify函数获取Git提交哈希
+            fetch('/.netlify/functions/version')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.version && data.version !== 'unknown') {
+                        versionElement.textContent = data.version;
+                        versionElement.title = `完整哈希: ${data.fullHash}\n分支: ${data.branch}\n部署时间: ${new Date(data.deployTime).toLocaleString()}`;
+                    } else {
+                        versionElement.textContent = 'unknown';
+                    }
+                })
+                .catch(() => {
+                    versionElement.textContent = 'unknown';
+                });
+        } else {
+            // 本地开发环境
+            versionElement.textContent = 'dev';
+        }
+    }
+
+    // 计算网站运行天数
+    function calculateUptime() {
+        // 设置网站开始运行的日期（你可以修改这个日期）
+        const startDate = new Date('2025-07-23T11:57:00Z'); // 修改为你的网站实际开始日期
+        const currentDate = new Date();
+        const timeDiff = currentDate.getTime() - startDate.getTime();
+        const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+        
+        const uptimeElement = document.getElementById('website-uptime');
+        if (uptimeElement) {
+            uptimeElement.textContent = `${daysDiff} 天`;
+        }
+    }
+
     // 页面加载完成后初始化
     window.addEventListener('load', () => {
         // 保留你原有的其他初始化函数
         initBackgroundSlider(); // 初始化背景切换
+        
+        // 初始化版本和运行时间功能
+        getWebsiteVersion();
+        calculateUptime();
+        
+        // 每分钟更新一次运行时间（可选）
+        setInterval(calculateUptime, 60000);
     });
 
       

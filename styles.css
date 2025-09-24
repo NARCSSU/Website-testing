@@ -5,16 +5,27 @@
 @import url("https://cdn-font.hyperos.mi.com/font/css?family=Misans_TC_VF:VF:Chinese_Traditional_TW&display=swap");
 
 :root {
-    --primary-color:#9e94d8;
-    --secondary-color:#333333;
-    --background-color:#f2eefc;
-    --card-bg:#FAFAFA;
-    --text-color:#444444;
-    --online-color:#00BFA6;
-    --nav-bg:rgba(109, 91, 154, 0.8);
-    --nav-bg-scroll:#424a55;
-    --button-hover:#b6ade6;
+    /* 基于原配色的现代化方案 */
+    --primary-color: #9e94d8;
+    --primary-gradient: linear-gradient(135deg, #9e94d8 0%, #b6ade6 100%);
+    --secondary-color: #333333;
+    --background-color: #f2eefc;
+    --background-gradient: linear-gradient(135deg, #f2eefc 0%, #e8e2f7 50%, #ddd6f3 100%);
+    --card-bg: rgba(255, 255, 255, 0.8);
+    --card-bg-hover: rgba(255, 255, 255, 0.9);
+    --text-color: #444444;
+    --text-secondary: #666666;
+    --online-color: #00BFA6;
+    --nav-bg: rgba(109, 91, 154, 0.8);
+    --nav-bg-scroll: rgba(109, 91, 154, 0.95);
+    --button-hover: #b6ade6;
+    --accent-color: #f59e0b;
+    --glass-bg: rgba(255, 255, 255, 0.6);
+    --glass-border: rgba(158, 148, 216, 0.3);
+    --shadow-color: rgba(109, 91, 154, 0.2);
+    --shadow-hover: rgba(109, 91, 154, 0.3);
 }
+
 
 * {
     margin: 0;
@@ -454,14 +465,7 @@ header {
     margin-bottom: 80px;
     opacity: 0;
     transform: translateY(30px);
-    transition: all 0.8s ease-out;
-}
-
-.section p {
-    
-    max-width: 800px;
-    margin: 0 auto;
-    font-size: 1.1em;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .section.visible {
@@ -469,31 +473,25 @@ header {
     transform: translateY(0);
 }
 
-/* h2 {
-    position: relative;
-    margin-bottom: 25px;
-    color: var(--secondary-color);
-    text-align: center;
-    font-size: clamp(1.8em, 5vw, 2.5em);
-} */
-.Pure-h2 {
+.section p {
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 1.1em;
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
+/* 标题样式 */
+.Pure-h2, .Comprehensive-h2 {
     position: relative;
     margin-bottom: 25px;
     text-align: left;
     margin-left: 14%;
-    color: var(--secondary-color);
-    
+    color: var(--text-color);
     font-size: clamp(1.8em, 5vw, 2.5em);
+    font-weight: 700;
 }
-.Comprehensive-h2 {
-    position: relative;
-    margin-bottom: 25px;
-    text-align: left;
-    margin-left: 14%;
-    color: var(--secondary-color);
-    
-    font-size: clamp(1.8em, 5vw, 2.5em);
-}
+
 .Pure-h2::after, .Comprehensive-h2::after {
     content: '';
     position: absolute;
@@ -502,29 +500,20 @@ header {
     transform: none;
     width: 900px;
     height: 4px;
-    background: var(--primary-color);
+    background: var(--primary-gradient);
     border-radius: 9999px;
 }
 
-
-.Integrated-h2 {
+.Integrated-h2, .gallery-h2, .team-h2 {
     position: relative;
     margin-bottom: 40px;
-    color: var(--secondary-color);
+    color: var(--text-color);
     text-align: center;
     font-size: clamp(1.8em, 5vw, 2.5em);
+    font-weight: 700;
 }
 
-.gallery-h2 {
-    position: relative;
-    margin-bottom: 25px;
-    color: var(--secondary-color);
-    text-align: center;
-    font-size: clamp(1.8em, 5vw, 2.5em);
-}
-
-/*我是.Integrated 、gallery、teamh2下面的装饰线 */
-.Integrated-h2::after,.gallery-h2::after,.team-h2::after { 
+.Integrated-h2::after, .gallery-h2::after, .team-h2::after { 
     content: '';
     position: absolute;
     bottom: -10px;
@@ -532,13 +521,12 @@ header {
     transform: translateX(-50%);
     width: 60px;
     height: 3px;
-    background: var(--primary-color);
+    background: var(--primary-gradient);
     border-radius: 2px;
 }
 
-/* 特点这一块/. */
+/* 特点卡片 */
 .Integrated {
-    /* border: 4px solid rgb(73, 0, 208); */
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -548,102 +536,155 @@ header {
 .Integrated-box {
     width: 100%;
     max-width: 320px;
-    padding: 30px 20px;
-    background: var(--card-bg);
-    border-radius: 10px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+    padding: 40px 30px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px var(--shadow-color);
     text-align: center;
-    transition: all 0.3s;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.Integrated-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--primary-gradient);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.Integrated-box:hover::before {
+    transform: scaleX(1);
 }
 
 .Integrated-box:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 30px 60px var(--shadow-hover);
+    background: var(--card-bg-hover);
 }
 
 .Integrated-img {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
     margin: 0 auto 25px;
-    background: #ecf0f1;
+    background: var(--primary-gradient);
     border-radius: 50%;
-    font-size: 1.3em;
-    color: var(--secondary-color);
-    transition: all 0.3s;
-}
-
-.Integrated-box:hover .feature-img {
-    background: var(--primary-color);
+    font-size: 1.5em;
     color: white;
+    transition: all 0.3s ease;
+    font-weight: 700;
 }
 
-/* 我们团队 */
-#team .team-h2 {
-    position: relative;
-    margin-bottom: 25px;
-    color: var(--secondary-color);
-    text-align: center;
-    font-size: clamp(1.8em, 5vw, 2.5em);
+.Integrated-box:hover .Integrated-img {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
 }
 
+.Integrated-box h3 {
+    color: var(--text-color);
+    font-size: 1.3em;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.Integrated-box p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    font-size: 1em;
+}
+
+/* 团队卡片 */
 #team .team-grid {
     display: flex;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-/* #team .team-grid {
-    display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     flex-wrap: wrap;
     justify-content: center;
-} */
+}
 
 #team .team-card {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 12px;
-    padding: 50px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 30px;
     text-align: center;
-    transition: transform .2s ease, box-shadow .2s ease;
-    backdrop-filter: blur(4px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    max-width: 280px;
+    width: 100%;
+}
+
+#team .team-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--primary-gradient);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+#team .team-card:hover::before {
+    transform: scaleX(1);
 }
 
 #team .team-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 30px 60px var(--shadow-hover);
+    background: var(--card-bg-hover);
 }
 
 #team .team-avatar {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     object-fit: cover;
     display: inline-block;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 10px 30px var(--shadow-color);
+    transition: all 0.3s ease;
+    border: 3px solid var(--glass-border);
+}
+
+#team .team-card:hover .team-avatar {
+    transform: scale(1.1);
+    box-shadow: 0 15px 40px var(--shadow-hover);
 }
 
 #team .team-name {
-    margin: 12px 0 6px;
-    font-size: 1.1rem;
+    margin: 15px 0 8px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-color);
 }
 
 #team .team-role {
     margin: 0;
-    opacity: .8;
-    font-size: .95rem;
+    opacity: 0.8;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
 }
 
 /* 团队卡片链接图标 */
 #team .team-links {
-    margin-top: 10px;
+    margin-top: 15px;
     display: inline-flex;
     gap: 12px;
 }
@@ -652,19 +693,21 @@ header {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    /* border-radius: 50%; */
-    color: var(--secondary-color);
-    /* background: rgba(0, 0, 0, 0.08); */
-    /* border: 1px solid rgba(0, 0, 0, 0.15); */
-    transition: transform .2s ease, background .2s ease, color .2s ease;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: var(--text-secondary);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s ease;
+    text-decoration: none;
 }
 
 #team .team-link:hover {
-    transform: translateY(-4px);
-    /* background: var(--primary-color); */
-    color: #111111;
+    transform: translateY(-3px) scale(1.1);
+    background: var(--primary-gradient);
+    color: white;
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
 }
 
 #team .team-link i {
@@ -749,6 +792,129 @@ header {
     transform: translateX(4px);
     color: var(--primary-color);
 }
+
+/* 加入按钮 
+.join-btn {
+    display: block;
+    width: 220px;
+    margin: 50px auto 0;
+    padding: 15px;
+    background: var(--primary-color);
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: clamp(1em, 3vw, 1.2em);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.join-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: all 0.5s;
+}
+
+.join-btn:hover::before {
+    left: 100%;
+}
+
+.join-btn:hover {
+    background: #16a085;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+}
+*/
+/* 页脚 */
+footer {
+    padding: 60px 20px 30px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: var(--text-color);
+    text-align: center;
+    position: relative;
+    border-top: 1px solid var(--glass-border);
+}
+footer p {
+    text-align: center;
+}
+
+.social-links {
+    margin-bottom: 25px;
+}
+
+.social-links a {
+    display: inline-block;
+    margin: 0 12px;
+    color: white;
+    font-size: 1.3em;
+    transition: all 0.3s;
+}
+
+.social-links a:hover {
+    color: var(--primary-color);
+    transform: translateY(-4px);
+}
+
+
+@keyframes fadeInUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(30px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 滚动动画 */
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* 悬停时的微动画 */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+/* 渐变文字动画 */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+
 
 /* 加入按钮 
 .join-btn {
@@ -886,6 +1052,67 @@ footer p {
     width: 12px;
     height: 12px;
     margin-left: 8px;
+}
+
+/* 网站状态信息样式 */
+.website-status-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 25px 0 15px 0;
+    flex-wrap: wrap;
+    opacity: 0.8;
+    font-size: 0.9em;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ccc;
+    transition: all 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.status-item:hover {
+    color: var(--primary-color);
+    background: rgba(158, 148, 216, 0.1);
+    transform: translateY(-2px);
+}
+
+.status-item i {
+    font-size: 14px;
+    color: var(--primary-color);
+    opacity: 0.8;
+}
+
+.status-item span {
+    font-family: 'MiSans VF', sans-serif;
+    font-weight: 500;
+}
+
+.status-item span span {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+    font-weight: 600;
+    color: #fff;
+    opacity: 0.9;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .website-status-info {
+        gap: 15px;
+        margin: 20px 0 10px 0;
+    }
+    
+    .status-item {
+        padding: 6px 10px;
+        font-size: 0.85em;
+    }
 }
 
 
