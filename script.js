@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 检查是否在Netlify环境
         if (typeof window !== 'undefined' && window.location.hostname.includes('netlify')) {
-            // 使用Netlify函数获取Git提交哈希
+            // 使用Netlify函数获取Git提交哈希数值
             fetch('/.netlify/functions/version')
                 .then(response => response.json())
                 .then(data => {
