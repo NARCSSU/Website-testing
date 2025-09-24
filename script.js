@@ -230,20 +230,31 @@ document.addEventListener('DOMContentLoaded', function() {
         const versionElement = document.getElementById('website-version');
         if (!versionElement) return;
 
-        // 检查是否在Netlify环境
-        if (typeof window !== 'undefined' && window.location.hostname.includes('netlify')) {
-            // 使用Netlify函数获取Git提交哈希值
+        // 检查是否在Netlify环境（排除本地开发环境）
+        console.log('当前域名:', window.location.hostname);
+        console.log('是否本地环境:', window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1'));
+        
+        if (typeof window !== 'undefined' && 
+            !window.location.hostname.includes('localhost') && 
+            !window.location.hostname.includes('127.0.0.1') &&
+            !window.location.hostname.includes('file://')) {
+            console.log('尝试从Netlify函数获取版本...');
+            // 使用Netlify函数获取Git提交哈希
             fetch('/.netlify/functions/version')
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Netlify函数返回数据:', data);
                     if (data.version && data.version !== 'unknown') {
                         versionElement.textContent = data.version;
                         versionElement.title = `完整哈希: ${data.fullHash}\n分支: ${data.branch}\n部署时间: ${new Date(data.deployTime).toLocaleString()}`;
+                        console.log('版本设置成功:', data.version);
                     } else {
                         versionElement.textContent = 'unknown';
+                        console.log('版本为unknown');
                     }
                 })
-                .catch(() => {
+                .catch(error => {
+                    console.error('获取版本失败:', error);
                     versionElement.textContent = 'unknown';
                 });
         } else {
