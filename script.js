@@ -265,16 +265,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 计算网站运行天数
     function calculateUptime() {
-        // 设置网站开始运行的日期（你可以修改这个日期）
-        const startDate = new Date('2025-07-23T11:57:00Z'); // 修改为你的网站实际开始日期
-        const currentDate = new Date();
+        // 设置网站开始运行的日期（中国时区 UTC+8）
+        const startDate = new Date('2025-07-23T11:57:00+08:00'); // 中国时区
+        const currentDate = new Date(); // 当前本地时间
+        
+        // 计算时间差（毫秒）
         const timeDiff = currentDate.getTime() - startDate.getTime();
+        
+        // 转换为天数
         const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
         
         const uptimeElement = document.getElementById('website-uptime');
         if (uptimeElement) {
             uptimeElement.textContent = `${daysDiff} 天`;
         }
+        
+        // 调试信息
+        console.log('开始时间:', startDate.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'}));
+        console.log('当前时间:', currentDate.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'}));
+        console.log('运行天数:', daysDiff);
     }
 
     // 页面加载完成后初始化
@@ -286,8 +295,8 @@ document.addEventListener('DOMContentLoaded', function() {
         getWebsiteVersion();
         calculateUptime();
         
-        // 每分钟更新一次运行时间（可选）
-        setInterval(calculateUptime, 60000);
+        // // 每分钟更新一次运行时间
+        // setInterval(calculateUptime, 60000);
     });
 
       
