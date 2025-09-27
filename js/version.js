@@ -12,10 +12,25 @@ class VersionManager {
     init() {
         // 页面加载完成后初始化
         window.addEventListener('load', () => {
+            console.log('VersionManager: 页面加载完成，开始初始化');
             this.getWebsiteVersion();
             this.calculateUptime();
             this.setupVersionClickHandler();
         });
+        
+        // 也尝试在DOMContentLoaded时初始化（以防load事件有问题）
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                console.log('VersionManager: DOMContentLoaded，设置点击处理器');
+                this.setupVersionClickHandler();
+            });
+        } else {
+            // DOM已经加载完成
+            console.log('VersionManager: DOM已加载，立即设置点击处理器');
+            setTimeout(() => {
+                this.setupVersionClickHandler();
+            }, 100);
+        }
     }
 
     // 获取网站版本信息
@@ -96,22 +111,39 @@ class VersionManager {
     // 设置版本号点击事件处理器
     setupVersionClickHandler() {
         const versionStatusItem = document.getElementById('version-status-item');
-        if (!versionStatusItem) return;
+        if (!versionStatusItem) {
+            console.error('未找到版本状态项元素 #version-status-item');
+            return;
+        }
+
+        console.log('找到版本状态项，设置点击事件处理器');
 
         // 添加点击事件监听器
-        versionStatusItem.addEventListener('click', () => {
+        versionStatusItem.addEventListener('click', (event) => {
+            console.log('版本状态项被点击');
+            event.preventDefault();
+            event.stopPropagation();
             this.handleVersionClick();
         });
 
         // 添加鼠标悬停效果
         versionStatusItem.style.cursor = 'pointer';
         versionStatusItem.title = '点击查看GitHub提交详情';
+        
+        console.log('版本状态项点击事件处理器设置完成');
     }
 
     // 处理版本号点击事件
     handleVersionClick() {
+        console.log('handleVersionClick 被调用');
+        console.log('当前版本数据:', this.currentVersionData);
+        
         if (!this.currentVersionData) {
             console.log('版本数据不可用，无法跳转');
+            // 即使没有版本数据，也尝试跳转到主分支
+            const githubUrl = `${this.githubRepoUrl}/tree/main`;
+            console.log('跳转到GitHub主分支:', githubUrl);
+            window.open(githubUrl, '_blank', 'noopener,noreferrer');
             return;
         }
 
@@ -120,21 +152,30 @@ class VersionManager {
         if (this.currentVersionData.version === 'dev') {
             // 开发环境，跳转到主分支
             githubUrl = `${this.githubRepoUrl}/tree/main`;
+            console.log('开发环境，跳转到主分支');
         } else if (this.currentVersionData.fullHash && this.currentVersionData.fullHash !== 'unknown') {
             // 有完整哈希，跳转到具体提交
             githubUrl = `${this.githubRepoUrl}/commit/${this.currentVersionData.fullHash}`;
+            console.log('有完整哈希，跳转到提交:', this.currentVersionData.fullHash);
         } else if (this.currentVersionData.version && this.currentVersionData.version !== 'unknown') {
             // 只有短哈希，尝试跳转到提交（可能不准确）
             githubUrl = `${this.githubRepoUrl}/commit/${this.currentVersionData.version}`;
+            console.log('只有短哈希，尝试跳转到提交:', this.currentVersionData.version);
         } else {
             // 无法确定版本，跳转到主分支
             githubUrl = `${this.githubRepoUrl}/tree/main`;
+            console.log('无法确定版本，跳转到主分支');
         }
 
-        console.log('跳转到GitHub:', githubUrl);
+        console.log('最终跳转URL:', githubUrl);
         
         // 在新标签页中打开GitHub链接
-        window.open(githubUrl, '_blank', 'noopener,noreferrer');
+        const newWindow = window.open(githubUrl, '_blank', 'noopener,noreferrer');
+        if (!newWindow) {
+            console.error('无法打开新窗口，可能被弹窗阻止器阻止');
+        } else {
+            console.log('成功打开新窗口');
+        }
     }
 }
 
