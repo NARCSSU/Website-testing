@@ -1,0 +1,50 @@
+/* monitoring-mobile.css */
+/* 监控页面移动端专用样式文件 - 简化版 */
+
+/* 移动端样式 */
+@media (max-width: 768px) {
+    .development-notice {
+        min-height: 70vh;
+        padding-top: 80px;
+    }
+    
+    .development-content i {
+        font-size: 3rem;
+        margin-bottom: 25px;
+    }
+    
+    .development-content h1 {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+    
+    .development-content p {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+    }
+    
+    .btn-back {
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .development-content i {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+    }
+    
+    .development-content h1 {
+        font-size: 1.8rem;
+    }
+    
+    .development-content p {
+        font-size: 1rem;
+    }
+    
+    .btn-back {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+}

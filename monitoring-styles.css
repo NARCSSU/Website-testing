@@ -1,0 +1,105 @@
+/* monitoring-styles.css */
+/* 监控页面专用样式文件 - 简化版 */
+
+/* 开发中提示样式 */
+.development-notice {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--background-color);
+    padding-top: 100px;
+}
+
+.development-content {
+    text-align: center;
+    max-width: 500px;
+    padding: 0 20px;
+}
+
+.development-content i {
+    font-size: 4rem;
+    color: var(--primary-color);
+    margin-bottom: 30px;
+    animation: pulse 2s infinite;
+}
+
+.development-content h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 20px;
+}
+
+.development-content p {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+    line-height: 1.6;
+}
+
+.btn-back {
+    display: inline-block;
+    padding: 15px 30px;
+    background: var(--primary-gradient);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(158, 148, 216, 0.3);
+}
+
+.btn-back:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(158, 148, 216, 0.4);
+}
+
+/* 移动端样式 */
+@media (max-width: 768px) {
+    .development-notice {
+        min-height: 70vh;
+        padding-top: 80px;
+    }
+    
+    .development-content i {
+        font-size: 3rem;
+        margin-bottom: 25px;
+    }
+    
+    .development-content h1 {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+    
+    .development-content p {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+    }
+    
+    .btn-back {
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .development-content i {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+    }
+    
+    .development-content h1 {
+        font-size: 1.8rem;
+    }
+    
+    .development-content p {
+        font-size: 1rem;
+    }
+    
+    .btn-back {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+}
