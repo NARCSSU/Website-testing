@@ -1102,6 +1102,35 @@ footer p {
     opacity: 0.9;
 }
 
+/* 可点击的版本状态项样式 */
+#version-status-item {
+    cursor: pointer;
+    position: relative;
+}
+
+#version-status-item:hover {
+    color: var(--primary-color);
+    background: rgba(158, 148, 216, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(158, 148, 216, 0.2);
+}
+
+#version-status-item:hover i {
+    color: var(--primary-color);
+    opacity: 1;
+}
+
+#version-status-item:hover span span {
+    color: var(--primary-color);
+    opacity: 1;
+}
+
+/* 添加点击效果 */
+#version-status-item:active {
+    transform: translateY(0);
+    background: rgba(158, 148, 216, 0.2);
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
     .website-status-info {

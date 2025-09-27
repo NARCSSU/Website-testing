@@ -5,6 +5,7 @@
 
 class VersionManager {
     constructor() {
+        this.githubRepoUrl = 'https://github.com/LuminolCraft/craft.luminolsuki.moe';
         this.init();
     }
 
@@ -13,6 +14,7 @@ class VersionManager {
         window.addEventListener('load', () => {
             this.getWebsiteVersion();
             this.calculateUptime();
+            this.setupVersionClickHandler();
         });
     }
 
@@ -39,18 +41,24 @@ class VersionManager {
                         versionElement.textContent = data.version;
                         versionElement.title = `完整哈希: ${data.fullHash}\n分支: ${data.branch}\n部署时间: ${new Date(data.deployTime).toLocaleString()}`;
                         console.log('版本设置成功:', data.version);
+                        
+                        // 保存版本信息供点击事件使用
+                        this.currentVersionData = data;
                     } else {
                         versionElement.textContent = 'unknown';
                         console.log('版本为unknown');
+                        this.currentVersionData = null;
                     }
                 })
                 .catch(error => {
                     console.error('获取版本失败:', error);
                     versionElement.textContent = 'unknown';
+                    this.currentVersionData = null;
                 });
         } else {
             // 本地开发环境
             versionElement.textContent = 'dev';
+            this.currentVersionData = { version: 'dev', fullHash: 'dev', branch: 'main' };
         }
     }
 
@@ -83,6 +91,50 @@ class VersionManager {
         setInterval(() => {
             this.calculateUptime();
         }, 60000);
+    }
+
+    // 设置版本号点击事件处理器
+    setupVersionClickHandler() {
+        const versionStatusItem = document.getElementById('version-status-item');
+        if (!versionStatusItem) return;
+
+        // 添加点击事件监听器
+        versionStatusItem.addEventListener('click', () => {
+            this.handleVersionClick();
+        });
+
+        // 添加鼠标悬停效果
+        versionStatusItem.style.cursor = 'pointer';
+        versionStatusItem.title = '点击查看GitHub提交详情';
+    }
+
+    // 处理版本号点击事件
+    handleVersionClick() {
+        if (!this.currentVersionData) {
+            console.log('版本数据不可用，无法跳转');
+            return;
+        }
+
+        let githubUrl;
+        
+        if (this.currentVersionData.version === 'dev') {
+            // 开发环境，跳转到主分支
+            githubUrl = `${this.githubRepoUrl}/tree/main`;
+        } else if (this.currentVersionData.fullHash && this.currentVersionData.fullHash !== 'unknown') {
+            // 有完整哈希，跳转到具体提交
+            githubUrl = `${this.githubRepoUrl}/commit/${this.currentVersionData.fullHash}`;
+        } else if (this.currentVersionData.version && this.currentVersionData.version !== 'unknown') {
+            // 只有短哈希，尝试跳转到提交（可能不准确）
+            githubUrl = `${this.githubRepoUrl}/commit/${this.currentVersionData.version}`;
+        } else {
+            // 无法确定版本，跳转到主分支
+            githubUrl = `${this.githubRepoUrl}/tree/main`;
+        }
+
+        console.log('跳转到GitHub:', githubUrl);
+        
+        // 在新标签页中打开GitHub链接
+        window.open(githubUrl, '_blank', 'noopener,noreferrer');
     }
 }
 
