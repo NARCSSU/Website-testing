@@ -1,10 +1,238 @@
 /* monitoring-styles.css */
 
 
+/* 导入字体 */
+@import url("https://cdn-font.hyperos.mi.com/font/css?family=MiSans_Latin_VF:VF:Latin&display=swap");
+@import url("https://cdn-font.hyperos.mi.com/font/css?family=MiSans_VF:VF:Chinese_Simplify,Latin&display=swap");
+@import url("https://cdn-font.hyperos.mi.com/font/css?family=MiSans:100,200,300,400,450,500,600,650,700,900:Chinese_Simplify,Latin&display=swap");
+@import url("https://cdn-font.hyperos.mi.com/font/css?family=Misans_TC_VF:VF:Chinese_Traditional_TW&display=swap");
+
+:root {
+    /* 基于原配色的现代化方案 */
+    --primary-color: #9e94d8;
+    --primary-gradient: linear-gradient(135deg, #9e94d8 0%, #b6ade6 100%);
+    --secondary-color: #333333;
+    --background-color: #f2eefc;
+    --background-gradient: linear-gradient(135deg, #f2eefc 0%, #e8e2f7 50%, #ddd6f3 100%);
+    --card-bg: rgba(255, 255, 255, 0.8);
+    --card-bg-hover: rgba(255, 255, 255, 0.9);
+    --text-color: #444444;
+    --text-secondary: #666666;
+    --online-color: #00BFA6;
+    --nav-bg: rgba(109, 91, 154, 0.8);
+    --nav-bg-scroll: rgba(109, 91, 154, 0.95);
+    --button-hover: #b6ade6;
+    --accent-color: #f59e0b;
+    --glass-bg: rgba(255, 255, 255, 0.6);
+    --glass-border: rgba(158, 148, 216, 0.3);
+    --shadow-color: rgba(109, 91, 154, 0.2);
+    --shadow-hover: rgba(109, 91, 154, 0.3);
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'MiSans VF', sans-serif;
+}
+
+body {
+    background: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
 
 a {
     text-decoration: none;
-  }
+}
+
+/* banner-header */
+nav {
+    display: flex;
+    align-items: center;
+    height: 81px;
+    padding: 15px 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    width: 100%;
+    z-index: 100;
+    top: 0;
+}
+
+/* nav.scrolled {
+    height: 81px;
+    background: var(--nav-bg-scroll);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+} */
+/* 导航链接通用样式 */
+nav a:hover {
+    color: var(--button-hover);
+}
+nav a {
+    display: inline-block;
+    margin:  20px;
+    color: white;
+    text-decoration: none;
+    font-size: 1.1em;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: var(--button-hover);
+}
+.AAA{
+    margin-right: 1.2em;
+}
+
+
+
+
+
+/* 下拉菜单样式 */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    font-size: 1.1em;
+    transition: color 0.3s;
+    cursor: pointer;
+}
+
+
+.menu-icon {
+    display: flex;
+    width: 18px;
+    height: 18px;
+    margin-left: 8px;
+    fill: currentColor;
+    transition: transform 0.3s;
+}
+.menu-button {
+    display: none;
+    position: absolute;
+    right: 20px;
+    top: 19.4px;
+    color: white;
+    font-size: 1.5em;
+    cursor: pointer;
+    
+}
+
+
+.logo-container {
+    
+    margin-left: 20px;  
+}
+.logo-container img {
+    height: 37px; 
+    width: 37px;
+}
+.right-align {
+    margin-left: auto;
+    margin-right: 20px;
+}
+.logo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.logo-and-text {
+    display: flex;
+    align-items: center;
+    
+    color: white;
+    font-size: 1.1em;
+    text-decoration: none;
+}
+
+
+.logo-and-text svg {
+    width: 18px;
+    height: 18px;
+    margin-left: 3px;
+    margin-bottom: 3px;
+}
+
+
+
+/* .dropdown:hover .menu-icon {鼠标悬停时旋转图标实际上图标本身就是倒过来的。。
+    transform: rotate(90deg);
+} */
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0; 
+    width: 150px;
+    background: var(--nav-bg-scroll);
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s ease-out;
+    z-index: 101;
+    transform-origin: top left;
+    transform: scaleY(0.8);
+}
+/* 最喜欢的效果之一 */
+/*当鼠标悬停在.dropdown上的时候.dropdown-menu就会哈气 */
+ .dropdown:hover .dropdown-menu {
+    /*渐变 */
+     opacity: 1;
+    /*使下拉菜单在悬停时显示*/
+     visibility: visible;
+    /*垂直缩放元素 */
+     transform: scaleY(1)
+
+       
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s;
+    opacity: 0;
+    transform: translateY(-5px);
+}
+.dropdown-item svg{
+    width: 18px;
+    height: 18px;
+    margin-left: 8px;
+    text-align: right;
+}
+.dropdown:hover .dropdown-item {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.item-icon {
+    width: 16px;
+    height: 16px;
+    margin-left: 10px;
+    fill: currentColor;
+    transition: transform 0.3s;
+}
+
+.dropdown-item:hover .item-icon {
+    transform: translateX(-3px);
+}
+
+
+.logo-and-text {
+    width: 130px;
+    margin-right: auto; 
+    margin-left: 20px;
+}
 
 /* 开发中提示样式 */
 .development-notice {
