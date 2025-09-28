@@ -96,6 +96,34 @@ body::after {
 .news-markdown ul { padding-left: 20px; }
 .news-markdown strong { color: var(--primary-color); }
 
+/* Markdown 引用样式 */
+.news-content blockquote {
+    border-left: 4px solid var(--primary-color);
+    background: rgba(158, 148, 216, 0.1);
+    padding: 15px 20px;
+    margin: 20px 0;
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    color: var(--text-color);
+    position: relative;
+}
+
+.news-content blockquote::before {
+    content: '"';
+    font-size: 3em;
+    color: var(--primary-color);
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    opacity: 0.3;
+}
+
+.news-content blockquote p {
+    margin: 0;
+    font-size: 1.05em;
+    line-height: 1.6;
+}
+
 
 
 
@@ -130,10 +158,20 @@ body::after {
     font-family: 'MiSans VF', monospace;
 }
 
-/* 高亮类样式（Highlight.js 会添加 hljs-keyword 等） */
-.hljs-keyword { color: #ff79c6; } /* 关键字如 function */
-.hljs-string { color: #f1fa8c; } /* 字符串如 "Hello" */
-.hljs-built_in { color: #50fa7b; } /* 内置如 console */
+/* 内联代码样式 */
+.news-content p code,
+.news-content li code,
+.news-content td code,
+.news-content th code {
+    background: rgba(158, 148, 216, 0.15);
+    color: var(--primary-color);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: 500;
+    border: 1px solid rgba(158, 148, 216, 0.3);
+}
+
 
 
 /* 置顶图标样式 */
