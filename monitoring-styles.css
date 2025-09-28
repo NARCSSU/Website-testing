@@ -1,5 +1,10 @@
 /* monitoring-styles.css */
-/* 监控页面专用样式文件 - 简化版 */
+
+
+
+a {
+    text-decoration: none;
+  }
 
 /* 开发中提示样式 */
 .development-notice {
@@ -101,5 +106,95 @@
     .btn-back {
         padding: 10px 20px;
         font-size: 0.95rem;
+    }
+}
+
+/* 网站状态信息样式 */
+.website-status-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 25px 0 15px 0;
+    flex-wrap: wrap;
+    opacity: 0.8;
+    font-size: 0.9em;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ccc;
+    transition: all 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.status-item:hover {
+    color: var(--primary-color);
+    background: rgba(158, 148, 216, 0.1);
+    transform: translateY(-2px);
+}
+
+.status-item i {
+    font-size: 14px;
+    color: var(--primary-color);
+    opacity: 0.8;
+}
+
+.status-item span {
+    font-family: 'MiSans VF', sans-serif;
+    font-weight: 500;
+}
+
+.status-item span span {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+    font-weight: 600;
+    color: #fff;
+    opacity: 0.9;
+}
+
+/* 可点击的版本状态项样式 */
+#version-status-item {
+    cursor: pointer;
+    position: relative;
+}
+
+#version-status-item:hover {
+    color: var(--primary-color);
+    background: rgba(158, 148, 216, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(158, 148, 216, 0.2);
+}
+
+#version-status-item:hover i {
+    color: var(--primary-color);
+    opacity: 1;
+}
+
+#version-status-item:hover span span {
+    color: var(--primary-color);
+    opacity: 1;
+}
+
+/* 添加点击效果 */
+#version-status-item:active {
+    transform: translateY(0);
+    background: rgba(158, 148, 216, 0.2);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .website-status-info {
+        gap: 15px;
+        margin: 20px 0 10px 0;
+    }
+    
+    .status-item {
+        padding: 6px 10px;
+        font-size: 0.85em;
     }
 }

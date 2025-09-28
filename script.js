@@ -206,18 +206,20 @@ document.addEventListener('DOMContentLoaded', function() {
           background.classList.remove('fade-in');
           background.classList.add('fade-out');
         
-          // 稍微延迟后触发新背景的淡入动画
-          setTimeout(() => {
+          // 立即触发新背景的淡入动画
+          requestAnimationFrame(() => {
             newBackground.classList.remove('new-background');
             newBackground.classList.add('fade-in');
-          }, 200); // 小延迟让动画更有层次感
+          });
 
           // 动画完成后清理旧背景
           setTimeout(() => {
-            background.remove();
+            if (background && background.parentNode) {
+              background.remove();
+            }
             background = newBackground;
             currentIndex = nextIndex;
-          }, 1200); // 与CSS过渡时间保持一致
+          }, 2500); // 延长清理时间，确保动画完全结束
         }
   
   
