@@ -1166,19 +1166,23 @@ footer p {
     background-repeat: no-repeat;
     z-index: -2;
     opacity: 0;
-    transition: opacity 2s ease-in-out; /* 延长过渡时间，让切换更柔和 */
+    transition: opacity 1.5s ease-in-out; /* 延长过渡时间，让切换更柔和 */
+    filter: brightness(0.95) contrast(1.0); /* 接近原始亮度，减少过滤效果 */
 }
 
 .header-background.fade-in {
-    opacity: 1.0; /* 背景图片完全不透明，完全清晰 */
+    opacity: 1.0; /* 完全不透明，显示原始图片 */
+    filter: brightness(0.95) contrast(1.0);
 }
 
 .header-background.fade-out {
     opacity: 0;
+    filter: brightness(0.95) contrast(1.0);
 }
 
 .header-background.new-background {
     opacity: 0;
+    filter: brightness(0.95) contrast(1.0);
 }
 
 /* 添加更柔和的过渡效果 */
@@ -1187,7 +1191,14 @@ footer p {
 }
 
 .hero-overlay {
-    display: none; /* 完全隐藏遮罩层 */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.2));
+    z-index: -1; /* 在背景图片之上，内容之下 */
+    pointer-events: none;
 }
 
 .hero-content {
