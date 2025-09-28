@@ -89,7 +89,9 @@ function initializeMarked() {
         }
         return `<a href="${href}" ${title ? `title="${title}"` : ''} class="${isExternal ? 'external-link' : ''}">${text}${svgIcon}</a>`;
     };
-    marked.setOptions({ renderer });
+    marked.setOptions({ 
+        renderer
+    });
     return true;
 }
 
@@ -247,6 +249,13 @@ async function renderNewsDetail() {
             lightbox.style.display = 'none';
         });
     }
+
+    // 初始化代码高亮
+    setTimeout(() => {
+        if (typeof hljs !== 'undefined') {  
+            hljs.highlightAll();
+        }
+    }, 100);
 }
 
 // 初始化汉堡菜单
