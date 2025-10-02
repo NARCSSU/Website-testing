@@ -10,50 +10,6 @@
   # 设置Node.js版本（用于Netlify Functions）
   NODE_VERSION = "18"
 
-# 重定向和重写规则
-[[redirects]]
-  # 新闻页面重定向
-  from = "/news/news"
-  to = "/news/news.html"
-  status = 301
-  force = true
-
-[[redirects]]
-  # 确保所有静态资源正确访问
-  from = "/images/*"
-  to = "/images/:splat"
-  status = 200
-
-[[redirects]]
-  # 确保JS文件正确访问
-  from = "/js/*"
-  to = "/js/:splat"
-  status = 200
-
-[[redirects]]
-  # 确保CSS文件正确访问
-  from = "/*.css"
-  to = "/:splat.css"
-  status = 200
-
-[[redirects]]
-  # news.json API端点
-  from = "/api/news"
-  to = "/news/news.json"
-  status = 200
-
-[[redirects]]
-  # 404页面处理 - 尝试添加.html扩展名
-  from = "/*"
-  to = "/:splat.html"
-  status = 200
-
-[[redirects]]
-  # 最终回退到首页
-  from = "/*"
-  to = "/index.html"
-  status = 404
-
 # 头部设置
 [[headers]]
   for = "/news/news.json"
@@ -77,12 +33,6 @@
   for = "/*.css"
   [headers.values]
     Cache-Control = "public, max-age=86400"
-
-# 针对SPA路由的设置（如果需要）
-[[redirects]]
-  from = "/news/*"
-  to = "/news/:splat"
-  status = 200
 
 # 安全头部
 [[headers]]
