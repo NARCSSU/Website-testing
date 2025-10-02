@@ -5,9 +5,42 @@ let filteredNews = null;
 let allNewsWithContent = [];
 const NEWS_STORAGE_KEY = 'session_news_data';
 const CACHE_DURATION = 24*60 * 60 * 1000;
-const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/';
-const GITEJSON_URL = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';
+// 检测是否运行在Netlify环境中
+function isNetlifyEnvironment() {
+    const hostname = window.location.hostname;
+    const isNetlify = hostname.includes('netlify.app') || 
+                     hostname.includes('netlify.com') ||
+                     hostname === 'localhost' ||
+                     hostname === '127.0.0.1' ||
+                     hostname.includes('craft.luminolsuki.moe');
+    
+    // 控制台输出环境检测结果
+    console.log('🌐 环境检测结果:', {
+        hostname: hostname,
+        isNetlifyEnvironment: isNetlify,
+        apiMode: isNetlify ? 'Netlify本地API' : '外部GitHub API',
+        newsJsonUrl: isNetlify ? '/news/news.json' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json',
+        contentBaseUrl: isNetlify ? '/' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/'
+    });
+    
+    return isNetlify;
+}
+
+// 动态配置API端点
+const GITHUB_RAW_BASE = isNetlifyEnvironment() ? '/' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/';
+const GITEJSON_URL = isNetlifyEnvironment() ? '/news/news.json' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';
 const SITE_DOMAIN = window.location.hostname || '';
+
+// 输出配置信息
+console.log('🚀 News Script 配置信息:', {
+    environment: isNetlifyEnvironment() ? 'Netlify' : 'External',
+    newsJsonUrl: GITEJSON_URL,
+    contentBaseUrl: GITHUB_RAW_BASE,
+    siteDomain: SITE_DOMAIN,
+    itemsPerPage: itemsPerPage,
+    cacheKey: NEWS_STORAGE_KEY,
+    cacheDuration: CACHE_DURATION / 1000 / 60 + ' minutes'
+});
 
 // 新增：从sessionStorage初始化数据（解决刷新丢失问题）
 function initNewsDataFromStorage() {

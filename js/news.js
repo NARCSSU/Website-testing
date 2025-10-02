@@ -11,18 +11,52 @@ class NewsManager {
         this.allNewsWithContent = [];
         this.NEWS_STORAGE_KEY = 'session_news_data';
         this.CACHE_DURATION = 24 * 60 * 60 * 1000;
-        this.GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/';
-        this.GITEJSON_URL = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';
+        // 动态配置API端点，优先使用本地路径（Netlify环境），回退到外部API
+        this.GITHUB_RAW_BASE = this.isNetlifyEnvironment() ? '/' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/';
+        this.GITEJSON_URL = this.isNetlifyEnvironment() ? '/news/news.json' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';
         this.SITE_DOMAIN = window.location.hostname || '';
         this.errorLogged = new Set();
         
         this.init();
+        
+        // 输出初始化配置信息
+        console.log('🚀 NewsManager 初始化配置:', {
+            environment: this.isNetlifyEnvironment() ? 'Netlify' : 'External',
+            newsJsonUrl: this.GITEJSON_URL,
+            contentBaseUrl: this.GITHUB_RAW_BASE,
+            siteDomain: this.SITE_DOMAIN,
+            itemsPerPage: this.itemsPerPage,
+            cacheKey: this.NEWS_STORAGE_KEY,
+            cacheDuration: this.CACHE_DURATION / 1000 / 60 + ' minutes'
+        });
     }
 
     init() {
         this.initFromStorage();
         this.initMarked();
         this.initEventListeners();
+    }
+
+    // 检测是否运行在Netlify环境中
+    isNetlifyEnvironment() {
+        // 检测域名是否包含netlify或是localhost开发环境
+        const hostname = window.location.hostname;
+        const isNetlify = hostname.includes('netlify.app') || 
+                         hostname.includes('netlify.com') ||
+                         hostname === 'localhost' ||
+                         hostname === '127.0.0.1' ||
+                         hostname.includes('craft.luminolsuki.moe'); // 你的自定义域名
+        
+        // 控制台输出环境检测结果
+        console.log('🌐 环境检测结果:', {
+            hostname: hostname,
+            isNetlifyEnvironment: isNetlify,
+            apiMode: isNetlify ? 'Netlify本地API' : '外部GitHub API',
+            newsJsonUrl: isNetlify ? '/news/news.json' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json',
+            contentBaseUrl: isNetlify ? '/' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/'
+        });
+        
+        return isNetlify;
     }
 
     // 从sessionStorage初始化数据
@@ -85,14 +119,19 @@ class NewsManager {
 
     // 预加载Markdown内容
     async preloadMarkdownContent(newsData) {
-        console.log('预加载 Markdown 内容...');
+        console.log('📚 预加载 Markdown 内容...', {
+            itemCount: newsData.length,
+            baseUrl: this.GITHUB_RAW_BASE,
+            environment: this.isNetlifyEnvironment() ? 'Netlify' : 'External'
+        });
+        
         const now = Date.now();
         const cached = localStorage.getItem('news-full-cache');
         const timestamp = localStorage.getItem('news-full-cache-timestamp');
 
         if (cached && timestamp && (now - parseInt(timestamp)) < this.CACHE_DURATION) {
             this.allNewsWithContent = JSON.parse(cached);
-            console.log('使用缓存的完整新闻数据');
+            console.log('🗄️ 使用缓存的完整新闻数据');
             sessionStorage.setItem(this.NEWS_STORAGE_KEY, JSON.stringify(this.allNewsWithContent));
             return;
         }
@@ -102,14 +141,30 @@ class NewsManager {
                 const fullContentUrl = item.content.startsWith('http') 
                     ? item.content 
                     : `${this.GITHUB_RAW_BASE}${item.content}`;
-                console.log(`加载 Markdown: ${fullContentUrl}`);
+                
+                console.log(`📄 加载 Markdown[${item.id}]:`, {
+                    title: item.title,
+                    originalPath: item.content,
+                    fullUrl: fullContentUrl,
+                    isAbsoluteUrl: item.content.startsWith('http')
+                });
+                
                 const response = await fetch(fullContentUrl, { cache: 'no-store' });
                 if (!response.ok) throw new Error(`无法加载: ${fullContentUrl} (状态: ${response.status})`);
                 const markdownContent = await response.text();
                 item.markdownContent = markdownContent || '暂无内容';
                 item.additionalImages = item.additionalImages?.filter(url => url && url.trim() !== '') || [];
+                
+                console.log(`✅ Markdown[${item.id}] 加载成功:`, {
+                    contentLength: markdownContent.length + ' chars',
+                    additionalImages: item.additionalImages.length
+                });
             } catch (error) {
-                console.error(`预加载新闻 ${item.id} 失败: ${error.message}, URL: ${fullContentUrl}`);
+                console.error(`❌ 预加载新闻 ${item.id} 失败:`, {
+                    error: error.message,
+                    url: fullContentUrl,
+                    title: item.title
+                });
                 item.markdownContent = '内容加载失败';
             }
         }
@@ -166,12 +221,34 @@ class NewsManager {
         });
 
         try {
+            console.log('📡 正在加载新闻数据...', {
+                url: this.GITEJSON_URL,
+                method: 'fetch',
+                cache: 'no-store'
+            });
+            
             const response = await fetch(this.GITEJSON_URL, { cache: 'no-store' });
+            
+            console.log('📡 API响应状态:', {
+                url: this.GITEJSON_URL,
+                status: response.status,
+                statusText: response.statusText,
+                ok: response.ok,
+                headers: {
+                    'content-type': response.headers.get('content-type'),
+                    'content-length': response.headers.get('content-length')
+                }
+            });
+            
             if (!response.ok) {
                 throw new Error(`无法加载 news.json: ${response.status} - ${response.statusText}`);
             }
             const data = await response.json();
-            console.log('news.json 加载成功:', data);
+            console.log('✅ news.json 加载成功:', {
+                itemCount: data.length,
+                firstItem: data[0]?.title || '无数据',
+                dataSize: JSON.stringify(data).length + ' bytes'
+            });
             localStorage.setItem('news-cache', JSON.stringify(data));
             localStorage.setItem('news-cache-timestamp', new Date().getTime().toString());
             await this.preloadMarkdownContent(data);
