@@ -580,9 +580,9 @@ nav a:hover {
 }
 
 /* 无图新闻：与绝对定位按钮的空白 */
-.news-item.no-image {
+/* .news-item.no-image {
     min-height: auto;
-}
+} */
 
 .news-item.no-image .news-content {
     height: auto;

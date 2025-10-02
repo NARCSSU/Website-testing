@@ -380,9 +380,9 @@ nav > a:first-of-type, nav > .dropdown:first-of-type {
     }
 
     /* 无图新闻：移动端也消除额外空白 */
-    .news-item.no-image {
+    /* .news-item.no-image {
         min-height: auto;
-    }
+    } */
     .news-item.no-image .news-content {
         height: auto;
         max-height: 220px;
