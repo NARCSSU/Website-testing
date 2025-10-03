@@ -187,7 +187,7 @@ header {
 }
 
 /* 移动端样式 */
-@media (max-width: 768px) {
+@media (max-width: 776px) {
     .container {
         padding: 40px 16px;
         margin-top: 12px;
@@ -275,7 +275,7 @@ header {
 }
 
 /* 移动端汉堡菜单 */
-@media (max-width: 768px) {
+@media (max-width: 776px) {
     .menu-button {
         display: block;
         position: absolute;
@@ -349,7 +349,7 @@ header {
 }
 
 /* 移动端汉堡菜单补充 */
-@media (max-width: 768px) {
+@media (max-width: 776px) {
     .nav-links .dropdown-toggle {
         display: flex;
         align-items: center;
@@ -391,7 +391,7 @@ header {
 }
 
 /* 移动端样式 */
-@media (max-width: 768px) {
+@media (max-width: 776px) {
     .development-notice {
         min-height: 70vh;
         padding-top: 80px;

@@ -189,7 +189,7 @@ nav > a:first-of-type, nav > .dropdown:first-of-type {
 }
 
 /* 移动端样式 */
-@media (max-width: 768px) {
+@media (max-width: 776px) {
     /* 显示汉堡菜单按钮 */
     .menu-button {
         display: block;
@@ -265,7 +265,7 @@ nav > a:first-of-type, nav > .dropdown:first-of-type {
 
 
 
-@media (max-width: 768px) {
+@media (max-width: 776px) {
     .menu-button {
         display: block;
     }
@@ -315,7 +315,7 @@ nav > a:first-of-type, nav > .dropdown:first-of-type {
 
 
 
-@media (max-width: 768px) {
+@media (max-width: 776px) {
     .news-search {
         display: flex;
         justify-content: center;

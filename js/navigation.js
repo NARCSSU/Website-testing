@@ -60,7 +60,7 @@ class NavigationManager {
             if (!toggle || !menu) return;
 
             dropdown.addEventListener('mouseenter', function() {
-                if (window.innerWidth >= 768) {
+                if (window.innerWidth >= 776) {
                     menu.style.display = 'block';
                     setTimeout(() => {
                         menu.style.opacity = '1';
@@ -70,7 +70,7 @@ class NavigationManager {
             });
             
             dropdown.addEventListener('mouseleave', function() {
-                if (window.innerWidth >= 768) {
+                if (window.innerWidth >= 776) {
                     menu.style.opacity = '0';
                     menu.style.transform = 'translateY(10px)';
                     setTimeout(() => {
@@ -80,7 +80,7 @@ class NavigationManager {
             });
             
             toggle.addEventListener('click', function(e) {
-                if (window.innerWidth < 768) {
+                if (window.innerWidth < 776) {
                     e.preventDefault();
                     
                     document.querySelectorAll('.dropdown-menu').forEach(otherMenu => {

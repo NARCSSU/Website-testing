@@ -145,7 +145,7 @@ nav > a:first-of-type, nav > .dropdown:first-of-type {
 }
 
 /* 移动端样式 */
-@media (max-width: 768px) {
+@media (max-width: 776px) {
     /* 显示汉堡菜单按钮 */
     .menu-button {
         display: block;

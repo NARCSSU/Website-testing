@@ -186,7 +186,7 @@ header {
 }
 
 /* 移动端样式 */
-@media (max-width: 768px) {
+@media (max-width: 776px) {
     .container {
         padding: 40px 16px;
         margin-top: 12px;
@@ -274,7 +274,7 @@ header {
 }
 
 /* 移动端汉堡菜单 */
-@media (max-width: 768px) {
+@media (max-width: 776px) {
     .menu-button {
         display: block;
         position: absolute;
@@ -348,7 +348,7 @@ header {
 }
 
 /* 移动端汉堡菜单补充 */
-@media (max-width: 768px) {
+@media (max-width: 776px) {
     .nav-links .dropdown-toggle {
         display: flex;
         align-items: center;
@@ -433,7 +433,7 @@ header {
     font-size: 1.1em;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 776px) {
     .Pure-h2 {
         position: relative;
         margin-bottom: 25px;
@@ -477,7 +477,7 @@ header {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 776px) {
     #team .team-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -490,7 +490,7 @@ header {
 }
 
 /* 移动端header元素位置调整 */
-@media (max-width: 768px) {
+@media (max-width: 776px) {
     .header-content {
         margin-top: -20px;
         padding: 0 15px;
@@ -508,7 +508,7 @@ header {
 }
 
 /* 首页移动端样式 - 从 index.html 提取 */
-@media (max-width: 768px) {
+@media (max-width: 776px) {
     .hero-content {
         grid-template-columns: 1fr;
         gap: 30px;
