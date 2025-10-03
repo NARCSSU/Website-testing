@@ -12,8 +12,37 @@
     <link rel="stylesheet" href="news-detail-styles.css">
     <link rel="stylesheet" href="news-detail-mobile.css" media="(max-width: 768px)">
     <link rel="stylesheet" href="code-highlight.css">
-    <!-- 添加 marked 库 -->
-    <script src="https://cdn.jsdelivr.net/npm/marked@7.0.0/marked.min.js"></script>
+    <!-- 添加 marked 库 - 多个CDN fallback -->
+    <script>
+    // 尝试加载 marked 库，使用多个 CDN 作为 fallback
+    function loadMarked(dataUrls) {
+        const script = document.createElement('script');
+        script.src = dataUrls[0];
+        script.onload = function() {
+            console.log('marked 库加载成功:', dataUrls[0]);
+        };
+        script.onerror = function() {
+            console.warn('marked 库加载失败，尝试下一个CDN:', dataUrls[0]);
+            if (dataUrls.length > 1) {
+                // 尝试下一个CDN
+                loadMarked(dataUrls.slice(1));
+            } else {
+                console.error('所有CDN都无法访问 marked 库');
+            }
+        };
+        document.head.appendChild(script);
+    }
+    
+    // CDN 列表（按优先级排序）
+    const markedCDNs = [
+        'https://cdn.jsdelivr.net/npm/marked@7.0.0/marked.min.js',
+        'https://unpkg.com/marked@7.0.0/marked.min.js', 
+        'https://cdnjs.cloudflare.com/ajax/libs/marked/7.0.0/marked.min.js',
+        'https://fastly.jsdelivr.net/npm/marked@7.0.0/marked.min.js'
+    ];
+    
+    loadMarked(markedCDNs);
+    </script>
     <!-- 代码高亮库 -->
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>

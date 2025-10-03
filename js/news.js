@@ -39,6 +39,29 @@ class NewsManager {
         }
     }
 
+    // 简单的 markdown 渲染器（fallback）
+    simpleMarkdownRender(text) {
+        if (!text) return '';
+        
+        // 基础转换
+        let html = text
+            .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+            .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+            .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/`(.*?)`/g, '<code>$1</code>')
+            .replace(/\n\n/g, '</p><p>')
+            .replace(/\n/g, '<br>')
+            .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, text, href) => {
+                const isExternal = !href.startsWith('/') && !href.includes(this.SITE_DOMAIN) && !href.startsWith('#');
+                const svgIcon = isExternal ? '<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg>' : '';
+                return `<a href="${href}" class="${isExternal ? 'external-link' : ''}">${text}${svgIcon}</a>`;
+            });
+            
+        return '<p>' + html + '</p>';
+    }
+
     // 初始化marked库
     initMarked() {
         if (typeof document === 'undefined') {
@@ -46,7 +69,7 @@ class NewsManager {
             return false;
         }
         if (typeof marked === 'undefined') {
-            console.error('marked 库未加载，请确保 marked 库已加载');
+            console.warn('marked 库未加载，使用简化渲染器作为备用方案');
             return false;
         }
         console.log('marked 库加载成功，版本:', marked.version || '未知');
@@ -318,7 +341,12 @@ class NewsManager {
                 const shortContent = item.markdownContent
                     ? item.markdownContent.substring(0, 100) + '...'
                     : '暂无内容';
-                content.innerHTML = marked.parse(shortContent);
+                // 检查marked库是否可用，否则使用fallback
+                if (typeof marked !== 'undefined') {
+                    content.innerHTML = marked.parse(shortContent);
+                } else {
+                    content.innerHTML = this.simpleMarkdownRender(shortContent);
+                }
 
                 newsItem.appendChild(title);
                 newsItem.appendChild(meta);
@@ -386,7 +414,12 @@ class NewsManager {
 
         const contentDiv = document.createElement('div');
         contentDiv.className = 'news-content';
-        contentDiv.innerHTML = marked.parse(newsItem.markdownContent || '');
+        // 检查marked库是否可用，否则使用fallback
+        if (typeof marked !== 'undefined') {
+            contentDiv.innerHTML = marked.parse(newsItem.markdownContent || '');
+        } else {
+            contentDiv.innerHTML = this.simpleMarkdownRender(newsItem.markdownContent || '');
+        }
 
         const gallerySection = document.createElement('div');
         gallerySection.className = 'gallery-section';
