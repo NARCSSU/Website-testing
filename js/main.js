@@ -65,6 +65,9 @@ function initHomePage() {
     
     // 为支持页面的按钮添加节流（如果存在）
     initSupportPageThrottling();
+    
+    // 初始化动画效果
+    initAnimations();
 }
 
 // 初始化新闻页面
@@ -217,6 +220,34 @@ window.addEventListener('pageshow', async function(event) {
         }
     }
 });
+
+// 初始化动画效果
+function initAnimations() {
+    // 使用 Intersection Observer 来观察元素是否进入视口
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    
+    // 观察所有 feature-card 元素
+    const featureCards = document.querySelectorAll('.feature-card');
+    featureCards.forEach((card, index) => {
+        // 设置每个 card 的延迟时间 - 减少延迟
+        card.style.transitionDelay = `${index * 0.05}s`;
+        observer.observe(card);
+    });
+    
+    console.log('动画效果初始化完成');
+}
 
 // 导出全局变量供其他脚本使用
 window.navigationManager = navigationManager;

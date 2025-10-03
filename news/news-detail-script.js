@@ -384,7 +384,7 @@ if (typeof document !== 'undefined') {
         tryInitializeMarked();
         await initializeApp();
         // 已移除 Three.js 背景
-        if (window.location.pathname.includes('news-detail.html')) {
+        if (window.location.pathname.includes('news-detail')) {
             await renderNewsDetail();
         }
         initHamburgerMenu();
