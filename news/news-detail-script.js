@@ -1,7 +1,7 @@
 // 全局变量
 let allNewsWithContent = [];
-const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/';
-const GITEJSON_URL = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';
+const GITHUB_RAW_BASE = 'https://luminolcraft-news.pages.dev/';
+const GITEJSON_URL = 'https://luminolcraft-news.pages.dev/news.json';
 const SITE_DOMAIN = window.location.hostname || '';
 let currentPage = 0;
 const itemsPerPage = 6;

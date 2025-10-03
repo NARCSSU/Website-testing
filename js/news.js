@@ -11,8 +11,8 @@ class NewsManager {
         this.allNewsWithContent = [];
         this.NEWS_STORAGE_KEY = 'session_news_data';
         this.CACHE_DURATION = 24 * 60 * 60 * 1000;
-        this.GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/';
-        this.GITEJSON_URL = 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';
+        this.GITHUB_RAW_BASE = 'https://luminolcraft-news.pages.dev/';
+        this.GITEJSON_URL = 'https://luminolcraft-news.pages.dev/news.json';
         this.SITE_DOMAIN = window.location.hostname || '';
         this.errorLogged = new Set();
         

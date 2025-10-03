@@ -78,27 +78,27 @@ class VersionManager {
     }
 
     // 计算网站运行天数
-    // calculateUptime() {
-    //     // 设置网站开始运行的日期（中国时区 UTC+8）
-    //     const startDate = new Date('2025-07-23T11:57:00+08:00'); // 中国时区
-    //     const currentDate = new Date(); // 当前本地时间
+    calculateUptime() {
+        // 设置网站开始运行的日期（中国时区 UTC+8）
+        const startDate = new Date('2025-07-23T11:57:00+08:00'); // 中国时区
+        const currentDate = new Date(); // 当前本地时间
         
-    //     // 计算时间差（毫秒）
-    //     const timeDiff = currentDate.getTime() - startDate.getTime();
+        // 计算时间差（毫秒）
+        const timeDiff = currentDate.getTime() - startDate.getTime();
         
-    //     // 转换为天数
-    //     const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+        // 转换为天数
+        const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
         
-    //     const uptimeElement = document.getElementById('website-uptime');
-    //     if (uptimeElement) {
-    //         uptimeElement.textContent = `${daysDiff} 天`;
-    //     }
+        const uptimeElement = document.getElementById('website-uptime');
+        if (uptimeElement) {
+            uptimeElement.textContent = `${daysDiff} 天`;
+        }
         
-    //     // 调试信息
-    //     console.log('开始时间:', startDate.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'}));
-    //     console.log('当前时间:', currentDate.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'}));
-    //     console.log('运行天数:', daysDiff);
-    // }
+        // 调试信息
+        console.log('开始时间:', startDate.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'}));
+        console.log('当前时间:', currentDate.toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'}));
+        console.log('运行天数:', daysDiff);
+    }
 
     // 更新运行时间（如果需要定期更新）
     startUptimeUpdate() {
