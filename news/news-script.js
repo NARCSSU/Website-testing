@@ -24,6 +24,24 @@ function initNewsDataFromStorage() {
     }
 }
 
+// 将GitHub URL转换为Cloudflare URL
+function convertGitHubUrlToCloudflare(contentUrl) {
+    if (!contentUrl.startsWith('http')) {
+        // 相对路径，直接拼接Cloudflare基础URL
+        return `${GITHUB_RAW_BASE}${contentUrl}`;
+    }
+    
+    if (contentUrl.includes('raw.githubusercontent.com/LuminolCraft/news.json')) {
+        // GitHub URL，转换为Cloudflare URL
+        const path = contentUrl.split('raw.githubusercontent.com/LuminolCraft/news.json')[1];
+        const cleanPath = path.replace('/refs/heads/main', '');
+        return `https://luminolcraft-news.pages.dev${cleanPath}`;
+    }
+    
+    // 其他情况，直接返回原URL
+    return contentUrl;
+}
+
 async function preloadMarkdownContent(newsData) {
     console.log('预加载 Markdown 内容...');
     const now = Date.now();
@@ -40,9 +58,7 @@ async function preloadMarkdownContent(newsData) {
 
     for (const item of newsData) {
         try {
-            const fullContentUrl = item.content.startsWith('http') 
-                ? item.content 
-                : `${GITHUB_RAW_BASE}${item.content}`;
+            const fullContentUrl = convertGitHubUrlToCloudflare(item.content);
             console.log(`加载 Markdown: ${fullContentUrl}`);
             const response = await fetch(fullContentUrl, { cache: 'no-store' });
             if (!response.ok) throw new Error(`无法加载: ${fullContentUrl} (状态: ${response.status})`);
