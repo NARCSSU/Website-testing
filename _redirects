@@ -22,6 +22,9 @@
 # 新闻详情页面特殊处理
 /news/news-detail.html  /news/news-detail.html  200
 
+# SimpleRules 页面
+/SimpleRules.html      /SimpleRules.html       200
+
 # HTML页面重定向（为不带扩展名的URL添加.html）
 /support         /support.html    200
 /monitoring      /monitoring.html 200
