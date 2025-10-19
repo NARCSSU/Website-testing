@@ -264,7 +264,7 @@
                     document.querySelector('#news-detail .news-content').innerHTML = htmlContent;
                 }
                 
-                console.log('规则内容加载成功');
+                debugLog('规则内容加载成功');
             } catch (error) {
                 console.error('加载规则内容失败:', error);
                 // 保持默认内容
@@ -313,16 +313,16 @@
     <!-- 确保导航栏和页脚在页面跳转时正确显示 -->
     <script>
         // 强制清除可能的缓存问题
-        console.log('页面加载时间:', new Date().toISOString());
-        console.log('当前页面URL:', window.location.href);
+        debugLog('页面加载时间:', new Date().toISOString());
+        debugLog('当前页面URL:', window.location.href);
         
         // 立即检查和修复显示问题
         function forceShowElements() {
             const nav = document.querySelector('nav');
             const footer = document.querySelector('footer');
             
-            console.log('检查导航栏:', nav ? '找到' : '未找到');
-            console.log('检查页脚:', footer ? '找到' : '未找到');
+            debugLog('检查导航栏:', nav ? '找到' : '未找到');
+            debugLog('检查页脚:', footer ? '找到' : '未找到');
             
             if (nav) {
                 // 强制重置样式
@@ -334,7 +334,7 @@
                 nav.style.top = '0';
                 nav.style.width = '100%';
                 nav.style.zIndex = '100';
-                console.log('导航栏样式已强制应用');
+                debugLog('导航栏样式已强制应用');
             }
             
             if (footer) {
@@ -343,7 +343,7 @@
                 footer.style.display = 'block';
                 footer.style.visibility = 'visible';
                 footer.style.opacity = '1';
-                console.log('页脚样式已强制应用');
+                debugLog('页脚样式已强制应用');
             }
         }
         
@@ -352,19 +352,19 @@
         
         // DOM加载完成后再次执行
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM加载完成，重新检查元素');
+            debugLog('DOM加载完成，重新检查元素');
             forceShowElements();
         });
         
         // 页面完全加载后再次执行
         window.addEventListener('load', function() {
-            console.log('页面完全加载，最终检查元素');
+            debugLog('页面完全加载，最终检查元素');
             forceShowElements();
         });
         
         // 延迟执行，确保所有脚本都加载完成
         setTimeout(() => {
-            console.log('延迟检查，确保元素显示');
+            debugLog('延迟检查，确保元素显示');
             forceShowElements();
         }, 200);
     </script>
