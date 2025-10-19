@@ -1,0 +1,230 @@
+/* Global footer styles extracted from news/news-styles.css */
+
+/* Footer base */
+footer {
+    padding: 50px 15px;
+    background: var(--secondary-color);
+    color: white;
+    text-align: center;
+}
+footer p {
+    text-align: center;
+}
+
+.social-links {
+    margin-bottom: 25px;
+}
+
+.social-links a {
+    display: inline-block;
+    margin: 0 12px;
+    color: white;
+    font-size: 1.3em;
+    transition: all 0.3s;
+}
+
+.social-links a:hover {
+    color: var(--primary-color);
+    transform: translateY(-4px);
+}
+
+/* Footer link columns */
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 30px 0;
+    flex-wrap: wrap;
+}
+
+.footer-column h3 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-column li {
+    margin-bottom: 8px;
+}
+
+.footer-column a {
+    color: #ddd;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-column a:hover {
+    color: var(--primary-color);
+}
+
+.footer-column svg{
+    width: 18px;
+    height: 18px;
+    margin-left: 8px;
+}
+
+/* Website status info */
+.website-status-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 25px 0 15px 0;
+    flex-wrap: wrap;
+    opacity: 0.8;
+    font-size: 0.9em;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ccc;
+    transition: all 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.status-item:hover {
+    color: var(--primary-color);
+    background: rgba(158, 148, 216, 0.1);
+    transform: translateY(-2px);
+}
+
+.status-item i {
+    font-size: 14px;
+    color: var(--primary-color);
+    opacity: 0.8;
+}
+
+.status-item span {
+    font-family: 'MiSans VF', sans-serif;
+    font-weight: 500;
+}
+
+.status-item span span {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+    font-weight: 600;
+    color: #fff;
+    opacity: 0.9;
+}
+
+/* Clickable version item */
+#version-status-item {
+    cursor: pointer;
+    position: relative;
+}
+
+#version-status-item:hover {
+    color: var(--primary-color);
+    background: rgba(158, 148, 216, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(158, 148, 216, 0.2);
+}
+
+#version-status-item:hover i {
+    color: var(--primary-color);
+    opacity: 1;
+}
+
+#version-status-item:hover span span {
+    color: var(--primary-color);
+    opacity: 1;
+}
+
+#version-status-item:active {
+    transform: translateY(0);
+    background: rgba(158, 148, 216, 0.2);
+}
+
+/* Dark theme overrides (explicit .dark-theme) */
+.dark-theme footer {
+    background: linear-gradient(135deg, #0a0f1c 0%, #1a1f2e 100%);
+    border-top: 1px solid rgba(71, 85, 105, 0.3);
+}
+
+.dark-theme .footer-column h3 {
+    color: #c4b5fd;
+}
+
+.dark-theme .footer-column a {
+    color: #cbd5e1;
+}
+
+.dark-theme .footer-column a:hover {
+    color: #c4b5fd;
+}
+
+.dark-theme .copyright-info {
+    border-top: 1px solid rgba(71, 85, 105, 0.3);
+    color: #94a3b8;
+}
+
+/* Copyright */
+.copyright-info {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.9em;
+    color: #aaa;
+}
+
+.copyright-info p {
+    margin: 8px 0;
+}
+
+.copyright-info a:any-link {
+    color: #aaa;
+}
+
+.copyright-info a:hover {
+    color: var(--primary-color);
+}
+
+.copyright-info svg {
+    width: 12px;
+    height: 12px;
+    margin-left: 8px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 846px) {
+    .website-status-info {
+        gap: 15px;
+        margin: 20px 0 10px 0;
+    }
+    .status-item {
+        padding: 6px 10px;
+        font-size: 0.85em;
+    }
+}
+
+/* Dark scheme auto (only footer-related) */
+@media (prefers-color-scheme: dark) {
+    :root:not(.dark-theme) footer {
+        background: linear-gradient(135deg, #0a0f1c 0%, #1a1f2e 100%) !important;
+        border-top: 1px solid rgba(71, 85, 105, 0.3) !important;
+    }
+    :root:not(.dark-theme) .footer-column h3 {
+        color: #c4b5fd !important;
+    }
+    :root:not(.dark-theme) .footer-column a {
+        color: #cbd5e1 !important;
+    }
+    :root:not(.dark-theme) .footer-column a:hover {
+        color: #c4b5fd !important;
+    }
+    :root:not(.dark-theme) .copyright-info {
+        border-top: 1px solid rgba(71, 85, 105, 0.3) !important;
+        color: #94a3b8 !important;
+    }
+}
+
+

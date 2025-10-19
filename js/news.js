@@ -3,6 +3,13 @@
  * 包含新闻列表、详情、分页、搜索等功能
  */
 
+// 调试日志函数（与main.js保持一致）
+function debugLog(...args) {
+    if (window.debugMode) {
+        debugLog(...args);
+    }
+}
+
 class NewsManager {
     constructor() {
         this.currentPage = 0;
@@ -31,7 +38,7 @@ class NewsManager {
         if (stored) {
             try {
                 this.allNewsWithContent = JSON.parse(stored);
-                console.log('从sessionStorage恢复新闻数据');
+                debugLog('从sessionStorage恢复新闻数据');
             } catch (e) {
                 console.error('解析sessionStorage数据失败', e);
                 sessionStorage.removeItem(this.NEWS_STORAGE_KEY);
@@ -72,7 +79,7 @@ class NewsManager {
             console.warn('marked 库未加载，使用简化渲染器作为备用方案');
             return false;
         }
-        console.log('marked 库加载成功，版本:', marked.version || '未知');
+        debugLog('marked 库加载成功，版本:', marked.version || '未知');
         const renderer = new marked.Renderer();
         renderer.link = (href, title, text) => {
             const isValidHref = typeof href === 'string' && href.trim() !== '';
@@ -92,7 +99,7 @@ class NewsManager {
             console.error('多次尝试后仍无法加载 marked，放弃初始化');
             return;
         }
-        console.log(`尝试初始化marked，剩余尝试次数: ${attempts}`);
+        debugLog(`尝试初始化marked，剩余尝试次数: ${attempts}`);
         setTimeout(() => this.tryInitializeMarked(attempts - 1, delay * 2), delay);
     }
 
@@ -120,20 +127,27 @@ class NewsManager {
             return `https://luminolcraft-news.pages.dev${cleanPath}`;
         }
         
+        // 处理其他GitHub URL格式
+        if (contentUrl.includes('raw.githubusercontent.com/LuminolMC/Luminol')) {
+            // 这是另一个GitHub仓库的URL，需要特殊处理
+            debugLog('检测到LuminolMC仓库URL，跳过加载:', contentUrl);
+            return null; // 返回null表示跳过这个URL
+        }
+        
         // 其他情况，直接返回原URL
         return contentUrl;
     }
 
     // 预加载Markdown内容
     async preloadMarkdownContent(newsData) {
-        console.log('预加载 Markdown 内容...');
+        debugLog('预加载 Markdown 内容...');
         const now = Date.now();
         const cached = localStorage.getItem('news-full-cache');
         const timestamp = localStorage.getItem('news-full-cache-timestamp');
 
         if (cached && timestamp && (now - parseInt(timestamp)) < this.CACHE_DURATION) {
             this.allNewsWithContent = JSON.parse(cached);
-            console.log('使用缓存的完整新闻数据');
+            debugLog('使用缓存的完整新闻数据');
             sessionStorage.setItem(this.NEWS_STORAGE_KEY, JSON.stringify(this.allNewsWithContent));
             return;
         }
@@ -141,7 +155,15 @@ class NewsManager {
         for (const item of newsData) {
             try {
                 const fullContentUrl = this.convertGitHubUrlToCloudflare(item.content);
-                console.log(`加载 Markdown: ${fullContentUrl}`);
+                
+                // 如果返回null，跳过这个条目
+                if (fullContentUrl === null) {
+                    debugLog(`跳过新闻 ${item.id}: 不支持的URL格式`);
+                    item.markdownContent = '内容不可用';
+                    continue;
+                }
+                
+                debugLog(`加载 Markdown: ${fullContentUrl}`);
                 const response = await fetch(fullContentUrl, { cache: 'no-store' });
                 if (!response.ok) throw new Error(`无法加载: ${fullContentUrl} (状态: ${response.status})`);
                 const markdownContent = await response.text();
@@ -156,7 +178,7 @@ class NewsManager {
         localStorage.setItem('news-full-cache', JSON.stringify(this.allNewsWithContent));
         localStorage.setItem('news-full-cache-timestamp', now.toString());
         sessionStorage.setItem(this.NEWS_STORAGE_KEY, JSON.stringify(this.allNewsWithContent));
-        console.log('新闻数据加载完成并缓存到sessionStorage');
+        debugLog('新闻数据加载完成并缓存到sessionStorage');
     }
 
     // 获取唯一标签
@@ -177,7 +199,7 @@ class NewsManager {
         const tag = tagSelect ? tagSelect.value : '';
         const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
-        console.log('筛选条件:', { tag, query });
+        debugLog('筛选条件:', { tag, query });
 
         this.filteredNews = this.allNewsWithContent.filter(item => {
             const matchesTag = !tag || (item.tags && item.tags.includes(tag));
@@ -189,7 +211,7 @@ class NewsManager {
             return matchesTag && matchesQuery;
         });
 
-        console.log('筛选结果:', { filteredNewsCount: this.filteredNews.length });
+        debugLog('筛选结果:', { filteredNewsCount: this.filteredNews.length });
 
         this.currentPage = 0;
         this.loadNews();
@@ -197,7 +219,7 @@ class NewsManager {
 
     // 初始化应用
     async initializeApp() {
-        console.log('检查 DOM 元素:', {
+        debugLog('检查 DOM 元素:', {
             newsGrid: !!document.querySelector('#news-grid'),
             paginationContainer: !!document.querySelector('#news-pagination'),
             tagSelect: !!document.getElementById('tag-select'),
@@ -210,11 +232,11 @@ class NewsManager {
                 throw new Error(`无法加载 news.json: ${response.status} - ${response.statusText}`);
             }
             const data = await response.json();
-            console.log('news.json 加载成功:', data);
+            debugLog('news.json 加载成功:', data);
             localStorage.setItem('news-cache', JSON.stringify(data));
             localStorage.setItem('news-cache-timestamp', new Date().getTime().toString());
             await this.preloadMarkdownContent(data);
-            console.log('allNewsWithContent:', this.allNewsWithContent);
+            debugLog('allNewsWithContent:', this.allNewsWithContent);
         } catch (error) {
             console.error('初始化加载 news.json 失败:', error.message);
             const newsGrid = document.querySelector('#news-grid');
@@ -404,8 +426,11 @@ class NewsManager {
         newsImgContainer.className = 'news-img';
         if (newsItem.image && newsItem.image.trim() !== '' && newsItem.image !== '""') {
             newsImgContainer.style.backgroundImage = `url('${newsItem.image}')`;
-            newsImgContainer.style.height = '400px';
             newsImgContainer.style.width = '100%';
+            newsImgContainer.style.aspectRatio = '16 / 9';
+            newsImgContainer.style.backgroundSize = 'contain';
+            newsImgContainer.style.backgroundRepeat = 'no-repeat';
+            newsImgContainer.style.backgroundPosition = 'center';
             hasImage = true;
         }
         if (!hasImage) {
@@ -469,6 +494,160 @@ class NewsManager {
                 lightbox.style.display = 'none';
             });
         }
+
+        // 初始化代码高亮 - 使用 Prism.js
+        setTimeout(() => {
+            if (typeof Prism !== 'undefined') {  
+                // Prism.js 会自动处理所有带有 language-* 类的代码块
+                Prism.highlightAll();
+                
+                // 为没有语言标识的代码块尝试自动检测
+                document.querySelectorAll('pre code:not([class*="language-"])').forEach((block) => {
+                    const text = block.textContent;
+                    
+                    // Gradle 检测
+                    if (text.includes('gradle') || text.includes('build.gradle') || text.includes('apply plugin') || text.includes('dependencies {')) {
+                        block.className = 'language-gradle';
+                    }
+                    // Shell/Bash 检测
+                    else if (text.includes('#!/bin/bash') || text.includes('#!/bin/sh') || text.includes('$ ') || text.includes('sudo ') || text.includes('npm ') || text.includes('yarn ')) {
+                        block.className = 'language-bash';
+                    }
+                    // Shell Session 检测 (带提示符的命令行)
+                    else if (text.includes('$ ') || text.includes('# ') || text.includes('> ') || text.includes('PS ')) {
+                        block.className = 'language-shell-session';
+                    }
+                    // Docker 检测 (使用 bash 代替，因为 dockerfile 组件不可用)
+                    else if (text.includes('FROM ') || text.includes('RUN ') || text.includes('COPY ') || text.includes('WORKDIR ')) {
+                        block.className = 'language-bash';
+                    }
+                    // YAML 检测
+                    else if (text.includes('---') || text.includes('apiVersion:') || text.includes('kind:')) {
+                        block.className = 'language-yaml';
+                    }
+                    // JSON 检测
+                    else if (text.trim().startsWith('{') && text.trim().endsWith('}')) {
+                        block.className = 'language-json';
+                    }
+                    // JavaScript 检测
+                    else if (text.includes('function') || text.includes('const ') || text.includes('let ') || text.includes('var ')) {
+                        block.className = 'language-javascript';
+                    }
+                    // Java 检测
+                    else if (text.includes('public class') || text.includes('import ') || text.includes('System.out.println')) {
+                        block.className = 'language-java';
+                    }
+                    // Python 检测
+                    else if (text.includes('def ') || text.includes('import ') || text.includes('print(') || text.includes('if __name__')) {
+                        block.className = 'language-python';
+                    }
+                    
+                    // 重新高亮
+                    Prism.highlightElement(block);
+                });
+                
+                // 初始化代码块工具栏
+                this.initCodeBlockToolbar();
+                
+                // 监听全站主题变化
+                this.initThemeListener();
+            }
+        }, 200);
+    }
+
+    // 初始化代码块工具栏
+    initCodeBlockToolbar() {
+        const codeBlocks = document.querySelectorAll('.news-content pre[class*="language-"]');
+        
+        codeBlocks.forEach((pre, index) => {
+            // 创建容器
+            const container = document.createElement('div');
+            container.className = 'code-block-container';
+            
+            // 创建工具栏
+            const toolbar = document.createElement('div');
+            toolbar.className = 'code-block-toolbar';
+            
+            // 创建复制按钮
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'code-block-btn copy-btn';
+            copyBtn.textContent = '复制';
+            copyBtn.title = '复制代码';
+            
+            // 添加到工具栏
+            toolbar.appendChild(copyBtn);
+            
+            // 包装代码块
+            pre.parentNode.insertBefore(container, pre);
+            container.appendChild(pre);
+            container.appendChild(toolbar);
+            
+            // 代码块跟随全站主题切换
+            this.updateCodeBlockTheme(container);
+            
+            // 复制功能
+            copyBtn.addEventListener('click', async () => {
+                const code = pre.querySelector('code');
+                const text = code ? code.textContent : pre.textContent;
+                
+                try {
+                    await navigator.clipboard.writeText(text);
+                    copyBtn.textContent = '已复制';
+                    copyBtn.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        copyBtn.textContent = '复制';
+                        copyBtn.classList.remove('copied');
+                    }, 2000);
+                } catch (err) {
+                    // 降级方案
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    
+                    copyBtn.textContent = '已复制';
+                    copyBtn.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        copyBtn.textContent = '复制';
+                        copyBtn.classList.remove('copied');
+                    }, 2000);
+                }
+            });
+        });
+    }
+
+    // 更新代码块主题
+    updateCodeBlockTheme(container) {
+        const isDark = document.body.classList.contains('dark-theme');
+        if (isDark) {
+            container.classList.add('code-block-dark');
+        } else {
+            container.classList.remove('code-block-dark');
+        }
+    }
+
+    // 初始化主题监听器
+    initThemeListener() {
+        // 监听 body 类变化
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    const codeBlocks = document.querySelectorAll('.code-block-container');
+                    codeBlocks.forEach(container => {
+                        this.updateCodeBlockTheme(container);
+                    });
+                }
+            });
+        });
+        
+        observer.observe(document.body, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
     }
 
 }

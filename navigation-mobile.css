@@ -1,0 +1,304 @@
+/* navigation-mobile.css - 移动端导航栏样式 */
+/* 导入字体 */
+@import url("https://cdn-font.hyperos.mi.com/font/css?family=MiSans_Latin_VF:VF:Latin&display=swap");
+@import url("https://cdn-font.hyperos.mi.com/font/css?family=MiSans_VF:VF:Chinese_Simplify,Latin&display=swap");
+@import url("https://cdn-font.hyperos.mi.com/font/css?family=MiSans:100,200,300,400,450,500,600,650,700,900:Chinese_Simplify,Latin&display=swap");
+@import url("https://cdn-font.hyperos.mi.com/font/css?family=Misans_TC_VF:VF:Chinese_Traditional_TW&display=swap");
+
+/* CSS变量定义 */
+:root {
+    --primary-color: #9e94d8;
+    --secondary-color: #333333;
+    --background-color: #f2eefc;
+    --card-bg: rgba(255, 255, 255, 0.8);
+    --card-bg-hover: rgba(255, 255, 255, 0.9);
+    --text-color: #444444;
+    --text-secondary: #666666;
+    --online-color: #00BFA6;
+    --nav-bg: rgba(109, 91, 154, 0.8);
+    --nav-bg-scroll: rgba(109, 91, 154, 0.95);
+    --button-hover: #b6ade6;
+    --accent-color: #f59e0b;
+    --glass-bg: rgba(255, 255, 255, 0.6);
+    --glass-border: rgba(158, 148, 216, 0.3);
+    --shadow-color: rgba(109, 91, 154, 0.2);
+    --shadow-hover: rgba(109, 91, 154, 0.3);
+    
+    /* 支持系统主题 */
+    color-scheme: light dark;
+}
+
+/* 深色主题变量 */
+.dark-theme {
+    --primary-color: #a78bfa;
+    --secondary-color: #f1f5f9;
+    --background-color: #0f172a;
+    --background-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    --card-bg: #1e293b;
+    --card-bg-hover: #334155;
+    --text-color: #e2e8f0;
+    --text-secondary: #cbd5e1;
+    --online-color: #10b981;
+    --nav-bg: rgba(15, 23, 42, 0.8);
+    --nav-bg-scroll: #1e293b;
+    --button-hover: #c4b5fd;
+    --accent-color: #f59e0b;
+    --glass-bg: rgba(30, 41, 59, 0.6);
+    --glass-border: rgba(71, 85, 105, 0.3);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --shadow-hover: rgba(0, 0, 0, 0.4);
+}
+
+/* 系统深色主题自动应用 */
+@media (prefers-color-scheme: dark) {
+    :root:not(.dark-theme) {
+        --primary-color: #a78bfa;
+        --secondary-color: #f1f5f9;
+        --background-color: #0f172a;
+        --card-bg: #1e293b;
+        --text-color: #e2e8f0;
+        --nav-bg: rgba(15, 23, 42, 0.8);
+        --nav-bg-scroll: #1e293b;
+        --button-hover: #c4b5fd;
+    }
+    
+    :root:not(.dark-theme) nav {
+        background-color: var(--nav-bg) !important;
+    }
+    
+    :root:not(.dark-theme) nav a {
+        color: #e2e8f0 !important;
+    }
+    
+    :root:not(.dark-theme) nav a:hover {
+        color: var(--button-hover) !important;
+    }
+}
+
+/* 移动端导航栏样式 - 仅在移动端生效 */
+@media (max-width: 896px) {
+    /* 汉堡菜单按钮 */
+    .menu-button {
+        display: block;
+        position: absolute;
+        right: 20px;
+        top: 19.4px;
+        color: white;
+        font-size: 1.1em;
+        cursor: pointer;
+        z-index: 102;
+    }
+    
+    /* 移动端主题切换按钮 - 放在汉堡菜单左边 */
+    .nav-theme-toggle {
+        position: absolute;
+        right: 70px; /* 汉堡菜单右边20px + 按钮宽度40px + 间距10px */
+        top: 19.4px;
+        z-index: 102;
+    }
+    
+    .nav-theme-toggle .theme-toggle-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+    }
+    
+    /* 导航链接容器 - 移动端隐藏 */
+    .nav-links {
+        display: none;
+    }
+    
+    /* 响应式导航链接 - 点击汉堡菜单后显示 */
+    .nav-links.responsive {
+        display: block;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: var(--nav-bg-scroll);
+        padding: 20px;
+        flex-direction: column;
+        z-index: 101;
+    }
+    
+    /* 移动端导航链接样式 */
+    .nav-links.responsive a:not(.dropdown-toggle):not(.dropdown-item) {
+        display: block;
+        margin: 10px 0;
+        color: white;
+        font-size: 1.2em;
+        font-weight: bold;
+        text-align: left;
+        pointer-events: auto;
+    }
+    
+    /* 移动端下拉菜单容器 */
+    .nav-links.responsive .dropdown {
+        display: block;
+        width: 100%;
+    }
+    
+    /* 移动端下拉菜单切换按钮 */
+    .nav-links.responsive .dropdown-toggle {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        color: white;
+        font-size: 1.2em;
+        font-weight: bold;
+        text-align: left;
+        pointer-events: auto;
+    }
+    
+    /* 移动端隐藏下拉菜单图标 */
+    .nav-links.responsive .dropdown-toggle .menu-icon {
+        display: none;
+    }
+    
+    /* 移动端下拉菜单 */
+    .nav-links.responsive .dropdown-menu {
+        display: block;
+        position: static;
+        width: 100%;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        background-color: transparent;
+    }
+    
+    /* 移动端下拉菜单项 */
+    .nav-links.responsive .dropdown-item {
+        display: block;
+        padding: 8px 0 8px 15px;
+        color: white;
+        font-size: 0.8em;
+        font-weight: normal;
+        text-align: left;
+        pointer-events: auto;
+        opacity: 1;
+        transform: none;
+    }
+    
+    /* 隐藏桌面版导航链接 */
+    nav a:not(.logo-and-text) {
+        display: none;
+    }
+    
+    /* 移动端Logo容器调整 */
+    .logo-container {
+        margin-left: 15px;
+    }
+    
+    .logo-container img {
+        height: 45px;
+        width: auto;
+    }
+    
+    /* 移动端Logo文字调整 */
+    .logo-and-text {
+        font-size: 1em;
+        margin-left: 10px;
+    }
+    
+    /* 移动端导航栏高度调整 */
+    nav {
+        height: 70px;
+        padding: 10px 15px;
+    }
+    
+    /* 移动端导航栏背景调整 */
+    nav {
+        background-color: var(--nav-bg);
+    }
+    
+    nav.scrolled {
+        background: var(--nav-bg-scroll);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+}
+
+/* 超小屏幕优化 (480px以下) */
+@media (max-width: 480px) {
+    /* 进一步缩小Logo */
+    .logo-container img {
+        height: 40px;
+    }
+    
+    /* 调整导航栏高度 */
+    nav {
+        height: 65px;
+        padding: 8px 10px;
+    }
+    
+    /* 调整汉堡菜单按钮位置 */
+    .menu-button {
+        right: 15px;
+        top: 17px;
+        font-size: 1em;
+    }
+    
+    /* 调整主题切换按钮位置 */
+    .nav-theme-toggle {
+        right: 60px;
+        top: 17px;
+    }
+    
+    .nav-theme-toggle .theme-toggle-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+    }
+    
+    /* 调整响应式导航链接间距 */
+    .nav-links.responsive {
+        padding: 15px;
+    }
+    
+    .nav-links.responsive a:not(.dropdown-toggle):not(.dropdown-item) {
+        margin: 8px 0;
+        font-size: 1.1em;
+    }
+    
+    .nav-links.responsive .dropdown-toggle {
+        padding: 8px 0;
+        font-size: 1.1em;
+    }
+    
+    .nav-links.responsive .dropdown-item {
+        padding: 6px 0 6px 12px;
+        font-size: 0.9em;
+    }
+}
+
+/* 深色主题移动端适配 */
+@media (max-width: 896px) {
+    .dark-theme nav {
+        background-color: var(--nav-bg);
+    }
+    
+    .dark-theme nav.scrolled {
+        background: var(--nav-bg-scroll);
+    }
+    
+    .dark-theme .nav-links.responsive {
+        background: var(--nav-bg-scroll);
+    }
+    
+    .dark-theme .nav-links.responsive a:not(.dropdown-toggle):not(.dropdown-item) {
+        color: #e2e8f0;
+    }
+    
+    .dark-theme .nav-links.responsive .dropdown-toggle {
+        color: #e2e8f0;
+    }
+    
+    .dark-theme .nav-links.responsive .dropdown-item {
+        color: #e2e8f0;
+    }
+    
+    .dark-theme .nav-links.responsive .dropdown-item:hover {
+        background: rgba(71, 85, 105, 0.2);
+        color: var(--button-hover);
+    }
+}

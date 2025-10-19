@@ -1,4 +1,4 @@
-/* mobile.css */
+/* mobile.css - 主页面移动端样式 */
 /* 导入字体 */
 @import url("https://cdn-font.hyperos.mi.com/font/css?family=MiSans_Latin_VF:VF:Latin&display=swap");
 @import url("https://cdn-font.hyperos.mi.com/font/css?family=MiSans_VF:VF:Chinese_Simplify,Latin&display=swap");
@@ -16,6 +16,175 @@
     --nav-bg-scroll:rgba(44, 62, 80, 1);
     --button-hover:#b6ade6;
 }
+/* 移动端主页样式 - 从 styles.css 提取 */
+
+/* 网站状态信息移动端样式 */
+.website-status-info {
+    gap: 15px;
+    margin: 20px 0 10px 0;
+}
+
+.status-item {
+    padding: 6px 10px;
+    font-size: 0.85em;
+}
+
+/* 主页英雄区域移动端样式 */
+.hero-title {
+    font-size: 2.5rem;
+}
+
+.hero-subtitle {
+    font-size: 1.1rem;
+}
+
+.hero-actions {
+    justify-content: center;
+}
+
+.btn-hero {
+    padding: 12px 24px;
+    font-size: 1rem;
+}
+
+.features-grid {
+    grid-template-columns: 1fr;
+}
+
+/* 移动端团队布局优化 */
+.team-section {
+    padding: 60px 0;
+}
+
+.team-container {
+    padding: 0 15px;
+}
+
+.team-grid {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 40px;
+}
+
+.team-card {
+    padding: 25px 20px;
+    border-radius: 16px;
+    flex: 0 0 auto;
+    max-width: 100%;
+    width: 100%;
+}
+
+.team-avatar {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+}
+
+.team-name {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+}
+
+.team-role {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+.team-links {
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.team-link {
+    width: 40px;
+    height: 40px;
+}
+
+.team-link i {
+    font-size: 16px;
+}
+
+.section-title {
+    font-size: 2rem;
+}
+
+/* 超小屏幕样式 */
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .server-status-card {
+        padding: 20px;
+    }
+    
+    .feature-card,
+    .server-card {
+        padding: 30px 20px;
+    }
+}
+
+/* 导航栏主题切换按钮 */
+.nav-theme-toggle {
+    display: flex;
+    align-items: center;
+    margin: 0 15px;
+    margin-right: auto;
+}
+
+.theme-toggle-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.theme-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.theme-toggle-btn i {
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle-btn:hover i {
+    transform: rotate(180deg);
+}
+
+/* 深色主题变量 */
+.dark-theme {
+    --primary-color: #a78bfa;
+    --primary-gradient: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%);
+    --secondary-color: #f1f5f9;
+    --background-color: #0f172a;
+    --background-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    --card-bg: #1e293b;
+    --card-bg-hover: #334155;
+    --text-color: #e2e8f0;
+    --text-secondary: #cbd5e1;
+    --online-color: #10b981;
+    --nav-bg: rgba(15, 23, 42, 0.8);
+    --nav-bg-scroll: #1e293b;
+    --button-hover: #c4b5fd;
+    --accent-color: #f59e0b;
+    --glass-bg: rgba(30, 41, 59, 0.6);
+    --glass-border: rgba(71, 85, 105, 0.3);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --shadow-hover: rgba(0, 0, 0, 0.4);
+}
+
+/* 导航栏样式已移至 navigation.css */
 
 /* 基础重置 */
 * {
@@ -35,150 +204,22 @@ a {
     text-decoration: none;
 }
 
-/* 导航栏样式 */
-nav {
-    display: flex;
-    align-items: center;
-    /* justify-content: space-between; */
-    padding: 15px 20px;
-    background-color: rgba(0, 0, 0, 0.7);
-    position: fixed;
-    width: 100%;
-    z-index: 100;
-    top: 0;
-}
+/* 导航栏样式已移至 navigation.css */
 
-nav.scrolled {
-    background: var(--nav-bg-scroll);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-}
+/* 导航栏样式已移至 navigation.css */
 
-nav a {
-    display: inline-block;
-    color: white;
-    text-decoration: none;
-    font-size: 1.1em;
-    transition: color 0.3s;
-}
+/* 导航栏样式已移至 navigation.css */
 
-.menu-button {
-    display: none;
-    position: absolute;
-    right: 20px;
-    top: 19.4px;
-    color: white;
-    font-size: 1.5em;
-    cursor: pointer;
+/* 导航栏样式已移至 navigation.css */
 }
-
-.nav-links {
-    display: none;
-    flex-direction: column;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background: var(--nav-bg-scroll);
-}
-
-.nav-links.responsive {
-    display: flex;
-}
-
-.nav-links a {
-    display: block;
-    margin: 10px;
-    color: white;
-    text-decoration: none;
-    font-size: 1.1em;
-    transition: color 0.3s;
-}
-
-.nav-links a:hover {
-    color: var(--button-hover);
-}
-
-.logo-container {
-    display: flex;
-    align-items: center;
-    margin-left: 20px;
-    flex-grow: 1; 
-}
-nav > a, nav > .dropdown {
-    /* 将“主页”和“服务器规则”放在 logo-container 之后 */
-    order: 1; 
-    /* 调整间距以靠近 logo */
-    margin: 0 10px; 
-}
-nav > a:first-of-type, nav > .dropdown:first-of-type {
-    /* 减小“主页”与 logo 的间距 */
-    margin-right: 80%;
-}
-.logo-container img {
-    height: 35px;
-    width: 35px;
-}
+/* 导航栏样式已移至 navigation.css */
 
 
 header {
     padding-top: 200px;
 }
 
-/* 下拉菜单样式 */
-.dropdown {
-    position: relative;
-    display: block;
-}
-
-.dropdown-toggle {
-    display: inline-flex;
-    align-items: center;
-    margin: 10px;
-    color: white;
-    text-decoration: none;
-    font-size: 1.1em;
-    transition: color 0.3s;
-    cursor: pointer;
-}
-
-.dropdown-menu {
-    position: static;
-    width: 100%;
-    background: rgba(255,255,255,0.1);
-    border-radius: 0;
-    box-shadow: none;
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-}
-
-.dropdown-item {
-    display: flex;
-    align-items: center;
-    padding: 10px 15px;
-    color: white;
-    text-decoration: none;
-    transition: all 0.3s;
-}
-
-.dropdown-item svg {
-    width: 18px;
-    height: 18px;
-    margin-left: 8px;
-    text-align: right;
-}
-
-.item-icon {
-    width: 16px;
-    height: 16px;
-    margin-left: 10px;
-    fill: currentColor;
-    transition: transform 0.3s;
-}
-
-.dropdown-item:hover .item-icon {
-    transform: translateX(-3px);
-}
+/* 导航栏样式已移至 navigation-mobile.css */
 
 .logo-and-text {
     display: flex;
@@ -186,191 +227,21 @@ header {
 }
 
 /* 移动端样式 */
-@media (max-width: 776px) {
+@media (max-width: 896px) {
     .container {
         padding: 40px 16px;
         margin-top: 12px;
     }
-    /* 显示汉堡菜单按钮 */
-    .menu-button {
-        display: block;
-    }
-
-    /* 隐藏导航链接 */
-    .nav-links {
-        display: none;
-    }
-
-    /* 点击汉堡菜单后显示导航链接 */
-    .nav-links.responsive {
-        display: block;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        background-color: var(--nav-bg-scroll);
-    }
-
-    /* 调整导航链接样式 */
-    .nav-links.responsive .dropdown {
-        display: block;
-        width: 100%;
-    }
-
-    .nav-links.responsive .dropdown-toggle {
-        display: block;
-        width: 100%;
-        padding: 15px 20px;
-    }
-
-    .nav-links.responsive .dropdown-menu {
-        position: static;
-        width: 100%;
-        opacity: 1;
-        visibility: visible;
-        transform: none;
-        box-shadow: none;
-        background-color: transparent;
-    }
-
-    .nav-links.responsive .dropdown-item {
-        padding: 10px 20px;
-    }
-
-    /* 隐藏桌面版导航链接 */
-    nav a:not(.logo-and-text) {
-        display: none;
-    }
+/* 导航栏样式已移至 navigation.css */
 }
 
-/* 桌面端导航布局（与移动端样式分离，集中于此文件响应式管理） */
-@media (min-width: 769px) {
-    nav {
-        flex-wrap: nowrap;
-        justify-content: flex-start;
-    }
-    nav > a[href="/"] {
-        order: -3;
-        margin: 0 15px 0 20px;
-    }
-    nav > .dropdown:first-of-type {
-        order: -2;
-        margin: 0 15px;
-    }
-    nav > a[href="/support"] {
-        order: -1;
-        margin: 0 15px;
-    }
-    .logo-container {
-        display: flex;
-        align-items: center;
-        order: 0;
-    }
-    nav > .right-align {
-        order: 1;
-        margin-left: auto;
-        margin-right: 20px;
-    }
+/* 导航栏样式已移至 navigation.css */
+
+/* 导航栏样式已移至 navigation.css */
+/* 导航栏样式已移至 navigation.css */
 }
 
-/* 移动端汉堡菜单 */
-@media (max-width: 776px) {
-    .menu-button {
-        display: block;
-        position: absolute;
-        right: 20px;
-        top: 19.4px;
-        color: white;
-        font-size: 1.1em;
-        cursor: pointer;
-        z-index: 102;
-    }
-    .nav-links {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        background: var(--nav-bg-scroll);
-        padding: 20px;
-        flex-direction: column;
-        z-index: 101;
-    }
-    .menu-toggle:checked ~ .nav-links {
-        display: flex;
-    }
-    .nav-links a:not(.dropdown-toggle):not(.dropdown-item) {
-        display: block;
-        margin: 10px 0;
-        color: white;
-        font-size: 1.2em;
-        font-weight: bold;
-        text-align: left;
-        pointer-events: auto;
-    }
-    .nav-links .dropdown {
-        display: block;
-        margin: 10px 0;
-    }
-    .nav-links .dropdown-toggle {
-        display: block;
-        color: white;
-        font-size: 1.2em;
-        font-weight: bold;
-        padding: 10px 0;
-        pointer-events: none;
-    }
-    .nav-links .dropdown-toggle .menu-icon {
-        display: none;
-    }
-    .nav-links .dropdown-menu {
-        display: block;
-        position: static;
-        transform: none;
-        width: 100%;
-        background: transparent;
-        box-shadow: none;
-        margin: 0;
-        opacity: 1;
-        visibility: visible;
-        transform: scaleY(1);
-    }
-    .nav-links .dropdown-item {
-        display: block;
-        padding: 8px 0 8px 15px;
-        color: white;
-        font-size: 0.8em;
-        font-weight: normal;
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: auto;
-    }
-}
-
-/* 移动端汉堡菜单补充 */
-@media (max-width: 776px) {
-    .nav-links .dropdown-toggle {
-        display: flex;
-        align-items: center;
-        padding: 10px 0;
-    }
-    .nav-links .dropdown-menu {
-        position: static;
-        transform: none;
-        width: 100%;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 5px;
-        margin-top: 5px;
-        opacity: 1;
-        visibility: visible;
-        transform: scaleY(1);
-    }
-    .nav-links .dropdown-item {
-        padding: 10px 15px;
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+/* 导航栏样式已移至 navigation.css */
 
 .LuminolMC {
     display: inline-flex;
@@ -433,7 +304,7 @@ header {
     font-size: 1.1em;
 }
 
-@media (max-width: 776px) {
+@media (max-width: 846px) {
     .Pure-h2 {
         position: relative;
         margin-bottom: 25px;
@@ -477,7 +348,7 @@ header {
     }
 }
 
-@media (max-width: 776px) {
+@media (max-width: 846px) {
     #team .team-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -490,7 +361,7 @@ header {
 }
 
 /* 移动端header元素位置调整 */
-@media (max-width: 776px) {
+@media (max-width: 846px) {
     .header-content {
         margin-top: -20px;
         padding: 0 15px;
@@ -508,7 +379,7 @@ header {
 }
 
 /* 首页移动端样式 - 从 index.html 提取 */
-@media (max-width: 776px) {
+@media (max-width: 846px) {
     .hero-content {
         grid-template-columns: 1fr;
         gap: 30px;
@@ -604,5 +475,78 @@ header {
     .btn-hero {
         padding: 10px 20px;
         font-size: 0.9rem;
+    }
+}
+
+/* 系统深色主题自动应用 */
+@media (prefers-color-scheme: dark) {
+    :root:not(.dark-theme) {
+        --primary-color: #a78bfa;
+        --secondary-color: #f1f5f9;
+        --background-color: #0f172a;
+        --card-bg: #1e293b;
+        --text-color: #e2e8f0;
+        --nav-bg: rgba(15, 23, 42, 0.8);
+        --nav-bg-scroll: #1e293b;
+    }
+    
+    :root:not(.dark-theme) body {
+        background: var(--background-color) !important;
+        color: var(--text-color) !important;
+    }
+    
+/* 导航栏样式已移至 navigation.css */
+    
+    :root:not(.dark-theme) footer {
+        background: linear-gradient(135deg, #0a0f1c 0%, #1a1f2e 100%) !important;
+        border-top: 1px solid rgba(71, 85, 105, 0.3) !important;
+    }
+    
+    :root:not(.dark-theme) .footer-column h3 {
+        color: #c4b5fd !important;
+    }
+    
+    :root:not(.dark-theme) .footer-column a {
+        color: #cbd5e1 !important;
+    }
+    
+    :root:not(.dark-theme) .footer-column a:hover {
+        color: #c4b5fd !important;
+    }
+    
+    :root:not(.dark-theme) .copyright-info {
+        border-top: 1px solid rgba(71, 85, 105, 0.3) !important;
+        color: #94a3b8 !important;
+    }
+    
+    /* 服务器区域深色主题 */
+    :root:not(.dark-theme) .servers-section {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%) !important;
+    }
+    
+    :root:not(.dark-theme) .server-card {
+        background: rgba(30, 41, 59, 0.8) !important;
+        border: 1px solid rgba(71, 85, 105, 0.3) !important;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    :root:not(.dark-theme) .server-card:hover {
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4) !important;
+    }
+    
+    :root:not(.dark-theme) .server-status-card {
+        background: rgba(30, 41, 59, 0.6) !important;
+        border: 1px solid rgba(71, 85, 105, 0.3) !important;
+    }
+    
+    /* 系统深色主题下主题切换按钮适配 */
+    :root:not(.dark-theme) .theme-toggle-btn {
+        background: rgba(71, 85, 105, 0.3) !important;
+        border: 1px solid rgba(71, 85, 105, 0.5) !important;
+        color: #e2e8f0 !important;
+    }
+    
+    :root:not(.dark-theme) .theme-toggle-btn:hover {
+        background: rgba(71, 85, 105, 0.5) !important;
     }
 }

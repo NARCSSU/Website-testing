@@ -34,6 +34,9 @@ class BackgroundSlider {
         this.currentIndex = 0;
         this.background = null;
         this.switchInterval = null;
+        this.preloaded = new Map(); // url -> { ok: boolean, src: string }
+        this.fallbackPrefix = '/images/'; // local fallback dir
+        this.isReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         
         this.init();
     }
@@ -45,8 +48,62 @@ class BackgroundSlider {
             return;
         }
         
-        this.setupInitialBackground();
-        this.startSliding();
+        this.preloadAll().then(() => {
+            this.setupInitialBackground();
+            this.startSliding();
+        });
+
+        // Page visibility handling to save CPU/GPU
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                this.stopSliding();
+            } else {
+                if (!this.isReducedMotion) this.startSliding();
+            }
+        });
+    }
+
+    // Preload all images with fallback
+    preloadAll() {
+        const preloadOne = (url) => new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                this.preloaded.set(url, { ok: true, src: url });
+                resolve();
+            };
+            img.onerror = () => {
+                // try local fallback using filename
+                try {
+                    const fileName = url.split('/').pop();
+                    const fallbackUrl = this.fallbackPrefix + fileName;
+                    const img2 = new Image();
+                    img2.onload = () => {
+                        this.preloaded.set(url, { ok: true, src: fallbackUrl });
+                        resolve();
+                    };
+                    img2.onerror = () => {
+                        this.preloaded.set(url, { ok: false, src: '' });
+                        resolve();
+                    };
+                    img2.src = fallbackUrl;
+                } catch (_) {
+                    this.preloaded.set(url, { ok: false, src: '' });
+                    resolve();
+                }
+            };
+            img.src = url;
+        });
+
+        // Respect prefers-reduced-motion by not preloading everything eagerly
+        const list = this.isReducedMotion ? this.backgroundImages.slice(0, 3) : this.backgroundImages;
+        return Promise.all(list.map(preloadOne));
+    }
+
+    resolveSrc(url) {
+        const info = this.preloaded.get(url);
+        if (info && info.ok && info.src) return info.src;
+        // if not preloaded yet, optimistically use original url
+        return url;
     }
 
     // 设置初始背景
@@ -57,7 +114,7 @@ class BackgroundSlider {
         // 创建初始背景（使用随机选中的图片）
         this.background = document.createElement('div');
         this.background.className = 'header-background fade-in';
-        this.background.style.backgroundImage = `url(${this.backgroundImages[this.currentIndex]})`;
+        this.background.style.backgroundImage = `url(${this.resolveSrc(this.backgroundImages[this.currentIndex])})`;
         this.header.appendChild(this.background);
     }
 
@@ -80,7 +137,7 @@ class BackgroundSlider {
         // 创建新背景元素
         const newBackground = document.createElement('div');
         newBackground.className = 'header-background new-background';
-        newBackground.style.backgroundImage = `url(${this.backgroundImages[nextIndex]})`;
+        newBackground.style.backgroundImage = `url(${this.resolveSrc(this.backgroundImages[nextIndex])})`;
         this.header.appendChild(newBackground);
         
         // 触发当前背景的淡出动画
@@ -103,10 +160,11 @@ class BackgroundSlider {
 
     // 开始轮播
     startSliding() {
-        // 每3.6秒切换一次背景
+        if (this.switchInterval || this.isReducedMotion) return;
+        // 每5秒切换一次背景，略微降低频率
         this.switchInterval = setInterval(() => {
             this.switchBackground();
-        }, 3600);
+        }, 5000);
     }
 
     // 停止轮播

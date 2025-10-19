@@ -4,6 +4,37 @@
 @import url("https://cdn-font.hyperos.mi.com/font/css?family=MiSans:100,200,300,400,450,500,600,650,700,900:Chinese_Simplify,Latin&display=swap");
 @import url("https://cdn-font.hyperos.mi.com/font/css?family=Misans_TC_VF:VF:Chinese_Traditional_TW&display=swap");
 
+/* 导航栏主题切换按钮已移至 navigation.css */
+
+.theme-toggle-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.theme-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.theme-toggle-btn i {
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle-btn:hover i {
+    transform: rotate(180deg);
+}
+
 :root {
     --primary-color:#9e94d8;
     --secondary-color:#333333;
@@ -16,6 +47,215 @@
     --button-hover:#b6ade6;
 }
 
+/* 深色主题变量 */
+.dark-theme {
+    --primary-color: #a78bfa;
+    --secondary-color: #f1f5f9;
+    --background-color: #0f172a;
+    --card-bg: #1e293b;
+    --text-color: #e2e8f0;
+    --online-color: #10b981;
+    --nav-bg: rgba(15, 23, 42, 0.8);
+    --nav-bg-scroll: #1e293b;
+    --button-hover: #c4b5fd;
+}
+
+/* 深色主题导航栏样式已移至 navigation.css */
+
+.dark-theme .theme-toggle-btn {
+    background: rgba(71, 85, 105, 0.3);
+    border: 1px solid rgba(71, 85, 105, 0.5);
+    color: #e2e8f0;
+}
+
+.dark-theme .theme-toggle-btn:hover {
+    background: rgba(71, 85, 105, 0.5);
+}
+
+/* 深色主题导航链接样式已移至 navigation.css */
+
+/* Footer 在深色主题下的适配 */
+.dark-theme footer {
+    background: linear-gradient(135deg, #0a0f1c 0%, #1a1f2e 100%);
+    border-top: 1px solid rgba(71, 85, 105, 0.3);
+}
+
+.dark-theme .footer-column h3 {
+    color: #c4b5fd;
+}
+
+.dark-theme .footer-column a {
+    color: #cbd5e1;
+}
+
+.dark-theme .footer-column a:hover {
+    color: #c4b5fd;
+}
+
+.dark-theme .copyright-info {
+    border-top: 1px solid rgba(71, 85, 105, 0.3);
+    color: #94a3b8;
+}
+
+/* 新闻详情页深色主题适配 */
+.dark-theme .news-detail-section {
+    background: rgba(30, 41, 59, 0.85);
+    border: 1px solid rgba(71, 85, 105, 0.45);
+}
+
+.dark-theme .news-detail-section h2 {
+    color: #f1f5f9;
+}
+
+.dark-theme .news-detail-section .news-date {
+    color: #cbd5e1;
+}
+
+.dark-theme .news-detail-section p {
+    color: #e2e8f0;
+}
+
+.dark-theme .news-detail-section .tag {
+    background: rgba(196, 181, 253, 0.2);
+    color: #c4b5fd;
+    
+}
+
+/* Markdown 内容深色主题适配 */
+.dark-theme .news-content h1,
+.dark-theme .news-content h2,
+.dark-theme .news-content h3,
+.dark-theme .news-content h4,
+.dark-theme .news-content h5,
+.dark-theme .news-content h6 {
+    color: #f1f5f9;
+}
+
+.dark-theme .news-content p {
+    color: #e2e8f0;
+}
+
+.dark-theme .news-content li {
+    color: #e2e8f0;
+}
+
+.dark-theme .news-content strong {
+    color: #c4b5fd;
+}
+
+.dark-theme .news-content blockquote {
+    background: rgba(196, 181, 253, 0.1);
+    border-left-color: #c4b5fd;
+}
+
+.dark-theme .news-content blockquote::before {
+    color: #c4b5fd;
+}
+
+.dark-theme .news-content blockquote p {
+    color: #cbd5e1;
+}
+
+/* 表格深色主题适配 */
+.dark-theme .news-content table {
+    background: rgba(30, 41, 59, 0.8);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dark-theme .news-content th {
+    background: rgba(71, 85, 105, 0.3);
+    color: #f1f5f9;
+}
+
+.dark-theme .news-content td {
+    color: #e2e8f0;
+}
+
+.dark-theme .news-content tr:hover {
+    background: rgba(71, 85, 105, 0.2);
+}
+
+/* 分割线深色主题适配 */
+.dark-theme .news-content hr {
+    background: linear-gradient(90deg, transparent, #c4b5fd, transparent);
+}
+
+/* 内联代码深色主题适配 */
+.dark-theme .news-content p code,
+.dark-theme .news-content li code,
+.dark-theme .news-content td code,
+.dark-theme .news-content th code {
+    background: rgba(196, 181, 253, 0.2);
+    color: #c4b5fd;
+    border: 1px solid rgba(196, 181, 253, 0.4);
+}
+
+/* 深色主题 token.tag 样式 */
+.dark-theme .news-content .token.tag {
+    background: none !important;
+    color: #79b8ff !important;
+}
+
+/* 链接深色主题适配 */
+.dark-theme .news-content a {
+    color: #c4b5fd;
+}
+
+.dark-theme .news-content a:hover {
+    color: #a78bfa;
+    border-bottom-color: #a78bfa;
+}
+
+.dark-theme .news-content a.external-link {
+    color: #60a5fa;
+}
+
+.dark-theme .news-content a.external-link:hover {
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
+}
+
+/* 图片画廊深色主题适配 */
+.dark-theme .gallery-section {
+    background: rgba(30, 41, 59, 0.9);
+}
+
+.dark-theme .gallery-section h3 {
+    color: #f1f5f9;
+}
+
+.dark-theme .gallery-section .empty-message {
+    color: #cbd5e1;
+}
+
+/* 灯箱深色主题适配 */
+.dark-theme .lightbox {
+    background: rgba(0, 0, 0, 0.9);
+}
+
+.dark-theme .lightbox-close,
+.dark-theme .lightbox-prev,
+.dark-theme .lightbox-next {
+    color: #e2e8f0;
+    background: rgba(30, 41, 59, 0.8);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.dark-theme .lightbox-close:hover,
+.dark-theme .lightbox-prev:hover,
+.dark-theme .lightbox-next:hover {
+    background: rgba(71, 85, 105, 0.8);
+    color: #f1f5f9;
+    transform: scale(1.1);
+}
+
+
 * {
     margin: 0;
     padding: 0;
@@ -25,13 +265,30 @@
 
 body {
     background: var(--background-color);
-    color: var(--text-color);
+    
     line-height: 1.6;
 }
 
 a {
     text-decoration: none;
 }
+
+
+/* 导航栏样式已移至 navigation.css 和 navigation-mobile.css */
+/* 桌面端导航布局已移至 navigation.css */
+
+/* 移动端汉堡菜单已移至 navigation-mobile.css */
+
+/* 移动端汉堡菜单修复已移至 navigation-mobile.css */
+
+
+
+
+/* 下拉菜单样式已移至 navigation.css */
+
+
+/* 导航栏相关样式已移至 navigation.css */
+
 .news-content a.external-link svg {
     width: 18px;
     height: 18px;
@@ -92,9 +349,89 @@ body::after {
     background: rgba(250, 250, 250, 0.9); /* 90% 不透明，背景可见 */
 }
 
-.news-markdown h1 { font-size: 1.5em; color: var(--secondary-color); }
-.news-markdown ul { padding-left: 20px; }
-.news-markdown strong { color: var(--primary-color); }
+/* Markdown 标题样式 */
+.news-content h1, .news-detail-section h1 {
+    font-size: 2.2em;
+    color: var(--secondary-color);
+    margin: 1.5em 0 0.8em 0;
+    font-weight: 700;
+    line-height: 1.2;
+    border-bottom: 3px solid var(--primary-color);
+    padding-bottom: 0.3em;
+}
+
+.news-content h2, .news-detail-section h2 {
+    font-size: 1.8em;
+    color: var(--secondary-color);
+    margin: 1.3em 0 0.6em 0;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.news-content h3, .news-detail-section h3 {
+    font-size: 1.5em;
+    color: var(--secondary-color);
+    margin: 1.2em 0 0.5em 0;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.news-content h4, .news-detail-section h4 {
+    font-size: 1.3em;
+    color: var(--secondary-color);
+    margin: 1em 0 0.4em 0;
+    font-weight: 600;
+}
+
+.news-content h5, .news-detail-section h5 {
+    font-size: 1.1em;
+    color: var(--secondary-color);
+    margin: 0.8em 0 0.3em 0;
+    font-weight: 600;
+}
+
+.news-content h6, .news-detail-section h6 {
+    font-size: 1em;
+    color: var(--secondary-color);
+    margin: 0.6em 0 0.2em 0;
+    font-weight: 600;
+}
+
+/* Markdown 列表样式 */
+.news-content ul, .news-content ol {
+    padding-left: 2em;
+    margin: 1em 0;
+    line-height: 1.8;
+}
+
+.news-content li {
+    margin-bottom: 0.5em;
+    font-size: 1.1em;
+}
+
+.news-content ul li {
+    list-style-type: disc;
+}
+
+.news-content ol li {
+    list-style-type: decimal;
+}
+
+.news-content ul ul, .news-content ol ol, .news-content ul ol, .news-content ol ul {
+    margin: 0.3em 0;
+    padding-left: 1.5em;
+}
+
+/* Markdown 强调样式 */
+.news-content strong, .news-detail-section strong {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.news-content em, .news-detail-section em {
+    font-style: italic;
+    
+}
 
 /* Markdown 引用样式 */
 .news-content blockquote {
@@ -104,7 +441,7 @@ body::after {
     margin: 20px 0;
     border-radius: 0 8px 8px 0;
     font-style: italic;
-    color: var(--text-color);
+
     position: relative;
 }
 
@@ -131,7 +468,7 @@ body::after {
     font-family: 'MiSans VF', sans-serif;
     font-size: 1.1em;
     text-align: center;
-    color: var(--text-color);
+    
 }
 
 
@@ -144,18 +481,110 @@ body::after {
 
 
 
-/* 代码高亮 */
+/* 代码高亮 - 基础样式，具体高亮由 Prism.js 处理 */
 .news-content pre {
-    background: #2d2d2d !important; /* 深色背景 */
-    color: #f8f8f2; /* 默认代码颜色 */
-    padding: 1em;
-    border-radius: 6px;
+    padding: 1.5em;
+    border-radius: 8px;
     overflow-x: auto;
-    margin: 1em 0;
+    margin: 1.5em 0;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.news-content pre code {
+    background: none;
+    padding: 0;
+    border: none;
+    font-size: 1.1em; /* 增大字体大小 */
+    line-height: 1.7; /* 增加行高 */
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+/* Prism.js 代码块字体大小调整 */
+.news-content pre[class*="language-"] {
+    font-size: 1.1em !important; /* 确保 Prism.js 代码块字体更大 */
+    line-height: 1.7 !important;
+}
+
+.news-content pre[class*="language-"] code {
+    font-size: 1.1em !important;
+    line-height: 1.7 !important;
+}
+
+/* GitHub 风格代码高亮 */
+.news-content pre[class*="language-"] {
+    background: #f6f8fa !important;
+    border: none !important;
+    border-radius: 6px !important;
+    color: #24292e !important;
+    text-shadow: none !important;
+}
+
+.news-content pre[class*="language-"] code {
+    color: #24292e !important;
+    text-shadow: none !important;
+}
+
+/* 深色主题代码块样式 */
+.dark-theme .news-content pre[class*="language-"] {
+    background: #0d1117 !important;
+    border: none !important;
+    color: #e6edf3 !important;
+    text-shadow: none !important;
+}
+
+.dark-theme .news-content pre[class*="language-"] code {
+    color: #e6edf3 !important;
+    text-shadow: none !important;
+}
+
+/* GitHub 风格语法高亮 */
+.news-content .token.comment,
+.news-content .token.prolog,
+.news-content .token.doctype,
+.news-content .token.cdata {
+    color: #6a737d !important;
+}
+
+
+
+/* 确保 token.tag 没有背景色 */
+.news-content .token.tag {
+    background: none !important;
+    color: #005cc5 !important;
+}
+
+
+
+
+
+.news-content .token.operator,
+.news-content .token.entity,
+.news-content .token.url,
+.news-content .language-css .token.string,
+.news-content .style .token.string {
+    color: #d73a49 !important;
+}
+
+.news-content .token.atrule,
+.news-content .token.attr-value,
+.news-content .token.keyword {
+    color: #d73a49 !important;
+}
+
+.news-content .token.function,
+.news-content .token.class-name {
+    color: #6f42c1 !important;
+}
+
+.news-content .token.regex,
+.news-content .token.important,
+.news-content .token.variable {
+    color: #e36209 !important;
 }
 
 .news-content code {
-    font-family: 'MiSans VF', monospace;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
 }
 
 /* 内联代码样式 */
@@ -164,13 +593,77 @@ body::after {
 .news-content td code,
 .news-content th code {
     background: rgba(158, 148, 216, 0.15);
-    color: var(--primary-color);
-    padding: 2px 6px;
+    color: #9e94d8; /* 直接使用颜色值 */
+    padding: 3px 8px;
     border-radius: 4px;
     font-size: 0.9em;
     font-weight: 500;
     border: 1px solid rgba(158, 148, 216, 0.3);
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
 }
+
+/* 表格样式 */
+.news-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.news-content th,
+.news-content td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid rgba(158, 148, 216, 0.2);
+    font-size: 1em;
+}
+
+.news-content th {
+    background: rgba(158, 148, 216, 0.1);
+    font-weight: 600;
+    color: var(--secondary-color);
+}
+
+.news-content tr:hover {
+    background: rgba(158, 148, 216, 0.05);
+}
+
+/* 分割线样式 */
+.news-content hr {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    margin: 2em 0;
+}
+
+/* 链接样式 */
+.news-content a {
+    color: var(--primary-color);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.news-content a:hover {
+    color: var(--button-hover);
+    border-bottom-color: var(--button-hover);
+}
+
+/* 外链使用浏览器默认蓝色 */
+.news-content a.external-link {
+    color: #0066cc; /* 浏览器默认链接蓝色 */
+    position: relative;
+}
+
+.news-content a.external-link:hover {
+    color: #004499; /* 悬停时深一点的蓝色 */
+    border-bottom-color: #004499;
+}
+
+
 
 
 
@@ -185,31 +678,34 @@ body::after {
 
 /* 新闻详情样式 */
 .news-detail-section {
-    padding: 40px;
-    background: rgba(255, 255, 255, 0.78);
+    padding: 50px 60px;
+    background: rgba(255, 255, 255, 0.85);
     border: 1px solid rgba(255, 255, 255, 0.45);
-    border-radius: 14px;
+    border-radius: 16px;
     margin-top: 80px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     margin-left: auto;
     margin-right: auto;
-    max-width: 900px;
-    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.14);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    max-width: 1200px;
+    min-width: 800px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
 }
 
 .news-detail-section h2 {
     font-family: 'MiSans VF', sans-serif;
     color: var(--secondary-color);
-    font-size: 28px;
-    margin-bottom: 15px;
+    font-size: 32px;
+    margin-bottom: 20px;
+    line-height: 1.3;
+    font-weight: 600;
 }
 
 .news-detail-section .news-date {
     font-family: 'MiSans VF', sans-serif;
     font-size: 0.9em;
-    color: var(--text-color);
+    
     opacity: 0.8;
     margin-bottom: 10px;
     display: block;
@@ -247,9 +743,30 @@ body::after {
 
 .news-detail-section p {
     font-family: 'MiSans VF', sans-serif;
-    font-size: 1.1em;
-    color: var(--text-color);
-    line-height: 1.8;
+    font-size: 1.15em;
+    
+    line-height: 1.9;
+    margin-bottom: 1.2em;
+    
+}
+
+/* Markdown 图片样式 */
+.news-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.news-content img:hover {
+    transform: scale(1.02);
+}
+
+/* 段落中的图片居中 */
+.news-content p img {
+    max-width: 100%;
+    height: auto;
 }
 
 .back-to-news {
@@ -274,14 +791,14 @@ body::after {
     font-family: 'MiSans VF', sans-serif;
     font-size: 1.1em;
     text-align: center;
-    color: var(--text-color);
+    
 }
 
 /* 图片画廊样式 */
 .gallery-section {
     padding: 20px;
     max-width: 800px;
-    margin: 20px auto;
+    
 }
 
 .gallery-section h3 {
@@ -318,7 +835,7 @@ body::after {
     font-family: 'MiSans VF', sans-serif;
     font-size: 1.1em;
     text-align: center;
-    color: var(--text-color);
+    
 }
 
 /* 灯箱样式 */
@@ -364,3 +881,329 @@ body::after {
 .lightbox-next {
     right: 20px;
 }
+
+
+
+/* feet */
+footer {
+    padding: 50px 15px;
+    background: var(--secondary-color);
+    color: white;
+    text-align: center;
+}
+footer p {
+    text-align: center;
+}
+
+.social-links {
+    margin-bottom: 25px;
+}
+
+.social-links a {
+    display: inline-block;
+    margin: 0 12px;
+    color: white;
+    font-size: 1.3em;
+    transition: all 0.3s;
+}
+
+.social-links a:hover {
+    color: var(--primary-color);
+    transform: translateY(-4px);
+}
+
+
+@keyframes fadeIn {/* 页头文字、页头按钮动画 */
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* 页脚链接样式 */
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 30px 0;
+    flex-wrap: wrap;
+}
+
+.footer-column h3 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-column li {
+    margin-bottom: 8px;
+}
+
+.footer-column a {
+    color: #ddd;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-column a:hover {
+    color: var(--primary-color);
+}
+.footer-column svg{
+    width: 18px;
+    height: 18px;
+    margin-left: 8px;
+}
+/*版权*/
+.copyright-info {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.9em;
+    color: #aaa;
+}
+
+.copyright-info p {
+    margin: 8px 0;
+}
+
+.copyright-info a:any-link {
+    color: #aaa;
+}
+
+.copyright-info a:hover {
+    color: var(--primary-color);
+}
+
+.copyright-info svg {
+    width: 12px;
+    height: 12px;
+    margin-left: 8px;
+}
+
+/* 网站状态信息样式 */
+.website-status-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 25px 0 15px 0;
+    flex-wrap: wrap;
+    opacity: 0.8;
+    font-size: 0.9em;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ccc;
+    transition: all 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.status-item:hover {
+    color: var(--primary-color);
+    background: rgba(158, 148, 216, 0.1);
+    transform: translateY(-2px);
+}
+
+.status-item i {
+    font-size: 14px;
+    color: var(--primary-color);
+    opacity: 0.8;
+}
+
+.status-item span {
+    font-family: 'MiSans VF', sans-serif;
+    font-weight: 500;
+}
+
+.status-item span span {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+    font-weight: 600;
+    color: #fff;
+    opacity: 0.9;
+}
+
+/* 可点击的版本状态项样式 */
+#version-status-item {
+    cursor: pointer;
+    position: relative;
+}
+
+#version-status-item:hover {
+    color: var(--primary-color);
+    background: rgba(158, 148, 216, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(158, 148, 216, 0.2);
+}
+
+#version-status-item:hover i {
+    color: var(--primary-color);
+    opacity: 1;
+}
+
+#version-status-item:hover span span {
+    color: var(--primary-color);
+    opacity: 1;
+}
+
+/* 添加点击效果 */
+#version-status-item:active {
+    transform: translateY(0);
+    background: rgba(158, 148, 216, 0.2);
+}
+
+/* 响应式设计（移动端规则已整合至 news-detail-mobile.css） */
+
+/* 系统深色主题自动应用 */
+@media (prefers-color-scheme: dark) {
+    :root:not(.dark-theme) {
+        --primary-color: #a78bfa;
+        --secondary-color: #f1f5f9;
+        --background-color: #0f172a;
+        --card-bg: #1e293b;
+        --text-color: #e2e8f0;
+        --nav-bg: rgba(15, 23, 42, 0.8);
+        --nav-bg-scroll: #1e293b;
+    }
+    
+    :root:not(.dark-theme) body {
+        background: var(--background-color) !important;
+        color: var(--text-color) !important;
+    }
+    
+/* 系统深色主题导航栏样式已移至 navigation.css */
+    
+    :root:not(.dark-theme) footer {
+        background: linear-gradient(135deg, #0a0f1c 0%, #1a1f2e 100%) !important;
+        border-top: 1px solid rgba(71, 85, 105, 0.3) !important;
+    }
+    
+    :root:not(.dark-theme) .footer-column h3 {
+        color: #c4b5fd !important;
+    }
+    
+    :root:not(.dark-theme) .footer-column a {
+        color: #cbd5e1 !important;
+    }
+    
+    :root:not(.dark-theme) .footer-column a:hover {
+        color: #c4b5fd !important;
+    }
+    
+    :root:not(.dark-theme) .copyright-info {
+        border-top: 1px solid rgba(71, 85, 105, 0.3) !important;
+        color: #94a3b8 !important;
+    }
+    
+    /* 新闻详情页深色主题 */
+    :root:not(.dark-theme) .news-detail-section {
+        background: rgba(30, 41, 59, 0.85) !important;
+        border: 1px solid rgba(71, 85, 105, 0.45) !important;
+    }
+    
+    :root:not(.dark-theme) .news-content h1,
+    :root:not(.dark-theme) .news-content h2,
+    :root:not(.dark-theme) .news-content h3,
+    :root:not(.dark-theme) .news-content h4,
+    :root:not(.dark-theme) .news-content h5,
+    :root:not(.dark-theme) .news-content h6 {
+        color: #e2e8f0 !important;
+    }
+    
+    :root:not(.dark-theme) .news-content p {
+        color: #cbd5e1 !important;
+    }
+    
+    :root:not(.dark-theme) .news-content ul,
+    :root:not(.dark-theme) .news-content ol {
+        color: #cbd5e1 !important;
+    }
+    
+    :root:not(.dark-theme) .news-content blockquote {
+        background: rgba(71, 85, 105, 0.2) !important;
+        border-left: 4px solid #a78bfa !important;
+        color: #cbd5e1 !important;
+    }
+    
+    :root:not(.dark-theme) .news-content table {
+        background: rgba(30, 41, 59, 0.5) !important;
+        border: 1px solid rgba(71, 85, 105, 0.3) !important;
+    }
+    
+    :root:not(.dark-theme) .news-content th,
+    :root:not(.dark-theme) .news-content td {
+        border: 1px solid rgba(71, 85, 105, 0.3) !important;
+        color: #cbd5e1 !important;
+    }
+    
+    :root:not(.dark-theme) .news-content th {
+        background: rgba(71, 85, 105, 0.3) !important;
+    }
+    
+    :root:not(.dark-theme) .news-content code {
+        background: rgba(71, 85, 105, 0.3) !important;
+        color: #cbd5e1 !important;
+    }
+    
+    :root:not(.dark-theme) .news-content a {
+        color: #a78bfa !important;
+    }
+    
+    :root:not(.dark-theme) .news-content a:hover {
+        color: #c4b5fd !important;
+    }
+    
+    :root:not(.dark-theme) .news-content a.external-link {
+        color: #60a5fa !important;
+    }
+    
+    :root:not(.dark-theme) .news-content a.external-link:hover {
+        color: #93c5fd !important;
+    }
+    
+    /* 图片画廊深色主题 */
+    :root:not(.dark-theme) .gallery-section {
+        background: rgba(30, 41, 59, 0.5) !important;
+        border: 1px solid rgba(71, 85, 105, 0.3) !important;
+    }
+    
+    :root:not(.dark-theme) .lightbox {
+        background: rgba(0, 0, 0, 0.9) !important;
+    }
+    
+    :root:not(.dark-theme) .lightbox-controls button {
+        background: rgba(71, 85, 105, 0.8) !important;
+        color: #e2e8f0 !important;
+    }
+    
+    :root:not(.dark-theme) .lightbox-controls button:hover {
+        background: rgba(71, 85, 105, 1) !important;
+    }
+    
+    /* 代码块深色主题 */
+    :root:not(.dark-theme) .news-content pre[class*="language-"] {
+        background: #1e293b !important;
+        border: 1px solid rgba(71, 85, 105, 0.3) !important;
+    }
+    
+    :root:not(.dark-theme) .news-content pre[class*="language-"] code {
+        color: #e2e8f0 !important;
+    }
+    
+    :root:not(.dark-theme) .news-content .token.tag {
+        background: none !important;
+        color: #79b8ff !important;
+    }
+    
+/* 系统深色主题导航链接样式已移至 navigation.css */
+}
+

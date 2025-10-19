@@ -12,22 +12,22 @@
     <meta name="referrer" content="no-referrer" />
     <link rel="icon" href="/images/favicon.ico">
     <link rel="icon" href="https://gitee.com/Narcssu/craft.luminolsuki.moe-imagehosting/raw/master/images/favicon.png" type="image/png">
-    <link rel="stylesheet" href="news-detail-styles.css?v=20250119">
-    <link rel="stylesheet" href="news-detail-mobile.css?v=20250119" media="(max-width: 896px)">
+    <link rel="stylesheet" href="news/news-detail-styles.css?v=20250119">
+    <link rel="stylesheet" href="news/news-detail-mobile.css?v=20250119" media="(max-width: 896px)">
     <!-- 公共导航栏样式 -->
-    <link rel="stylesheet" href="../navigation.css?v=20250119">
-    <link rel="stylesheet" href="../navigation-mobile.css?v=20250119" media="(max-width: 896px)">
-    <link rel="stylesheet" href="/footer.css?v=20250119">
+    <link rel="stylesheet" href="navigation.css?v=20250119">
+    <link rel="stylesheet" href="navigation-mobile.css?v=20250119" media="(max-width: 896px)">
+    <link rel="stylesheet" href="footer.css?v=20250119">
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
     <!-- 模块化JavaScript文件 -->
-    <script src="../js/utils.js?v=20250119"></script>
-    <script src="../js/navigation.js?v=20250119"></script>
-    <script src="../js/theme.js?v=20250119"></script>
-    <script src="../js/background.js?v=20250119"></script>
-    <script src="../js/version.js?v=20250119"></script>
-    <script src="../js/news.js?v=20250119"></script>
-    <script src="../js/main.js?v=20250119"></script>
+    <script src="js/utils.js?v=20250119"></script>
+    <script src="js/navigation.js?v=20250119"></script>
+    <script src="js/theme.js?v=20250119"></script>
+    <script src="js/background.js?v=20250119"></script>
+    <script src="js/version.js?v=20250119"></script>
+    <script src="js/news.js?v=20250119"></script>
+    <script src="js/main.js?v=20250119"></script>
     <!-- 添加 marked 库 - 多个CDN fallback -->
     <script>
     // 尝试加载 marked 库，使用多个 CDN 作为 fallback
@@ -84,12 +84,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/css.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
-    <!-- 模块化JavaScript文件 -->
-    <script src="../js/utils.js"></script>
-    <script src="../js/navigation.js"></script>
-    <script src="../js/version.js"></script>
-    <script src="../js/news.js"></script>
-    <script src="../js/main.js"></script>
 
     
 </head>
@@ -113,7 +107,7 @@
         </div> -->
         <div class="AAA">
             <div class="nav-links">
-                <a href="/index.html">主页</a>
+                <a href="index.html">主页</a>
             
                 <div class="dropdown">
                     <a href="#" class="dropdown-toggle">服务器规则
@@ -122,7 +116,7 @@
                         </svg>
                     </a>
                     <div class="dropdown-menu">
-                        <a  href="../SimpleRules.html" class="dropdown-item">简洁版
+                        <a  href="SimpleRules.html" class="dropdown-item">简洁版
                             <!-- <svg  xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg> -->
                         </a>
                         <a href="https://docs.qq.com/pdf/DQUZYS0FKenFmYWZx" target="_blank" rel="noopener noreferrer"  class="dropdown-item">详细版
@@ -130,16 +124,39 @@
                         </a>
                     </div>
                 </div>
-                <a href="/support.html" >支持我们</a>
-                <a href="/news/news.html " >新闻</a>
-                <a href="/monitoring.html" >监控</a>
+                <a href="support.html" >支持我们</a>
+                <a href="news/news.html" >新闻</a>
+                <a href="monitoring.html" >监控</a>
             </div>
         </div>
     </nav>
 
     <section class="news-detail-section">
-        <div id="news-detail"></div>
-        <a class="back-to-news" href="/news/news.html">返回新闻列表</a>
+        <div id="news-detail">
+            <div class="news-content">
+                <h1>LuminolCraft 服务器规则（简洁版）</h1>
+                <p><em>于 2025 年 10 月 3 日 根据《LuminolCraft 服务器规则》制定。</em></p>
+                
+                <ol>
+                    <li>严禁使用外挂或任何能实现原版客户端无法完成操作的作弊工具；允许使用非作弊类辅助模组（如 AutoFish、Tweakeroo、Litematica 等）。</li>
+                    <li>不得破坏他人建筑、机器，或以任何方式干扰其他玩家的正常游戏体验；发生冲突应先自行协商，协商不成可联系管理，管理将依据先申诉方陈述处理。</li>
+                    <li>禁止在游戏内或服务器群聊中传播违法、色情、暴力、反动、广告或其他不健康内容，禁止恶意辱骂他人。</li>
+                    <li>群聊违规行为将视情节给予警告、禁言或踢出群聊等处理；管理将结合相关证据进行判断。</li>
+                    <li>服务器会收集必要数据（包括 IP 地址、方块操作记录、发言内容等），用于安全审计与违规追溯。您可随时申请删除非必要个人数据（如操作日志、聊天记录等），但 UUID、游戏名等维持服务器运行所必需的数据除外。</li>
+                    <li>若因服务器意外故障（且未提前公告）导致物品或建筑丢失，可申请赔偿；不合理赔偿请求管理部有权拒绝。</li>
+                    <li>三人及以上可组建玩家团体，团体名称不得含违规、攻击性或不当内容；团体负责人须对成员行为负责，纵容违规将被连带处理。</li>
+                    <li>社区管理每半年（寒暑假期间）通过玩家投票选举产生，所有玩家均可参与提名与投票，若游玩玩家过少会酌情减少或停止选举。</li>
+                    <li>管理员须依规行使权限，不得滥用；如发现管理员违规，请向服主举报。</li>
+                    <li>服务器为公益性质，接受自愿赞助。赞助玩家将获得"赞助者"称号（无任何特殊权限），感谢您的支持！</li>
+                    <li>本服务器遵守中华人民共和国相关法律法规和Minecraft EULA协议，所有规则在法律框架内执行，所有规则的最终解释权归服务器管理部所有。</li>
+                </ol>
+
+                <blockquote>
+                    <p>此文档仅供玩家快速了解 LuminolCraft 服务器基本规则使用，若需详细的规则细则（包括管理流程、数据处理机制、插件列表等），请参考<a href="https://docs.qq.com/pdf/DQUZYS0FKenFmYWZx" target="_blank" rel="noopener noreferrer">《LuminolCraft 服务器规则》</a>。</p>
+                </blockquote>
+            </div>
+        </div>
+        <a class="back-to-news" href="index.html">返回主页</a>
     </section>
 
 
@@ -219,6 +236,77 @@
         document.addEventListener('DOMContentLoaded', function() {
             // 初始化 Highlight.js
             hljs.highlightAll();
+        });
+    </script>
+    
+    <!-- 动态加载规则内容 -->
+    <script>
+        // 加载规则内容
+        async function loadRulesContent() {
+            try {
+                // 使用 Cloudflare 的 URL 来访问 GitHub 内容
+                const response = await fetch('https://raw.githubusercontent.com/LuminolCraft/news.json/refs/heads/main/News-content/rule_20251003.md');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const markdownText = await response.text();
+                
+                // 检查是否有 marked 库
+                if (typeof marked !== 'undefined') {
+                    // 使用 marked 库渲染 markdown
+                    const htmlContent = marked.parse(markdownText);
+                    document.querySelector('#news-detail .news-content').innerHTML = htmlContent;
+                } else {
+                    // 简单的 markdown 渲染
+                    const htmlContent = simpleMarkdownRender(markdownText);
+                    document.querySelector('#news-detail .news-content').innerHTML = htmlContent;
+                }
+                
+                console.log('规则内容加载成功');
+            } catch (error) {
+                console.error('加载规则内容失败:', error);
+                // 保持默认内容
+            }
+        }
+        
+        // 简单的 markdown 渲染函数
+        function simpleMarkdownRender(text) {
+            let html = text;
+            
+            // 处理标题
+            html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+            html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+            html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            
+            // 处理粗体和斜体
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            
+            // 处理引用
+            html = html.replace(/^> (.*$)/gim, '<blockquote><p>$1</p></blockquote>');
+            
+            // 处理有序列表
+            html = html.replace(/^(\d+)\. (.*$)/gim, '<li>$2</li>');
+            
+            // 处理无序列表
+            html = html.replace(/^\- (.*$)/gim, '<li>$1</li>');
+            
+            // 处理链接
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+            
+            // 处理段落
+            html = html.replace(/\n\n/g, '</p><p>');
+            html = html.replace(/\n/g, '<br>');
+            html = html.replace(/^(.+)$/gim, '<p>$1</p>');
+            
+            return html;
+        }
+        
+        // 页面加载完成后加载内容
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRulesContent();
         });
     </script>
     

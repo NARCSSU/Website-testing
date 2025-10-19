@@ -9,17 +9,21 @@
     <link rel="icon" href="/images/favicon.ico">
     <link rel="icon" href="https://gitee.com/Narcssu/craft.luminolsuki.moe-imagehosting/raw/master/images/favicon.png" type="image/png">
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="mobile.css" media="(max-width: 776px)">
+    <link rel="stylesheet" href="mobile.css" media="(max-width: 896px)">
+    <!-- 公共导航栏样式 -->
+    <link rel="stylesheet" href="navigation.css">
+    <link rel="stylesheet" href="navigation-mobile.css" media="(max-width: 896px)">
+    <link rel="stylesheet" href="/footer.css">
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
     <!-- 模块化JavaScript文件 -->
-    <script src="js/utils.js"></script>
-    <script src="js/navigation.js"></script>
-    <script src="js/background.js"></script>
-    <script src="js/server-status-monitor.js"></script>
-    <script src="js/version.js"></script>
-    <script src="js/news.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/utils.js?v=20250119"></script>
+    <script src="js/navigation.js?v=20250119"></script>
+    <script src="js/theme.js?v=20250119"></script>
+    <script src="js/background.js?v=20250119"></script>
+    <script src="js/version.js?v=20250119"></script>
+    <script src="js/news.js?v=20250119"></script>
+    <script src="js/main.js?v=20250119"></script>
 
     <meta name='description' content='LuminolCraft 是 LuminolMC 附属的 Minecraft 服务器，拥有综合生存与纯净生存两个子服，管理活跃，欢迎加入我们！'>
     
@@ -36,6 +40,12 @@
         <a href="https://luminolsuki.moe/" target="_blank" rel="noopener noreferrer"  class="logo-and-text ">LuminolMC
             <svg  xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg>
         </a>
+        <!-- 主题切换按钮 -->
+        <!-- <div class="nav-theme-toggle">
+            <button class="theme-toggle-btn" title="切换主题">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div> -->
         <div class="AAA">
             <div class="nav-links">
                 <a href="#header">主页</a>
@@ -47,7 +57,7 @@
                         </svg>
                     </a>
                     <div class="dropdown-menu">
-                        <a href="/news/news-detail.html?id=6" target="_blank" rel="noopener noreferrer" class="dropdown-item">简洁版
+                        <a href="SimpleRules.html" class="dropdown-item">简洁版
                             <!-- <svg  xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg> -->
                         </a>
                         <a href="https://docs.qq.com/pdf/DQUZYS0FKenFmYWZx" target="_blank" rel="noopener noreferrer"  class="dropdown-item">详细版
@@ -110,6 +120,9 @@
                         <div class="info-item">
                             <div class="info-label">运行状态</div>
                             <div class="info-value">稳定运行</div>
+                            <!-- <div class="info-value" id="server-status">
+                                <span class="status-indicator loading">检查中...</span>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -206,103 +219,189 @@
         <div class="team-container">
             <div class="section-header">
                 <h2 class="section-title">管理团队</h2>
-                <p class="section-subtitle">专业的团队为服务器提供稳定可靠的服务</p>
+                <p class="section-subtitle">经验丰富的团队为服务器提供稳定可靠的服务</p>
             </div>
             
-            <div class="team-grid">
-                <div class="team-card">
-                    <img src="https://q1.qlogo.cn/g?b=qq&nk=2506442080&s=0" alt="MrHua269" class="team-avatar">
-                    <h3 class="team-name">MrHua269</h3>
-                    <p class="team-role">物理服主 & Luminol 服务端开发人员</p>
-                    <div class="team-links">
-                        <a class="team-link" href="https://github.com/MrHua269" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                            <i class="fab fa-github"></i>
-                        </a>
-                    </div>
+            <!-- 服务器核心管理层 -->
+            <section class="team-subsection">
+                <div class="subsection-header">
+                    <h3 class="subsection-title">服务器管理</h3>
+                    <p class="subsection-description">负责服务器的日常管理和维护工作</p>
                 </div>
                 
-                <div class="team-card">
-                    <img src="https://q1.qlogo.cn/g?b=qq&nk=1638465997&s=0" alt="NaT_Jerry" class="team-avatar">
-                    <h3 class="team-name">NaT_Jerry</h3>
-                    <p class="team-role">纯净生存服务器管理员</p>
-                    <div class="team-links">
-                        <a class="team-link" href="https://github.com/NatJerry" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                            <i class="fab fa-github"></i>
-                        </a>
-                        <a class="team-link" href="https://qm.qq.com/q/6IjUhdaTRe">
-                            <i class="fa-brands fa-qq"></i>
-                        </a>
-                        <a class="team-link" href="mailto:xiaomajunqwq123@outlook.com" aria-label="Email">
-                            <i class="fas fa-envelope"></i>
-                        </a>
-                    </div>
+                <div class="contributors-flex">
+                    <article class="contributor-card">
+                        <div class="contributor-layout">
+                            <div class="contributor-avatar-container">
+                                <img src="https://q1.qlogo.cn/g?b=qq&nk=2506442080&s=0" alt="MrHua269" class="contributor-avatar">
+                            </div>
+                            <div class="contributor-info">
+                                <div class="contributor-name">MrHua269</div>
+                                <div class="contributor-role">物理服主 & Luminol 服务端开发人员</div>
+                                <a href="https://github.com/MrHua269" target="_blank" rel="noopener noreferrer" class="contributor-github-link">
+                                    <svg class="github-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                    </svg>
+                                    MrHua269
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="contributor-card">
+                        <div class="contributor-layout">
+                            <div class="contributor-avatar-container">
+                                <img src="https://q1.qlogo.cn/g?b=qq&nk=1638465997&s=0" alt="NaT_Jerry" class="contributor-avatar">
+                            </div>
+                            <div class="contributor-info">
+                                <div class="contributor-name">NaT_Jerry</div>
+                                <div class="contributor-role">纯净生存服务器管理员</div>
+                                <div class="contributor-links-wrapper">
+                                    <a href="https://github.com/NatJerry" target="_blank" rel="noopener noreferrer" class="contributor-github-link">
+                                    <svg class="github-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.287.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729.115.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                    </svg>
+                                    NatJerry
+                                </a>
+                                <div class="contributor-links">
+                                    <a href="https://qm.qq.com/q/6IjUhdaTRe" target="_blank" rel="noopener noreferrer">
+                                        <i class="fa-brands fa-qq"></i>
+                                    </a>
+                                        <a href="mailto:xiaomajunqwq123@outlook.com">
+                                            <i class="fas fa-envelope"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="contributor-card">
+                        <div class="contributor-layout">
+                            <div class="contributor-avatar-container">
+                                <img src="https://q1.qlogo.cn/g?b=qq&nk=3337913379&s=0" alt="Klop233" class="contributor-avatar">
+                            </div>
+                           <div class="contributor-info">
+                                <div class="contributor-name">Klop233</div>
+                                <div class="contributor-role">综合生存服务器管理员</div>
+                                <a href="https://github.com/Klop233/" target="_blank" rel="noopener noreferrer" class="contributor-github-link">
+                                    <svg class="github-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                    </svg>
+                                    Klop233
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="contributor-card">
+                        <div class="contributor-layout">
+                            <div class="contributor-avatar-container">
+                                <img src="https://q1.qlogo.cn/g?b=qq&nk=985526606&s=0" alt="IngilYing" class="contributor-avatar">
+                            </div>
+                            <div class="contributor-info">
+                                <div class="contributor-name">IngilYing</div>
+                                <div class="contributor-role">纯净生存服务器管理员</div>
+                                <a href="https://github.com/ingilying" target="_blank" rel="noopener noreferrer" class="contributor-github-link">
+                                    <svg class="github-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                    </svg>
+                                    ingilying
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="contributor-card">
+                        <div class="contributor-layout">
+                            <div class="contributor-avatar-container">
+                                <img src="https://q1.qlogo.cn/g?b=qq&nk=1782764161&s=0" alt="SunaShiroko" class="contributor-avatar">
+                            </div>
+                            <div class="contributor-info">
+                                <div class="contributor-name">SunaShiroko</div>
+                                <div class="contributor-role">综合生存服务器管理员</div>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="contributor-card">
+                        <div class="contributor-layout">
+                            <div class="contributor-avatar-container">
+                                <img src="https://q1.qlogo.cn/g?b=qq&nk=3466829709&s=0" alt="xiaomu18" class="contributor-avatar">
+                            </div>
+                            <div class="contributor-info">
+                                <div class="contributor-name">xiaomu18</div>
+                                <div class="contributor-role">综合生存服务器管理员</div>
+                                <a href="https://github.com/xiaomu18/" target="_blank" rel="noopener noreferrer" class="contributor-github-link">
+                                    <svg class="github-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                    </svg>
+                                    xiaomu18
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+            
+            <!-- 社区运营和开发团队 -->
+            <section class="team-subsection">
+                <div class="subsection-header">
+                    <h3 class="subsection-title">社区与开发</h3>
+                    <p class="subsection-description">负责社区运营和网站开发维护</p>
                 </div>
                 
-                <div class="team-card">
-                    <img src="https://q1.qlogo.cn/g?b=qq&nk=3337913379&s=0" alt="Klop233" class="team-avatar">
-                    <h3 class="team-name">Klop233</h3>
-                    <p class="team-role">综合生存服务器管理员</p>
-                    <div class="team-links">
-                        <a class="team-link" href="https://github.com/Klop233/" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                            <i class="fab fa-github"></i>
-                        </a>
-                    </div>
+                <div class="contributors-flex">
+                    <article class="contributor-card">
+                        <div class="contributor-layout">
+                            <div class="contributor-avatar-container">
+                                <img src="https://q1.qlogo.cn/g?b=qq&nk=1462355431&s=0" alt="Lonelyplanet_" class="contributor-avatar">
+                            </div>
+                            <div class="contributor-info">
+                                <div class="contributor-name">Lonelyplanet_</div>
+                                <div class="contributor-role">社区管理</div>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="contributor-card">
+                        <div class="contributor-layout">
+                            <div class="contributor-avatar-container">
+                                <img src="https://q1.qlogo.cn/g?b=qq&nk=1562869214&s=0" alt="LycaonW" class="contributor-avatar">
+                            </div>
+                            <div class="contributor-info">
+                                <div class="contributor-name">LycaonW</div>
+                                <div class="contributor-role">社区管理</div>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="contributor-card">
+                        <div class="contributor-layout">
+                            <div class="contributor-avatar-container">
+                                <img src="https://q1.qlogo.cn/g?b=qq&nk=1928325064&s=0" alt="Narcssu" class="contributor-avatar">
+                            </div>
+                            <div class="contributor-info">
+                                <div class="contributor-name">Narcssu</div>
+                                <div class="contributor-role">网站开发主理人</div>
+                                <div class="contributor-links-wrapper">
+                                    <a href="https://github.com/NARCSSU" target="_blank" rel="noopener noreferrer" class="contributor-github-link">
+                                    <svg class="github-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                    </svg>
+                                    NARCSSU
+                                </a>
+                                    <div class="contributor-links">
+                                        <a href="mailto:goofygazer@gmail.com">
+                                            <i class="fas fa-envelope"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
                 </div>
-                
-                <div class="team-card">
-                    <img src="https://q1.qlogo.cn/g?b=qq&nk=985526606&s=0" alt="IngilYing" class="team-avatar">
-                    <h3 class="team-name">IngilYing</h3>
-                    <p class="team-role">纯净生存服务器管理员</p>
-                    <div class="team-links">
-                        <a class="team-link" href="https://github.com/ingilying" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                            <i class="fab fa-github"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="team-card">
-                    <img src="https://q1.qlogo.cn/g?b=qq&nk=1782764161&s=0" alt="婧婧" class="team-avatar">
-                    <h3 class="team-name">SunaShiroko</h3>
-                    <p class="team-role">综合生存服务器管理员</p>
-                </div>
-                
-                <div class="team-card">
-                    <img src="https://q1.qlogo.cn/g?b=qq&nk=3466829709&s=0" alt="xiaomu18" class="team-avatar">
-                    <h3 class="team-name">xiaomu18</h3>
-                    <p class="team-role">综合生存服务器管理员</p>
-                    <div class="team-links">
-                        <a class="team-link" href="https://github.com/xiaomu18/" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                            <i class="fab fa-github"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="team-card">
-                    <img src="https://q1.qlogo.cn/g?b=qq&nk=1462355431&s=0" alt="Lonelyplanet_" class="team-avatar">
-                    <h3 class="team-name">Lonelyplanet_</h3>
-                    <p class="team-role">社区管理</p>
-                </div>
-                
-                <div class="team-card">
-                    <img src="https://q1.qlogo.cn/g?b=qq&nk=1562869214&s=0" alt="LycaonW" class="team-avatar">
-                    <h3 class="team-name">LycaonW</h3>
-                    <p class="team-role">社区管理</p>
-                </div>
-                
-                <div class="team-card">
-                    <img src="https://q1.qlogo.cn/g?b=qq&nk=1928325064&s=0" alt="Narcssu" class="team-avatar">
-                    <h3 class="team-name">Narcssu</h3>
-                    <p class="team-role">网站开发主理人</p>
-                    <div class="team-links">
-                        <a class="team-link" href="https://github.com/NARCSSU" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                            <i class="fab fa-github"></i>
-                        </a>
-                        <a class="team-link" href="mailto:goofygazer@gmail.com" aria-label="Email">
-                            <i class="fas fa-envelope"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
+            </section>
         </div>
     </section>
     

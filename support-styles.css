@@ -16,6 +16,75 @@
     --button-hover: #b6ade6;
 }
 
+/* 导航栏主题切换按钮已移至 navigation.css */
+
+.theme-toggle-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.theme-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.theme-toggle-btn i {
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle-btn:hover i {
+    transform: rotate(180deg);
+}
+
+/* 深色主题变量 */
+.dark-theme {
+    --primary-color: #a78bfa;
+    --secondary-color: #f1f5f9;
+    --background-color: #0f172a;
+    --card-bg: #1e293b;
+    --text-color: #e2e8f0;
+    --online-color: #10b981;
+    --nav-bg: rgba(15, 23, 42, 0.8);
+    --nav-bg-scroll: #1e293b;
+    --button-hover: #c4b5fd;
+}
+
+/* 导航栏样式已移至 navigation.css */
+
+/* Footer 在深色主题下的适配 */
+.dark-theme footer {
+    background: linear-gradient(135deg, #0a0f1c 0%, #1a1f2e 100%);
+    border-top: 1px solid rgba(71, 85, 105, 0.3);
+}
+
+.dark-theme .footer-column h3 {
+    color: #c4b5fd;
+}
+
+.dark-theme .footer-column a {
+    color: #cbd5e1;
+}
+
+.dark-theme .footer-column a:hover {
+    color: #c4b5fd;
+}
+
+.dark-theme .copyright-info {
+    border-top: 1px solid rgba(71, 85, 105, 0.3);
+    color: #94a3b8;
+}
+
 
 * {
     margin: 0;
@@ -35,363 +104,17 @@ a {
   }
 
 
-/* nav */
-nav {
-    display: flex;
-    align-items: center;
-    height: 81px;
-    padding: 15px 20px;
-    background-color: rgba(0, 0, 0, 0.7);
-    /* position: fixed; */
-    width: 100%;
-    z-index: 100;
-    top: 0;
-}
+/* 导航栏样式已移至 navigation.css */
 
-/* nav.scrolled {
-    height: 81px;
-    background: var(--nav-bg-scroll);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-} */
-/* 导航链接通用样式 */
-nav a:hover {
-    color: var(--button-hover);
-}
-nav a {
-    display: inline-block;
-    margin:  20px;
-    color: white;
-    text-decoration: none;
-    font-size: 1.1em;
-    transition: color 0.3s;
-}
+/* 导航栏样式已移至 navigation.css */
+/* 导航栏样式已移至 navigation.css */
 
-nav a:hover {
-    color: var(--button-hover);
-}
-.AAA{
-    margin-right: 1.2em;
-}
-/* 桌面端导航布局 */
-@media (min-width: 769px) {
-    nav {
-        flex-wrap: nowrap;
-        justify-content: flex-start;
-    }
-    nav > a[href="/"] {
-        order: -3;
-        /* 主页：左边界 20px，与服务器规则 15px */
-        margin: 0 15px 0 20px; 
-    }
-    nav > .dropdown:first-of-type {
-        order: -2;
-        /* 服务器规则：与主页 15px，与支持我们 15px */
-        margin: 0 15px; 
-    }
-    nav > a[href="/support"] {
-        order: -1;
-        /* 支持我们：与服务器规则 15px，与 LuminolMC 15px */
-        margin: 0 15px; 
-    }
-    .logo-container {
-        display: flex;
-        align-items: center;
-        order: 0;
-    }
-    nav > .right-align {
-        order: 1;
-        margin-left: auto;
-        margin-right: 20px;
-    }
-}
-
-/* 移动端汉堡菜单 */
-@media (max-width: 768px) {
-    .menu-button {
-        display: block;
-        position: absolute;
-        right: 20px;
-        top: 19.4px;
-        color: white;
-        font-size: 1.1em;
-        cursor: pointer;
-        z-index: 102;
-    }
-    .nav-links {
-        display: none;
-        position: absolute;
-        
-        left: 0;
-        width: 100%;
-        background: var(--nav-bg-scroll);
-        padding: 20px;
-        flex-direction: column;
-        z-index: 101;
-    }
-    .menu-toggle:checked ~ .nav-links {
-        display: flex;
-    }
-    .nav-links a:not(.dropdown-toggle):not(.dropdown-item) {
-        display: block;
-        margin: 10px 0;
-        color: white;
-        /* 主页大标题 */
-        font-size: 1.2em;
-        font-weight: bold;
-        text-align: left;
-        pointer-events: auto;
-    }
-    .nav-links .dropdown {
-        display: block;
-        margin: 10px 0;
-    }
-    .nav-links .dropdown-toggle {
-        display: block;
-        color: white;
-        /* 服务器规则大标题 */
-        font-size: 1.2em; 
-        font-weight: bold;
-        padding: 10px 0;
-        /* 禁用点击，因为是标题 */
-        pointer-events: none; 
-    }
-    .nav-links .dropdown-toggle .menu-icon {
-        /* 隐藏下拉箭头 */
-        display: none; 
-    }
-    .nav-links .dropdown-menu {
-        /* 直接显示子项 */
-        display: block; 
-        position: static;
-        transform: none;
-        width: 100%;
-        /* 无背景，与主菜单融合 */
-        background: transparent; 
-        box-shadow: none;
-        margin: 0;
-        opacity: 1;
-        visibility: visible;
-        transform: scaleY(1);
-    }
-    .nav-links .dropdown-item {
-        display: block;
-        /* 缩进 15px */
-        padding: 8px 0 8px 15px; 
-        color: white;
-        /* 小标题 */
-        font-size: 0.8em; 
-        font-weight: normal;
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: auto;
-    }
-}
-
-/* 移动端汉堡菜单修复 */
-@media (max-width: 768px) {
-    .menu-button {
-        display: block;
-        position: absolute;
-        right: 20px;
-        top: 19.4px;
-        color: white;
-        font-size: 1.1em;
-        cursor: pointer;
-        z-index: 102;
-    }
-    .nav-links {
-        display: none;
-        position: absolute;
-        
-        left: 0;
-        width: 100%;
-        background: var(--nav-bg-scroll);
-        padding: 20px;
-        flex-direction: column;
-        z-index: 101;
-    }
-    .menu-toggle:checked ~ .nav-links {
-        /* checkbox 选中时显示 */
-        display: flex; 
-    }
-    .nav-links a, .nav-links .dropdown {
-        display: block;
-        margin: 10px 0;
-        color: white;
-        font-size: 1.2em;
-        text-align: left;
-        pointer-events: auto;
-    }
-    .nav-links .dropdown-toggle {
-        display: flex;
-        align-items: center;
-        padding: 10px 0;
-    }
-    .nav-links .dropdown-menu {
-        position: static;
-        transform: none;
-        width: 100%;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 5px;
-        margin-top: 5px;
-        opacity: 1;
-        visibility: visible;
-        transform: scaleY(1);
-    }
-    .nav-links .dropdown-item {
-        padding: 10px 15px;
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+/* 导航栏样式已移至 navigation.css */
 
 
 
 
-/* 下拉菜单样式 */
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown-toggle {
-    display: inline-flex;
-    align-items: center;
-    color: white;
-    text-decoration: none;
-    font-size: 1.1em;
-    transition: color 0.3s;
-    cursor: pointer;
-}
-
-
-.menu-icon {
-    display: flex;
-    width: 18px;
-    height: 18px;
-    margin-left: 8px;
-    fill: currentColor;
-    transition: transform 0.3s;
-}
-.menu-button {
-    display: none;
-    position: absolute;
-    right: 20px;
-    top: 19.4px;
-    color: white;
-    font-size: 1.5em;
-    cursor: pointer;
-    
-}
-
-
-.logo-container {
-    
-    margin-left: 20px;  
-}
-.logo-container img {
-    height: 37px; 
-    width: 37px;
-}
-.right-align {
-    margin-left: auto;
-    margin-right: 20px;
-}
-.logo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.logo-and-text {
-    display: flex;
-    align-items: center;
-    
-    color: white;
-    font-size: 1.1em;
-    text-decoration: none;
-}
-
-
-.logo-and-text svg {
-    width: 18px;
-    height: 18px;
-    margin-left: 3px;
-    margin-bottom: 3px;
-}
-
-
-
-/* .dropdown:hover .menu-icon {鼠标悬停时旋转图标实际上图标本身就是倒过来的。。
-    transform: rotate(90deg);
-} */
-
-.dropdown-menu {
-    position: absolute;
-    top: 100%;
-    left: 0; 
-    width: 150px;
-    background: var(--nav-bg-scroll);
-    border-radius: 5px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.4s ease-out;
-    z-index: 101;
-    transform-origin: top left;
-    transform: scaleY(0.8);
-}
-/* 最喜欢的效果之一 */
-/*当鼠标悬停在.dropdown上的时候.dropdown-menu就会哈气 */
- .dropdown:hover .dropdown-menu {
-    /*渐变 */
-     opacity: 1;
-    /*使下拉菜单在悬停时显示*/
-     visibility: visible;
-    /*垂直缩放元素 */
-     transform: scaleY(1)
-
-       
-}
-
-.dropdown-item {
-    display: flex;
-    align-items: center;
-    padding: 10px 15px;
-    color: white;
-    text-decoration: none;
-    transition: all 0.3s;
-    opacity: 0;
-    transform: translateY(-5px);
-}
-.dropdown-item svg{
-    width: 18px;
-    height: 18px;
-    margin-left: 8px;
-    text-align: right;
-}
-.dropdown:hover .dropdown-item {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.item-icon {
-    width: 16px;
-    height: 16px;
-    margin-left: 10px;
-    fill: currentColor;
-    transition: transform 0.3s;
-}
-
-.dropdown-item:hover .item-icon {
-    transform: translateX(-3px);
-}
-
-
-.logo-and-text {
-    width: 130px;
-    margin-right: auto; 
-    margin-left: 20px;
-}
+/* 导航栏样式已移至 navigation.css */
 
 
 
@@ -588,7 +311,7 @@ header {
     transition: all 0.3s;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
-@media (max-width: 768px) {
+@media (max-width: 846px) {
     .back-to-home {
         width: 40px;
         height: 40px;
@@ -627,35 +350,7 @@ header {
     box-shadow: 0 8px 18px rgba(0,0,0,0.2);
 }
 
-/* 页脚 */
-footer {
-    padding: 60px 20px 30px;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    color: var(--text-color);
-    text-align: center;
-    position: relative;
-    border-top: 1px solid var(--glass-border);
-}
-footer p {
-    text-align: center;
-}
-
-.social-links {
-    margin-bottom: 25px;
-}
-
-.social-links a {
-    display: inline-block;
-    margin: 0 12px;
-    color: white;
-    font-size: 1.3em;
-    transition: all 0.3s;
-}
-
-.social-links a:hover {
-    color: var(--primary-color);
-    transform: translateY(-4px);
-}
+/* 页脚样式统一至 /footer.css */
 
 
 @keyframes fadeInUp {
@@ -750,33 +445,7 @@ footer p {
     box-shadow: 0 8px 18px rgba(0,0,0,0.2);
 }
 */
-/* feet */
-footer {
-    padding: 50px 15px;
-    background: var(--secondary-color);
-    color: white;
-    text-align: center;
-}
-footer p {
-    text-align: center;
-}
-
-.social-links {
-    margin-bottom: 25px;
-}
-
-.social-links a {
-    display: inline-block;
-    margin: 0 12px;
-    color: white;
-    font-size: 1.3em;
-    transition: all 0.3s;
-}
-
-.social-links a:hover {
-    color: var(--primary-color);
-    transform: translateY(-4px);
-}
+/* feet moved to /footer.css */
 
 
 @keyframes fadeIn {/* 页头文字、页头按钮动画 */
@@ -931,7 +600,7 @@ footer p {
 }
 
 /* 响应式设计 */
-@media (max-width: 768px) {
+@media (max-width: 846px) {
     .website-status-info {
         gap: 15px;
         margin: 20px 0 10px 0;
@@ -941,6 +610,50 @@ footer p {
         padding: 6px 10px;
         font-size: 0.85em;
     }
+}
+
+/* 系统深色主题自动应用 */
+@media (prefers-color-scheme: dark) {
+    :root:not(.dark-theme) {
+        --primary-color: #a78bfa;
+        --secondary-color: #f1f5f9;
+        --background-color: #0f172a;
+        --card-bg: #1e293b;
+        --text-color: #e2e8f0;
+        --nav-bg: rgba(15, 23, 42, 0.8);
+        --nav-bg-scroll: #1e293b;
+    }
+    
+    :root:not(.dark-theme) body {
+        background: var(--background-color) !important;
+        color: var(--text-color) !important;
+    }
+    
+/* 导航栏样式已移至 navigation.css */
+    
+    :root:not(.dark-theme) footer {
+        background: linear-gradient(135deg, #0a0f1c 0%, #1a1f2e 100%) !important;
+        border-top: 1px solid rgba(71, 85, 105, 0.3) !important;
+    }
+    
+    :root:not(.dark-theme) .footer-column h3 {
+        color: #c4b5fd !important;
+    }
+    
+    :root:not(.dark-theme) .footer-column a {
+        color: #cbd5e1 !important;
+    }
+    
+    :root:not(.dark-theme) .footer-column a:hover {
+        color: #c4b5fd !important;
+    }
+    
+    :root:not(.dark-theme) .copyright-info {
+        border-top: 1px solid rgba(71, 85, 105, 0.3) !important;
+        color: #94a3b8 !important;
+    }
+    
+/* 系统深色主题导航链接样式已移至 navigation.css */
 }
 
 
