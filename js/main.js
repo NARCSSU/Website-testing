@@ -262,7 +262,16 @@ window.addEventListener('pageshow', async function(event) {
 });
 
 // 调试模式开关 - 从localStorage读取状态
-let debugMode = localStorage.getItem('debugMode') === 'true';
+// 生产环境强制关闭调试模式
+let debugMode = false;
+// 只有在开发环境或明确开启时才允许调试模式
+if (window.location.hostname.includes('localhost') || 
+    window.location.hostname.includes('127.0.0.1') ||
+    localStorage.getItem('debugMode') === 'true') {
+    debugMode = localStorage.getItem('debugMode') === 'true';
+}
+// 确保localStorage中保存正确的状态
+localStorage.setItem('debugMode', debugMode.toString());
 window.debugMode = debugMode; // 全局访问
 
 // 调试日志函数
