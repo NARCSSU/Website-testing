@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>环境测试页面 - LuminolCraft</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .console-tip {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .status {
+            padding: 8px 16px;
+            border-radius: 4px;
+            margin: 5px 0;
+            font-weight: bold;
+        }
+        .netlify { background: #00c7b7; color: white; }
+        .external { background: #f44336; color: white; }
+        .unknown { background: #9e9e9e; color: white; }
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 环境检测测试页面</h1>
+        
+        <div class="info-box">
+            <h3>页面信息</h3>
+            <p><strong>当前域名:</strong> <span id="hostname"></span></p>
+            <p><strong>当前URL:</strong> <span id="current-url"></span></p>
+            <p><strong>用户代理:</strong> <span id="user-agent"></span></p>
+        </div>
+
+        <div class="console-tip">
+            <h3>📱 使用说明</h3>
+            <p>1. 打开浏览器开发者工具（F12）</p>
+            <p>2. 切换到"控制台"标签页</p>
+            <p>3. 点击下面的测试按钮查看详细日志</p>
+            <p>4. 观察控制台中的 🌐 🚀 📡 📚 📄 等图标的日志信息</p>
+        </div>
+
+        <h3>环境检测结果</h3>
+        <div id="environment-status" class="status unknown">检测中...</div>
+
+        <h3>测试功能</h3>
+        <button onclick="testEnvironmentDetection()">🔍 重新检测环境</button>
+        <button onclick="testNewsLoad()">📰 测试新闻加载</button>
+        <button onclick="clearLogs()">🧹 清空控制台</button>
+
+        <div id="test-results"></div>
+    </div>
+
+    <!-- 加载必要的脚本 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.0.0/marked.min.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/news.js"></script>
+
+    <script>
+        // 全局变量
+        let newsManager = null;
+        
+        // 页面加载时显示基本信息
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('hostname').textContent = window.location.hostname;
+            document.getElementById('current-url').textContent = window.location.href;
+            document.getElementById('user-agent').textContent = navigator.userAgent;
+            
+            // 初始化 NewsManager
+            try {
+                console.log('🔧 尝试初始化 NewsManager...');
+                
+                // 检查是否存在 NewsManager 类
+                if (typeof NewsManager !== 'undefined') {
+                    newsManager = new NewsManager();
+                    console.log('✅ NewsManager 初始化成功');
+                } else {
+                    console.warn('⚠️ NewsManager 类未找到，使用直接检测方法');
+                }
+                
+                // 延迟一点时间让初始化完成
+                setTimeout(testEnvironmentDetection, 1000);
+            } catch (error) {
+                console.error('❌ NewsManager 初始化失败:', error);
+                console.log('🔄 将使用直接检测方法...');
+                setTimeout(testEnvironmentDetection, 500);
+            }
+        });
+
+        function testEnvironmentDetection() {
+            console.log('\n=== 🧪 手动环境检测测试 ===');
+            
+            if (newsManager && typeof newsManager.isNetlifyEnvironment === 'function') {
+                const isNetlify = newsManager.isNetlifyEnvironment();
+                updateEnvironmentStatus(isNetlify);
+                
+                console.log('✅ NewsManager 检测结果:', {
+                    environment: isNetlify ? 'Netlify' : 'External',
+                    newsJsonUrl: newsManager.GITEJSON_URL,
+                    contentBaseUrl: newsManager.GITHUB_RAW_BASE
+                });
+            } else {
+                console.error('❌ NewsManager 未正确初始化或方法不存在');
+                updateEnvironmentStatus(null);
+                
+                // 尝试直接测试环境
+                console.log('🔄 尝试直接环境检测...');
+                testDirectEnvironment();
+            }
+        }
+
+        function updateEnvironmentStatus(isNetlify) {
+            const statusEl = document.getElementById('environment-status');
+            if (isNetlify === true) {
+                statusEl.textContent = 'Netlify 环境 - 使用本地 API';
+                statusEl.className = 'status netlify';
+            } else if (isNetlify === false) {
+                statusEl.textContent = 'External 环境 - 使用外部 GitHub API';
+                statusEl.className = 'status external';
+            } else {
+                statusEl.textContent = '检测失败或未初始化';
+                statusEl.className = 'status unknown';
+            }
+        }
+
+        function testDirectEnvironment() {
+            const hostname = window.location.hostname;
+            const isNetlify = hostname.includes('netlify.app') || 
+                             hostname.includes('netlify.com') ||
+                             hostname === 'localhost' ||
+                             hostname === '127.0.0.1' ||
+                             hostname.includes('craft.luminolsuki.moe');
+            
+            console.log('🔧 直接环境检测结果:', {
+                hostname: hostname,
+                isNetlifyEnvironment: isNetlify,
+                apiMode: isNetlify ? 'Netlify本地API' : '外部GitHub API',
+                expectedNewsJsonUrl: isNetlify ? '/news/news.json' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json'
+            });
+            
+            updateEnvironmentStatus(isNetlify);
+        }
+
+        async function testNewsLoad() {
+            console.log('\n=== 📰 手动新闻加载测试 ===');
+            
+            if (newsManager && typeof newsManager.initializeApp === 'function') {
+                try {
+                    await newsManager.initializeApp();
+                    console.log('✅ 新闻加载测试完成，请查看上方的详细日志');
+                } catch (error) {
+                    console.error('❌ 新闻加载测试失败:', error);
+                }
+            } else {
+                console.error('❌ NewsManager 未初始化，尝试直接测试 API...');
+                await testDirectApiCall();
+            }
+        }
+
+        async function testDirectApiCall() {
+            const hostname = window.location.hostname;
+            const isNetlify = hostname.includes('netlify.app') || hostname.includes('netlify.com') || 
+                             hostname === 'localhost' || hostname === '127.0.0.1' ||
+                             hostname.includes('craft.luminolsuki.moe');
+            
+            const apiUrl = isNetlify ? '/news/news.json' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';
+            
+            console.log('🔗 直接测试 API 调用:', {
+                url: apiUrl,
+                environment: isNetlify ? 'Netlify' : 'External'
+            });
+            
+            try {
+                const response = await fetch(apiUrl, { cache: 'no-store' });
+                console.log('📡 API 响应:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    ok: response.ok,
+                    url: response.url
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ 数据加载成功:', {
+                        itemCount: data.length,
+                        firstItem: data[0]?.title || '无数据'
+                    });
+                } else {
+                    console.error('❌ API 调用失败:', response.status, response.statusText);
+                }
+            } catch (error) {
+                console.error('❌ 网络请求失败:', error);
+            }
+        }
+
+        function clearLogs() {
+            console.clear();
+            console.log('🧹 控制台已清空，可以重新进行测试');
+        }
+
+        // 全局错误捕获
+        window.addEventListener('error', function(e) {
+            console.error('🚨 页面错误:', e.error);
+        });
+    </script>
+</body>
+</html>

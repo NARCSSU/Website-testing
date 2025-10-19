@@ -239,4 +239,3 @@ craft.luminolsuki.moe/
 
 Made with ❤️ by LuminolCraft Team
 
-</div>

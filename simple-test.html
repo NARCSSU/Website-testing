@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简单环境测试 - LuminolCraft</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .netlify { background: #00c7b7; color: white; }
+        .external { background: #f44336; color: white; }
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #1976d2; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 简单环境检测</h1>
+        
+        <p><strong>当前域名:</strong> <span id="hostname"></span></p>
+        <p><strong>检测结果:</strong></p>
+        <div id="status" class="status">检测中...</div>
+        
+        <button onclick="testEnvironment()">🔄 重新检测</button>
+        <button onclick="testApi()">📡 测试 API</button>
+        <button onclick="console.clear()">🧹 清空控制台</button>
+        
+        <h3>📱 查看控制台获取详细信息</h3>
+        <p>按 F12 打开开发者工具，查看控制台中的详细日志</p>
+    </div>
+
+    <script>
+        // 环境检测函数
+        function isNetlifyEnvironment() {
+            const hostname = window.location.hostname;
+            const isNetlify = hostname.includes('netlify.app') || 
+                             hostname.includes('netlify.com') ||
+                             hostname === 'localhost' ||
+                             hostname === '127.0.0.1' ||
+                             hostname.includes('craft.luminolsuki.moe');
+            
+            console.log('🌐 环境检测结果:', {
+                hostname: hostname,
+                isNetlifyEnvironment: isNetlify,
+                apiMode: isNetlify ? 'Netlify本地API' : '外部GitHub API',
+                newsJsonUrl: isNetlify ? '/news/news.json' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json',
+                contentBaseUrl: isNetlify ? '/' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/'
+            });
+            
+            return isNetlify;
+        }
+
+        function testEnvironment() {
+            console.log('\n=== 🧪 环境检测测试 ===');
+            const isNetlify = isNetlifyEnvironment();
+            updateStatus(isNetlify);
+        }
+
+        function updateStatus(isNetlify) {
+            const statusEl = document.getElementById('status');
+            if (isNetlify) {
+                statusEl.textContent = 'Netlify 环境 - 使用本地 /news/news.json';
+                statusEl.className = 'status netlify';
+            } else {
+                statusEl.textContent = 'External 环境 - 使用外部 GitHub API';
+                statusEl.className = 'status external';
+            }
+        }
+
+        async function testApi() {
+            console.log('\n=== 📡 API 测试 ===');
+            const isNetlify = isNetlifyEnvironment();
+            const apiUrl = isNetlify ? '/news/news.json' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';
+            
+            console.log('📡 正在测试 API:', {
+                url: apiUrl,
+                environment: isNetlify ? 'Netlify' : 'External'
+            });
+            
+            try {
+                const response = await fetch(apiUrl, { cache: 'no-store' });
+                
+                console.log('📡 API 响应:', {
+                    url: response.url,
+                    status: response.status,
+                    statusText: response.statusText,
+                    ok: response.ok,
+                    headers: {
+                        'content-type': response.headers.get('content-type'),
+                        'content-length': response.headers.get('content-length')
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ 数据加载成功:', {
+                        itemCount: data.length,
+                        firstItem: data[0]?.title || '无数据',
+                        lastItem: data[data.length - 1]?.title || '无数据',
+                        sampleData: data.slice(0, 2)
+                    });
+                    
+                    alert(`✅ API 测试成功！\n环境: ${isNetlify ? 'Netlify' : 'External'}\n数据条数: ${data.length}\n详细信息请查看控制台`);
+                } else {
+                    console.error('❌ API 响应错误:', response.status, response.statusText);
+                    alert(`❌ API 测试失败！\n状态码: ${response.status}\n错误: ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('❌ 网络请求失败:', error);
+                alert(`❌ 网络请求失败！\n错误: ${error.message}`);
+            }
+        }
+
+        // 页面加载时自动检测
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('hostname').textContent = window.location.hostname;
+            testEnvironment();
+        });
+    </script>
+</body>
+</html>

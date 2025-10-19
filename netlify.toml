@@ -1,0 +1,55 @@
+[build]
+  # 对于静态网站，不需要构建命令
+  command = ""
+  # 发布目录是项目根目录
+  publish = "."
+  # 函数目录
+  functions = "netlify/functions"
+
+[build.environment]
+  # 设置Node.js版本（用于Netlify Functions）
+  NODE_VERSION = "18"
+
+# 头部设置
+[[headers]]
+  for = "/news/news.json"
+  [headers.values]
+    Cache-Control = "public, max-age=300, s-maxage=300"
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# 安全头部
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# 开发环境设置
+[context.deploy-preview]
+  command = ""
+
+[context.branch-deploy]
+  command = ""
+
+# 生产环境设置
+[context.production]
+  command = ""
