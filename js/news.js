@@ -29,7 +29,7 @@ class NewsManager {
         this.init();
         
         // 输出初始化配置信息
-        console.log('🚀 NewsManager 初始化配置:', {
+        debugLog('🚀 NewsManager 初始化配置:', {
             environment: this.isNetlifyEnvironment() ? 'Netlify' : 'External',
             newsJsonUrl: this.GITEJSON_URL,
             contentBaseUrl: this.GITHUB_RAW_BASE,
@@ -57,7 +57,7 @@ class NewsManager {
                          hostname.includes('craft.luminolsuki.moe'); // 你的自定义域名
         
         // 控制台输出环境检测结果
-        console.log('🌐 环境检测结果:', {
+        debugLog('🌐 环境检测结果:', {
             hostname: hostname,
             isNetlifyEnvironment: isNetlify,
             apiMode: isNetlify ? 'Netlify本地API' : '外部GitHub API',
@@ -176,7 +176,7 @@ class NewsManager {
 
     // 预加载Markdown内容
     async preloadMarkdownContent(newsData) {
-        console.log('📚 预加载 Markdown 内容...', {
+        debugLog('📚 预加载 Markdown 内容...', {
             itemCount: newsData.length,
             baseUrl: this.GITHUB_RAW_BASE,
             environment: this.isNetlifyEnvironment() ? 'Netlify' : 'External'
@@ -189,7 +189,7 @@ class NewsManager {
 
         if (cached && timestamp && (now - parseInt(timestamp)) < this.CACHE_DURATION) {
             this.allNewsWithContent = JSON.parse(cached);
-            console.log('🗄️ 使用缓存的完整新闻数据');
+            debugLog('🗄️ 使用缓存的完整新闻数据');
             debugLog('使用缓存的完整新闻数据');
             sessionStorage.setItem(this.NEWS_STORAGE_KEY, JSON.stringify(this.allNewsWithContent));
             return;
@@ -199,7 +199,7 @@ class NewsManager {
             try {
                 const fullContentUrl = this.convertGitHubUrlToCloudflare(item.content);
                 
-                console.log(`📄 加载 Markdown[${item.id}]:`, {
+                debugLog(`📄 加载 Markdown[${item.id}]:`, {
                     title: item.title,
                     originalPath: item.content,
                     fullUrl: fullContentUrl,
@@ -220,7 +220,7 @@ class NewsManager {
                 item.markdownContent = markdownContent || '暂无内容';
                 item.additionalImages = item.additionalImages?.filter(url => url && url.trim() !== '') || [];
                 
-                console.log(`✅ Markdown[${item.id}] 加载成功:`, {
+                debugLog(`✅ Markdown[${item.id}] 加载成功:`, {
                     contentLength: markdownContent.length + ' chars',
                     additionalImages: item.additionalImages.length
                 });
@@ -286,7 +286,7 @@ class NewsManager {
         });
 
         try {
-            console.log('📡 正在加载新闻数据...', {
+            debugLog('📡 正在加载新闻数据...', {
                 url: this.GITEJSON_URL,
                 method: 'fetch',
                 cache: 'no-store'
@@ -294,7 +294,7 @@ class NewsManager {
             
             const response = await fetch(this.GITEJSON_URL, { cache: 'no-store' });
             
-            console.log('📡 API响应状态:', {
+            debugLog('📡 API响应状态:', {
                 url: this.GITEJSON_URL,
                 status: response.status,
                 statusText: response.statusText,
@@ -309,7 +309,7 @@ class NewsManager {
                 throw new Error(`无法加载 news.json: ${response.status} - ${response.statusText}`);
             }
             const data = await response.json();
-            console.log('✅ news.json 加载成功:', {
+            debugLog('✅ news.json 加载成功:', {
                 itemCount: data.length,
                 firstItem: data[0]?.title || '无数据',
                 dataSize: JSON.stringify(data).length + ' bytes'
