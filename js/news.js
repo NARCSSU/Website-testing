@@ -197,9 +197,7 @@ class NewsManager {
 
         for (const item of newsData) {
             try {
-                const fullContentUrl = item.content.startsWith('http') 
-                    ? item.content 
-                    : `${this.GITHUB_RAW_BASE}${item.content}`;
+                const fullContentUrl = this.convertGitHubUrlToCloudflare(item.content);
                 
                 console.log(`📄 加载 Markdown[${item.id}]:`, {
                     title: item.title,
@@ -207,8 +205,6 @@ class NewsManager {
                     fullUrl: fullContentUrl,
                     isAbsoluteUrl: item.content.startsWith('http')
                 });
-                
-                const fullContentUrl = this.convertGitHubUrlToCloudflare(item.content);
                 
                 // 如果返回null，跳过这个条目
                 if (fullContentUrl === null) {
