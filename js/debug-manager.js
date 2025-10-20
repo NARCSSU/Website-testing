@@ -197,7 +197,7 @@
                 console.log('当前页面:', window.location.pathname);
                 console.log('输入 debugLite() 可关闭调试模式');
             } else {
-                console.log('🐛 调试模式已开启 - 显示所有调试信息');
+                console.log('🐛 完整调试模式已开启 - 显示所有调试信息');
                 console.log('当前页面:', window.location.pathname);
                 console.log('输入 fuckbug() 可关闭调试模式');
             }
@@ -207,9 +207,10 @@
         debug.info('✅ 所有模块初始化完成');
         debug.info('🎉 网站加载成功，所有功能已启用');
         
-        // 显示用户环境信息
-        if (window.DebugManager.debugMode) {
+        // 显示用户环境信息（只在统一调试管理器模式下）
+        if (window.DebugManager.debugMode && !window.DebugManager._environmentShown) {
             window.DebugManager.showUserEnvironment();
+            window.DebugManager._environmentShown = true;
         }
     });
     
