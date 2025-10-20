@@ -430,22 +430,54 @@ function debugUserEnvironment() {
     
     const debug = debugModule('user');
     
-    // 网络连接信息
-    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    // 网络连接信息 - 兼容多种浏览器
+    const connection = navigator.connection || 
+                      navigator.mozConnection || 
+                      navigator.webkitConnection ||
+                      navigator.msConnection;
+    
+    debug.info('🌐 网络环境信息:');
+    debug.info(`🔗 在线状态: ${navigator.onLine ? '✅ 已连接' : '❌ 离线'}`);
+    
     if (connection) {
-        const networkType = connection.effectiveType || '未知';
-        const downlink = connection.downlink || '未知';
-        const rtt = connection.rtt || '未知';
+        // 兼容不同浏览器的属性名
+        const networkType = connection.effectiveType || 
+                           connection.type || 
+                           connection.effectiveConnectionType || 
+                           '未知';
+        const downlink = connection.downlink || 
+                       connection.downlinkMax || 
+                       '未知';
+        const rtt = connection.rtt || 
+                   connection.roundTripTime || 
+                   '未知';
+        const saveData = connection.saveData || false;
         
-        debug.info('🌐 网络环境信息:');
         debug.info(`📶 连接类型: ${networkType}`);
-        debug.info(`⬇️ 下载速度: ${downlink} Mbps`);
-        debug.info(`⏱️ 延迟: ${rtt} ms`);
-        debug.info(`🔗 在线状态: ${navigator.onLine ? '✅ 已连接' : '❌ 离线'}`);
+        if (downlink !== '未知') {
+            debug.info(`⬇️ 下载速度: ${downlink} Mbps`);
+        }
+        if (rtt !== '未知') {
+            debug.info(`⏱️ 延迟: ${rtt} ms`);
+        }
+        debug.info(`💾 省流量模式: ${saveData ? '开启' : '关闭'}`);
     } else {
-        debug.info('🌐 网络环境信息:');
-        debug.info(`🔗 在线状态: ${navigator.onLine ? '✅ 已连接' : '❌ 离线'}`);
-        debug.info('ℹ️ 详细网络信息需要HTTPS环境或现代浏览器支持');
+        // 尝试通过其他方式获取网络信息
+        const userAgent = navigator.userAgent;
+        let browserInfo = '未知浏览器';
+        
+        if (userAgent.includes('Chrome')) {
+            browserInfo = 'Chrome';
+        } else if (userAgent.includes('Firefox')) {
+            browserInfo = 'Firefox';
+        } else if (userAgent.includes('Safari')) {
+            browserInfo = 'Safari';
+        } else if (userAgent.includes('Edge')) {
+            browserInfo = 'Edge';
+        }
+        
+        debug.info(`🌐 浏览器: ${browserInfo}`);
+        debug.info('ℹ️ 网络连接API需要现代浏览器支持');
         debug.info('💡 这是正常现象，不影响网站使用');
     }
     
