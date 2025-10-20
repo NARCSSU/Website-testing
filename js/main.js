@@ -265,10 +265,12 @@ window.addEventListener('pageshow', async function(event) {
 // 生产环境强制关闭调试模式
 let debugMode = false;
 // 只有在开发环境或明确开启时才允许调试模式
-if (window.location.hostname.includes('localhost') || 
-    window.location.hostname.includes('127.0.0.1') ||
-    localStorage.getItem('debugMode') === 'true') {
-    debugMode = localStorage.getItem('debugMode') === 'true';
+const isLocalDev = window.location.hostname.includes('localhost') || 
+                   window.location.hostname.includes('127.0.0.1');
+const savedDebugMode = localStorage.getItem('debugMode') === 'true';
+
+if (isLocalDev || savedDebugMode) {
+    debugMode = savedDebugMode;
 }
 // 确保localStorage中保存正确的状态
 localStorage.setItem('debugMode', debugMode.toString());

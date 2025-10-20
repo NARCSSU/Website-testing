@@ -164,7 +164,7 @@ class BackgroundSlider {
         // 每5秒切换一次背景，略微降低频率
         this.switchInterval = setInterval(() => {
             this.switchBackground();
-        }, 5000);
+        }, 3600);
     }
 
     // 停止轮播
