@@ -2,7 +2,9 @@
  * 导航管理模块
  * 负责处理导航栏的所有交互功能
  */
-class NavigationManager {
+// 避免重复声明
+if (typeof NavigationManager === 'undefined') {
+    class NavigationManager {
     constructor() {
         this.init();
     }
@@ -191,12 +193,13 @@ class NavigationManager {
     }
 }
 
-// 导出类（如果使用模块化）
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = NavigationManager;
-}
+    // 导出类（如果使用模块化）
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = NavigationManager;
+    }
 
-// 如果在浏览器环境中，创建全局实例
-if (typeof window !== 'undefined') {
-    window.NavigationManager = NavigationManager;
+    // 如果在浏览器环境中，创建全局实例
+    if (typeof window !== 'undefined') {
+        window.NavigationManager = NavigationManager;
+    }
 }

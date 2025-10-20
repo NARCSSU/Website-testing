@@ -6,11 +6,13 @@
 // 调试日志函数（与main.js保持一致）
 function debugLog(...args) {
     if (window.debugMode) {
-        debugLog(...args);
+        console.log(...args);
     }
 }
 
-class VersionManager {
+// 避免重复声明
+if (typeof VersionManager === 'undefined') {
+    class VersionManager {
     constructor() {
         this.githubRepoUrl = 'https://github.com/LuminolCraft/craft.luminolsuki.moe';
         this.init();
@@ -186,7 +188,13 @@ class VersionManager {
     }
 }
 
-// 导出类（如果使用模块化）
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = VersionManager;
+    // 导出类（如果使用模块化）
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = VersionManager;
+    }
+
+    // 如果在浏览器环境中，创建全局实例
+    if (typeof window !== 'undefined') {
+        window.VersionManager = VersionManager;
+    }
 }

@@ -20,6 +20,8 @@
     <link rel="stylesheet" href="/footer.css?v=20250119">
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+    <!-- 统一调试管理器 -->
+    <script src="../js/debug-manager.js?v=20250119"></script>
     <!-- 模块化JavaScript文件 -->
     <script src="../js/utils.js?v=20250119"></script>
     <script src="../js/navigation.js?v=20250119"></script>
@@ -84,12 +86,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/css.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
-    <!-- 模块化JavaScript文件 -->
-    <script src="../js/utils.js"></script>
-    <script src="../js/navigation.js"></script>
-    <script src="../js/version.js"></script>
-    <script src="../js/news.js"></script>
-    <script src="../js/main.js"></script>
 
     
 </head>
@@ -224,17 +220,19 @@
     
     <!-- 确保导航栏和页脚在页面跳转时正确显示 -->
     <script>
-        // 强制清除可能的缓存问题
-        console.log('页面加载时间:', new Date().toISOString());
-        console.log('当前页面URL:', window.location.href);
+        // 使用统一调试管理器
+        const debug = window.DebugManager ? window.DebugManager.module('page') : { info: () => {} };
+        
+        debug.info('页面加载时间:', new Date().toISOString());
+        debug.info('当前页面URL:', window.location.href);
         
         // 立即检查和修复显示问题
         function forceShowElements() {
             const nav = document.querySelector('nav');
             const footer = document.querySelector('footer');
             
-            console.log('检查导航栏:', nav ? '找到' : '未找到');
-            console.log('检查页脚:', footer ? '找到' : '未找到');
+            debug.info('检查导航栏:', nav ? '找到' : '未找到');
+            debug.info('检查页脚:', footer ? '找到' : '未找到');
             
             if (nav) {
                 // 强制重置样式
@@ -246,7 +244,7 @@
                 nav.style.top = '0';
                 nav.style.width = '100%';
                 nav.style.zIndex = '100';
-                console.log('导航栏样式已强制应用');
+                debug.info('导航栏样式已强制应用');
             }
             
             if (footer) {
@@ -255,7 +253,7 @@
                 footer.style.display = 'block';
                 footer.style.visibility = 'visible';
                 footer.style.opacity = '1';
-                console.log('页脚样式已强制应用');
+                debug.info('页脚样式已强制应用');
             }
         }
         
@@ -264,19 +262,19 @@
         
         // DOM加载完成后再次执行
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM加载完成，重新检查元素');
+            debug.info('DOM加载完成，重新检查元素');
             forceShowElements();
         });
         
         // 页面完全加载后再次执行
         window.addEventListener('load', function() {
-            console.log('页面完全加载，最终检查元素');
+            debug.info('页面完全加载，最终检查元素');
             forceShowElements();
         });
         
         // 延迟执行，确保所有脚本都加载完成
         setTimeout(() => {
-            console.log('延迟检查，确保元素显示');
+            debug.info('延迟检查，确保元素显示');
             forceShowElements();
         }, 200);
     </script>
