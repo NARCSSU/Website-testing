@@ -226,6 +226,14 @@
         debug.info('🌐 网络环境信息:');
         debug.info(`🔗 在线状态: ${navigator.onLine ? '✅ 已连接' : '❌ 离线'}`);
         
+        // 调试信息：显示检测到的连接对象
+        if (connection) {
+            debug.info('🔍 检测到网络连接API');
+            debug.info('📊 连接对象属性:', Object.keys(connection));
+        } else {
+            debug.info('❌ 未检测到网络连接API');
+        }
+        
         if (connection) {
             // 兼容不同浏览器的属性名
             const networkType = connection.effectiveType || 
