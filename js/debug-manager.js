@@ -261,19 +261,24 @@
             // 尝试通过其他方式获取网络信息
             const userAgent = navigator.userAgent;
             let browserInfo = '未知浏览器';
+            let apiSupport = '不支持';
             
             if (userAgent.includes('Chrome')) {
                 browserInfo = 'Chrome';
+                apiSupport = '支持';
             } else if (userAgent.includes('Firefox')) {
                 browserInfo = 'Firefox';
+                apiSupport = '不支持（实验性功能）';
             } else if (userAgent.includes('Safari')) {
                 browserInfo = 'Safari';
+                apiSupport = '部分支持';
             } else if (userAgent.includes('Edge')) {
                 browserInfo = 'Edge';
+                apiSupport = '支持';
             }
             
             debug.info(`🌐 浏览器: ${browserInfo}`);
-            debug.info('ℹ️ 网络连接API需要现代浏览器支持');
+            debug.info(`📡 网络连接API: ${apiSupport}`);
             debug.info('💡 这是正常现象，不影响网站使用');
         }
         
