@@ -21,8 +21,14 @@
         init() {
             if (this.isInitialized) return;
             
-            // 检查调试模式状态
-            this.debugMode = localStorage.getItem('debugMode') === 'true';
+            // 检查是否在本地开发环境
+            const isLocalDev = window.location.hostname.includes('localhost') || 
+                              window.location.hostname.includes('127.0.0.1') ||
+                              window.location.hostname.includes('127.0.0.1');
+            
+            // 只有在本地开发环境或明确启用调试时才开启调试模式
+            const savedDebugMode = localStorage.getItem('debugMode') === 'true';
+            this.debugMode = isLocalDev || savedDebugMode;
             this.isLiteMode = this.debugMode && !localStorage.getItem('debugFullMode');
             this.isFullMode = this.debugMode && localStorage.getItem('debugFullMode') === 'true';
             

@@ -320,8 +320,12 @@ if (typeof savedDebugMode === 'undefined') {
     var savedDebugMode = localStorage.getItem('debugMode') === 'true';
 }
 
-if (isLocalDev || savedDebugMode) {
+// 只有在本地开发环境或明确启用调试时才开启调试模式
+if (isLocalDev) {
     debugMode = savedDebugMode;
+} else {
+    // 生产环境默认关闭调试模式
+    debugMode = false;
 }
 
 // 确保localStorage中保存正确的状态
