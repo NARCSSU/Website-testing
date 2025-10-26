@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 检查是否使用了统一调试管理器
     if (!window.DebugManager) {
         // 如果没有统一调试管理器，使用旧的调试系统
-        if (debugMode) {
+    if (debugMode) {
             const isLiteMode = localStorage.getItem('debugMode') === 'true' && 
                               !localStorage.getItem('debugFullMode');
             
@@ -32,8 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('输入 debugLite() 可关闭调试模式');
             } else {
                 console.log('🐛 完整调试模式已开启 - 显示所有调试信息');
-                console.log('当前页面:', window.location.pathname);
-                console.log('输入 fuckbug() 可关闭调试模式');
+        console.log('当前页面:', window.location.pathname);
+        console.log('输入 fuckbug() 可关闭调试模式');
             }
         }
     }
@@ -353,8 +353,8 @@ function debugLog(...args) {
             }
         } else {
             // 完整模式：显示所有信息
-            console.log(...args);
-        }
+        console.log(...args);
+    }
     }
 }
 
@@ -618,9 +618,9 @@ window.debugLite = function() {
         // 如果已经是轻量级模式，则关闭调试
         const isFullMode = localStorage.getItem('debugFullMode') === 'true';
         if (!isFullMode) {
-            debugMode = false;
-            window.debugMode = debugMode;
-            localStorage.setItem('debugMode', 'false');
+        debugMode = false;
+        window.debugMode = debugMode;
+        localStorage.setItem('debugMode', 'false');
             console.log('🐛 轻量级调试模式已关闭');
             return;
         }

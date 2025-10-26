@@ -45,7 +45,10 @@ if (typeof VersionManager === 'undefined') {
     // 获取网站版本信息
     getWebsiteVersion() {
         const versionElement = document.getElementById('website-version');
-        if (!versionElement) return;
+        if (!versionElement) {
+            debugLog('未找到版本元素 #website-version');
+            return;
+        }
 
         // 检查是否在Netlify环境（排除本地开发环境）
         debugLog('当前域名:', window.location.hostname);
@@ -55,34 +58,115 @@ if (typeof VersionManager === 'undefined') {
             !window.location.hostname.includes('localhost') && 
             !window.location.hostname.includes('127.0.0.1') &&
             !window.location.hostname.includes('file://')) {
+            
             debugLog('尝试从Netlify函数获取版本...');
-            // 使用Netlify函数获取Git提交哈希
-            fetch('/.netlify/functions/version')
-                .then(response => response.json())
-                .then(data => {
-                    debugLog('Netlify函数返回数据:', data);
-                    if (data.version && data.version !== 'unknown') {
-                        versionElement.textContent = data.version;
-                        versionElement.title = `完整哈希: ${data.fullHash}\n分支: ${data.branch}\n部署时间: ${new Date(data.deployTime).toLocaleString()}`;
-                        debugLog('版本设置成功:', data.version);
+            
+            // 设置超时和重试机制
+            const fetchWithRetry = async (retries = 3) => {
+                for (let i = 0; i < retries; i++) {
+                    try {
+                        debugLog(`尝试获取版本 (第${i + 1}次)...`);
                         
-                        // 保存版本信息供点击事件使用
-                        this.currentVersionData = data;
-                    } else {
-                        versionElement.textContent = 'unknown';
-                        debugLog('版本为unknown');
-                        this.currentVersionData = null;
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
+                        
+                        const response = await fetch('/.netlify/functions/version', {
+                            signal: controller.signal,
+                            headers: {
+                                'Accept': 'application/json',
+                                'Cache-Control': 'no-cache'
+                            }
+                        });
+                        
+                        clearTimeout(timeoutId);
+                        
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                        }
+                        
+                        const data = await response.json();
+                        debugLog('Netlify函数返回数据:', data);
+                        
+                        if (data.version && data.version !== 'unknown') {
+                            versionElement.textContent = data.version;
+                            versionElement.title = `完整哈希: ${data.fullHash}\n分支: ${data.branch}\n部署时间: ${new Date(data.deployTime).toLocaleString()}\n来源: ${data.source || 'netlify'}`;
+                            debugLog('版本设置成功:', data.version);
+                            
+                            // 保存版本信息供点击事件使用
+                            this.currentVersionData = data;
+                            return; // 成功，退出重试循环
+                        } else {
+                            throw new Error('版本数据无效');
+                        }
+                    } catch (error) {
+                        debugLog(`第${i + 1}次尝试失败:`, error.message);
+                        
+                        if (i === retries - 1) {
+                            // 最后一次尝试失败
+                            console.error('获取版本失败，所有重试均失败:', error);
+                            versionElement.textContent = 'unknown';
+                            versionElement.title = '版本信息获取失败';
+                            this.currentVersionData = null;
+                            
+                            // 尝试从GitHub API获取作为备用方案
+                            this.fallbackToGitHubAPI(versionElement);
+                        } else {
+                            // 等待后重试
+                            await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+                        }
                     }
-                })
-                .catch(error => {
-                    console.error('获取版本失败:', error);
-                    versionElement.textContent = 'unknown';
-                    this.currentVersionData = null;
-                });
+                }
+            };
+            
+            fetchWithRetry();
         } else {
             // 本地开发环境
             versionElement.textContent = 'dev';
+            versionElement.title = '本地开发环境';
             this.currentVersionData = { version: 'dev', fullHash: 'dev', branch: 'main' };
+        }
+    }
+
+    // 备用方案：从GitHub API获取版本
+    async fallbackToGitHubAPI(versionElement) {
+        try {
+            debugLog('尝试从GitHub API获取版本...');
+            
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000);
+            
+            const response = await fetch('https://api.github.com/repos/LuminolCraft/craft.luminolsuki.moe/commits/main', {
+                signal: controller.signal,
+                headers: {
+                    'Accept': 'application/vnd.github.v3+json',
+                    'User-Agent': 'LuminolCraft-Website'
+                }
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (response.ok) {
+                const data = await response.json();
+                const shortHash = data.sha.substring(0, 7);
+                
+                versionElement.textContent = shortHash;
+                versionElement.title = `完整哈希: ${data.sha}\n分支: main\n提交时间: ${new Date(data.commit.committer.date).toLocaleString()}\n来源: github-api`;
+                
+                this.currentVersionData = {
+                    version: shortHash,
+                    fullHash: data.sha,
+                    branch: 'main',
+                    source: 'github-api'
+                };
+                
+                debugLog('从GitHub API获取版本成功:', shortHash);
+            } else {
+                throw new Error(`GitHub API HTTP ${response.status}`);
+            }
+        } catch (error) {
+            console.error('GitHub API备用方案也失败:', error);
+            versionElement.textContent = 'error';
+            versionElement.title = '版本信息获取失败';
         }
     }
 

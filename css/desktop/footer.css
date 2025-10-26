@@ -105,12 +105,12 @@ footer p {
 }
 
 .status-item span {
-    font-family: 'MiSans VF', sans-serif;
+    font-family: var(--font-primary);
     font-weight: 500;
 }
 
 .status-item span span {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+    font-family: var(--font-mono);
     font-weight: 600;
     color: #fff;
     opacity: 0.9;

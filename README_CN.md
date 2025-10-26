@@ -4,9 +4,8 @@
 
 [![English](https://img.shields.io/badge/Language-English-blue.svg)](README.md)
 [![中文](https://img.shields.io/badge/语言-中文-red.svg)](README_CN.md)
-
 [![License](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![GitHub Stars](https://img.shields.io/github/stars/LuminolCraft/craft.luminolsuki.moe.svg)](https://github.com/LuminolCraft/craft.luminolsuki.moe/stargazers)
+[![GitHub Stars](https://img.shields.io/badge/GitHub-Stars-yellow.svg)](https://github.com/LuminolCraft/craft.luminolsuki.moe/stargazers)
 
 ## 🎮 关于 LuminolCraft
 
@@ -40,45 +39,58 @@
 - **前端**: HTML5, CSS3, JavaScript ES6+
 - **样式**: Flexbox/Grid, CSS变量, 媒体查询
 - **库文件**: Font Awesome 7.0.0, Marked.js, MiSans字体
-- **部署**: Netlify, Netlify Functions, Gitee图片托管
-- **CORS解决方案**: Cloudflare Pages代理绕过Gitee CORS限制
+- **部署**: Netlify, Netlify Functions, Cloudflare Pages
+- **CORS解决方案**: Cloudflare Pages代理优化性能
+- **架构**: 模块化JavaScript架构，职责分离
 
 ### 📁 项目结构
 
 ```
 craft.luminolsuki.moe/
 ├── 🎯 页面文件
-│   ├── index.html              # 主页面
-│   ├── support.html            # 支持页面
-│   ├── monitoring.html         # 服务器监控
+│   ├── index.html # 主页面
+│   ├── support.html # 支持页面
+│   ├── monitoring.html # 服务器监控
 │   └── news/
-│       ├── news.html           # 新闻列表
-│       ├── news-detail.html    # 新闻详情
-│       └── news.json           # 新闻数据
-│
+│       ├── news.html # 新闻列表
+│       ├── news-detail.html # 新闻详情
+│       └── news.json # 新闻数据
 ├── ⚡ JavaScript 模块
 │   ├── js/
-│   │   ├── main.js            # 主入口
-│   │   ├── utils.js           # 工具函数
-│   │   ├── navigation.js      # 导航系统
-│   │   ├── background.js      # 背景轮播
-│   │   ├── news.js            # 新闻管理
-│   │   └── version.js         # 版本跟踪
-│   └── netlify/functions/     # 服务器函数
-│       └── version.js         # 版本API
-│
+│   │   ├── main.js # 主入口
+│   │   ├── utils.js # 工具函数
+│   │   ├── navigation.js # 导航系统
+│   │   ├── background.js # 背景轮播
+│   │   ├── news.js # 新闻管理
+│   │   ├── font-manager.js # 字体管理
+│   │   ├── theme.js # 主题管理
+│   │   ├── monitoring.js # 服务器监控
+│   │   ├── debug-manager.js # 调试管理
+│   │   └── version.js # 版本跟踪
+│   └── netlify/functions/ # 服务器函数
+│       ├── news.js # 新闻API
+│       └── version.js # 版本API
 ├── 🎨 样式文件
-│   ├── styles.css             # 主样式表
-│   ├── mobile.css             # 移动端响应式
-│   ├── news-styles.css        # 新闻页面样式
-│   ├── support-styles.css     # 支持页面样式
-│   └── monitoring-styles.css  # 监控页面样式
-│
+│   ├── css/
+│   │   ├── fonts.css # 字体资源
+│   │   ├── desktop/ # 桌面端样式
+│   │   │   ├── styles.css # 主样式表
+│   │   │   ├── navigation.css # 导航样式
+│   │   │   ├── footer.css # 页脚样式
+│   │   │   ├── news-styles.css # 新闻页面样式
+│   │   │   ├── support-styles.css # 支持页面样式
+│   │   │   └── monitoring-styles.css # 监控页面样式
+│   │   └── mobile/ # 移动端响应式样式
+│   │       ├── mobile.css # 移动端主样式
+│   │       ├── navigation-mobile.css # 移动端导航
+│   │       ├── news-mobile.css # 移动端新闻样式
+│   │       ├── support-mobile.css # 移动端支持样式
+│   │       └── monitoring-mobile.css # 移动端监控样式
 └── 🖼️ 资源文件
-    ├── images/                # 游戏截图和图标
-    ├── sitemap.xml           # SEO站点地图
-    ├── _redirects           # Netlify重定向
-    └── BingSiteAuth.xml     # 搜索引擎认证
+    ├── images/ # 游戏截图和图标
+    ├── sitemap.xml # SEO站点地图
+    ├── _redirects # Netlify重定向
+    └── BingSiteAuth.xml # 搜索引擎认证
 ```
 
 ## 🚀 快速开始
@@ -86,10 +98,16 @@ craft.luminolsuki.moe/
 ### 本地开发
 
 1. **克隆仓库**
-   ```bash
-   git clone https://github.com/LuminolCraft/craft.luminolsuki.moe.git
-   cd craft.luminolsuki.moe
-   ```
+```bash
+git clone https://github.com/LuminolCraft/craft.luminolsuki.moe.git
+cd craft.luminolsuki.moe
+```
+
+2. **启动开发服务器**
+```bash
+# 使用 Live Server (VS Code 扩展)
+# 或任何本地 HTTP 服务器
+```
 
 ### Netlify 部署
 
@@ -111,17 +129,26 @@ craft.luminolsuki.moe/
 
 1. **添加新闻**: 编辑 `news/news.json` 文件
 2. **Markdown 内容**: 在 News-content/ 目录下添加对应文件
-3. **图片资源**: 上传到 Gitee 图床并更新链接
+3. **图片资源**: 上传到图床并更新链接
 4. **缓存**: 系统会自动处理缓存刷新
 
 ### CORS 解决方案
 
 网站实现了智能的CORS绕过解决方案：
 
-- **问题**: Gitee的CORS策略阻止直接访问GitHub raw内容
-- **解决方案**: 自动将GitHub URL转换为Cloudflare Pages URL
+- **问题**: CORS策略阻止直接访问外部内容
+- **解决方案**: 自动将URL转换为Cloudflare Pages
 - **示例**: `raw.githubusercontent.com` → `luminolcraft-news.pages.dev`
 - **优势**: 更快的加载速度、更好的可靠性、全球CDN加速
+
+### 模块化架构
+
+网站采用模块化JavaScript架构：
+
+- **职责分离**: 每个模块处理特定功能
+- **可维护性**: 易于更新和调试单个功能
+- **可扩展性**: 添加新功能不影响现有代码
+- **性能优化**: 按页面只加载必要的模块
 
 ### 🔀 代码贡献
 
@@ -134,7 +161,6 @@ craft.luminolsuki.moe/
 ### 🐛 问题反馈
 
 使用 GitHub Issues 报告问题，请包括：
-
 - 问题描述
 - 重现步骤
 - 环境信息
@@ -143,12 +169,10 @@ craft.luminolsuki.moe/
 ## 📞 联系我们
 
 ### 💬 社区交流
-
 - **QQ 交流群**: 通过网站首页获取
 - **Discord**: 正在规划中
 
 ### 🌐 外部平台
-
 - **GitHub 组织**: [LuminolMC](https://github.com/LuminolMC), [LuminolCraft](https://github.com/LuminolCraft)
 - **服务器论坛**: [MineBBS](https://www.minebbs.com/threads/luminolcraft.35730/), [klpbbs](https://klpbbs.com/thread-162318-1-1.html), [mcmod](https://play.mcmod.cn/sv20188263.html)
 
@@ -157,16 +181,14 @@ craft.luminolsuki.moe/
 本项目基于 GNU Affero General Public License v3.0 (AGPL-3.0) 开源协议。
 
 ### 🏷️ 商标声明
-
 - "Minecraft" 和 "我的世界" 是 Mojang AB 的注册商标
 - LuminolCraft 是独立的游戏服务器，与 Mojang AB 或 Microsoft 无任何隶属关系
 - 网站内容 © 2025 Luminol Team 保留所有权利
 
 ### 📚 资源声明
-
 - 网站使用 MiSans 开源字体
 - 图标来自 Font Awesome 开源项目
-- 图片资源托管在 Gitee 平台
+- 图片资源托管在 Cloudflare Pages
 
 ## ⭐ Star History
 
@@ -181,7 +203,6 @@ Made with ❤️ by LuminolCraft Team
 ---
 
 ## 🔗 相关链接
-
 - **🌐 网站**: [craft.luminolsuki.moe](https://craft.luminolsuki.moe)
 - **📱 服务器状态**: [监控页面](https://craft.luminolsuki.moe/monitoring.html)
 - **📰 新闻中心**: [新闻中心](https://craft.luminolsuki.moe/news/news.html)
@@ -190,10 +211,9 @@ Made with ❤️ by LuminolCraft Team
 ---
 
 ## 🌐 Language / 语言
-
 - **English**: [README.md](README.md)
 - **中文**: [README_CN.md](README_CN.md) (Current / 当前)
 
 ---
 
-*最后更新: 2025年10月19日*
+*最后更新: 2025年1月26日*

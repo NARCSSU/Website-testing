@@ -1,8 +1,4 @@
-/* 导入字体 */
-@import url("https://cdn-font.hyperos.mi.com/font/css?family=MiSans_Latin_VF:VF:Latin&display=swap");
-@import url("https://cdn-font.hyperos.mi.com/font/css?family=MiSans_VF:VF:Chinese_Simplify,Latin&display=swap");
-@import url("https://cdn-font.hyperos.mi.com/font/css?family=MiSans:100,200,300,400,450,500,600,650,700,900:Chinese_Simplify,Latin&display=swap");
-@import url("https://cdn-font.hyperos.mi.com/font/css?family=Misans_TC_VF:VF:Chinese_Traditional_TW&display=swap");
+/* 字体资源已移至 css/fonts.css */
 
 :root {
     --primary-color:#9e94d8;
@@ -153,7 +149,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'MiSans VF', sans-serif;
+    font-family: var(--font-primary);
 }
 
 body {
@@ -290,14 +286,14 @@ a {
 }
 
 .intro h2 {
-    font-family: 'MiSans VF', sans-serif;
+    font-family: var(--font-primary);
     font-size: 32px;
     color: var(--secondary-color);
     margin-bottom: 10px;
 }
 
 .intro p {
-    font-family: 'MiSans VF', sans-serif;
+    font-family: var(--font-primary);
     font-size: 1.1em;
     color: var(--text-color);
     opacity: 0.8;
@@ -314,7 +310,7 @@ a {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-family: 'MiSans VF', sans-serif;
+    font-family: var(--font-primary);
     font-size: 1em;
     width: 300px;
 }
@@ -325,7 +321,7 @@ a {
     color: #fff;
     border: none;
     border-radius: 5px;
-    font-family: 'MiSans VF', sans-serif;
+    font-family: var(--font-primary);
     font-size: 1em;
     cursor: pointer;
     transition: background 0.3s, transform 0.3s;
@@ -346,7 +342,7 @@ a {
 }
 
 .tag-filter label {
-    font-family: 'MiSans VF', sans-serif;
+    font-family: var(--font-primary);
     font-size: 1em;
     color: var(--text-color);
     font-weight: 500;
@@ -360,7 +356,7 @@ a {
     border: 1px solid var(--primary-color); /* 边框使用主题色 */
     border-radius: 8px; /* 更圆润的边角 */
     padding: 10px 32px 10px 12px; /* 留出右边箭头空间 */
-    font-family: 'MiSans VF', sans-serif;
+    font-family: var(--font-primary);
     font-size: 1em;
     color: var(--text-color);
     cursor: pointer;
@@ -385,7 +381,7 @@ a {
 .tag-filter select option {
     background: var(--card-bg);
     color: var(--text-color);
-    font-family: 'MiSans VF', sans-serif;
+    font-family: var(--font-primary);
     padding: 10px;
 }
 
@@ -531,14 +527,14 @@ a {
 }
 
 .news-content h3 {
-    font-family: 'MiSans VF', sans-serif;
+    font-family: var(--font-primary);
     font-size: 1.2em;
     color: var(--secondary-color);
     margin-bottom: 10px;
 }
 
 .news-date {
-    font-family: 'MiSans VF', sans-serif;
+    font-family: var(--font-primary);
     font-size: 0.9em;
     color: var(--text-color);
     opacity: 0.8;
@@ -546,7 +542,7 @@ a {
 }
 
 .news-content p {
-    font-family: 'MiSans VF', sans-serif;
+    font-family: var(--font-primary);
     font-size: 1em;
     color: var(--text-color);
 }
@@ -557,7 +553,7 @@ a {
     color: var(--primary-color);
     padding: 8px 16px;
     border-radius: 5px;
-    font-family: 'MiSans VF', sans-serif;
+    font-family: var(--font-primary);
     font-size: 0.95em;
     position: absolute;
     bottom: 10px; /* 增加底部间距，减少紧贴感 */
@@ -587,7 +583,7 @@ a {
     color: #fff;
     border: none;
     border-radius: 5px;
-    font-family: 'MiSans VF', sans-serif;
+    font-family: var(--font-primary);
     font-size: 0.95em;
     cursor: pointer;
     transition: background 0.3s, transform 0.3s;
@@ -613,7 +609,7 @@ a {
 
 .empty-message,
 .error-message {
-    font-family: 'MiSans VF', sans-serif;
+    font-family: var(--font-primary);
     font-size: 1.1em;
     text-align: center;
     color: var(--text-color);

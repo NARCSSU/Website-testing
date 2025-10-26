@@ -24,9 +24,7 @@ if (typeof NewsManager === 'undefined') {
         this.STALE_DURATION = 30 * 60 * 1000; // 30分钟过期时间
         this.BACKGROUND_REFRESH_INTERVAL = 10 * 60 * 1000; // 10分钟后台检查
         this.USER_ACTIVE_THRESHOLD = 5 * 60 * 1000; // 5分钟用户活跃阈值
-        // 动态配置API端点，优先使用本地路径（Netlify环境），回退到外部API
-        this.GITHUB_RAW_BASE = this.isNetlifyEnvironment() ? '/' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/';
-        this.GITEJSON_URL = this.isNetlifyEnvironment() ? '/news/news.json' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';
+        // 动态配置API端点，强制使用Cloudflare Pages（原始配置）
         this.GITHUB_RAW_BASE = 'https://luminolcraft-news.pages.dev/';
         this.GITEJSON_URL = 'https://luminolcraft-news.pages.dev/news.json';
         this.SITE_DOMAIN = window.location.hostname || '';
@@ -44,7 +42,7 @@ if (typeof NewsManager === 'undefined') {
         
         // 输出初始化配置信息
         debugLog('🚀 NewsManager 初始化配置:', {
-            environment: this.isNetlifyEnvironment() ? 'Netlify' : 'External',
+            environment: 'Cloudflare Pages (强制)',
             newsJsonUrl: this.GITEJSON_URL,
             contentBaseUrl: this.GITHUB_RAW_BASE,
             siteDomain: this.SITE_DOMAIN,
@@ -62,6 +60,17 @@ if (typeof NewsManager === 'undefined') {
         this.initMarked();
         this.initEventListeners();
         this.initSmartCache();
+        this.setupCleanup();
+    }
+
+    // 设置清理机制
+    setupCleanup() {
+        // 页面卸载时清理定时器
+        window.addEventListener('beforeunload', () => {
+            if (this.cacheStatus.backgroundRefreshTimer) {
+                clearInterval(this.cacheStatus.backgroundRefreshTimer);
+            }
+        });
     }
 
     // 初始化智能缓存系统
@@ -104,7 +113,10 @@ if (typeof NewsManager === 'undefined') {
         // 如果用户活跃且缓存过期，触发刷新
         if (this.cacheStatus.isStale) {
             debugLog('👤 检测到用户活跃，缓存已过期，触发刷新');
-            this.refreshCacheInBackground();
+            // 添加错误处理，避免未捕获的Promise
+            this.refreshCacheInBackground().catch(error => {
+                debugLog('❌ 用户活跃触发刷新失败:', error.message);
+            });
         }
     }
 
@@ -208,22 +220,70 @@ if (typeof NewsManager === 'undefined') {
         return true;
     }
 
-    // 简单的XSS检测
+    // 安全的HTML内容设置
+    setSafeHTML(element, content) {
+        if (!element) return;
+        
+        // 创建临时容器进行HTML转义
+        const temp = document.createElement('div');
+        temp.textContent = content;
+        element.innerHTML = temp.innerHTML;
+    }
+    
+    // 安全的innerHTML设置（带XSS检查）
+    setSafeInnerHTML(element, content) {
+        if (!element) return;
+        
+        // 检查内容是否包含XSS
+        if (this.containsXSS(content)) {
+            console.warn('检测到潜在XSS内容，已阻止:', content);
+            element.textContent = '内容包含不安全元素，已过滤';
+            return;
+        }
+        
+        element.innerHTML = content;
+    }
+
+    // 增强的XSS检测
     containsXSS(text) {
         if (typeof text !== 'string') return false;
         
+        // 先进行HTML实体解码检测
+        const decodedText = text
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&#x27;/g, "'")
+            .replace(/&#x2F;/g, '/')
+            .replace(/&amp;/g, '&');
+        
         const xssPatterns = [
             /<script[^>]*>.*?<\/script>/gi,
-            /javascript:/gi,
+            /javascript\s*:/gi,
+            /vbscript\s*:/gi,
+            /data\s*:\s*text\/html/gi,
             /on\w+\s*=/gi,
             /<iframe[^>]*>/gi,
             /<object[^>]*>/gi,
             /<embed[^>]*>/gi,
             /<link[^>]*>/gi,
-            /<meta[^>]*>/gi
+            /<meta[^>]*>/gi,
+            /<style[^>]*>.*?<\/style>/gi,
+            /expression\s*\(/gi,
+            /url\s*\(/gi,
+            /@import/gi,
+            /eval\s*\(/gi,
+            /setTimeout\s*\(/gi,
+            /setInterval\s*\(/gi,
+            /document\.write/gi,
+            /innerHTML\s*=/gi,
+            /outerHTML\s*=/gi
         ];
         
-        return xssPatterns.some(pattern => pattern.test(text));
+        // 检测原始文本和解码后的文本
+        return xssPatterns.some(pattern => 
+            pattern.test(text) || pattern.test(decodedText)
+        );
     }
 
     // 更新缓存状态指示器
@@ -283,8 +343,15 @@ if (typeof NewsManager === 'undefined') {
         }
     }
 
-    // 重试数据加载
+    // 重试数据加载 - 添加加载锁防止竞态条件
     async retryDataLoad() {
+        // 防止重复调用
+        if (this.isRetrying) {
+            debugLog('⚠️ 重试操作正在进行中，跳过重复调用');
+            return;
+        }
+        
+        this.isRetrying = true;
         debugLog('🔄 用户触发数据重试加载');
         
         // 显示加载状态
@@ -334,6 +401,8 @@ if (typeof NewsManager === 'undefined') {
                     <button onclick="window.location.reload()" style="margin-left: 10px; padding: 2px 8px; font-size: 12px;">刷新页面</button>
                 `;
             }
+        } finally {
+            this.isRetrying = false;
         }
     }
 
@@ -366,32 +435,39 @@ if (typeof NewsManager === 'undefined') {
 
     // 检测是否运行在Netlify环境中
     isNetlifyEnvironment() {
-        // 检测域名是否包含netlify或是localhost开发环境
+        // 检测是否运行在Netlify环境中（排除本地开发环境）
         const hostname = window.location.hostname;
         const isNetlify = hostname.includes('netlify.app') || 
                          hostname.includes('netlify.com') ||
-                         hostname === 'localhost' ||
-                         hostname === '127.0.0.1' ||
-                         hostname.includes('craft.luminolsuki.moe'); // 你的自定义域名
+                         hostname.includes('craft.luminolsuki.moe');
         
         // 控制台输出环境检测结果
         debugLog('🌐 环境检测结果:', {
             hostname: hostname,
             isNetlifyEnvironment: isNetlify,
-            apiMode: isNetlify ? 'Netlify本地API' : '外部GitHub API',
-            newsJsonUrl: isNetlify ? '/news/news.json' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json',
-            contentBaseUrl: isNetlify ? '/' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/'
+            apiMode: isNetlify ? 'Netlify Function' : 'GitHub Raw',
+            newsJsonUrl: isNetlify ? '/.netlify/functions/news' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json',
+            contentBaseUrl: 'https://luminolcraft-news.pages.dev/'
         });
         
         return isNetlify;
     }
 
-    // 从sessionStorage初始化数据
+    // 安全的从sessionStorage初始化数据
     initFromStorage() {
         const stored = sessionStorage.getItem(this.NEWS_STORAGE_KEY);
         if (stored) {
             try {
-                this.allNewsWithContent = JSON.parse(stored);
+                const parsed = JSON.parse(stored);
+                
+                // 验证数据安全性
+                if (!this.validateNewsData(parsed)) {
+                    console.warn('sessionStorage数据验证失败，已清除');
+                    sessionStorage.removeItem(this.NEWS_STORAGE_KEY);
+                    return;
+                }
+                
+                this.allNewsWithContent = parsed;
                 debugLog('从sessionStorage恢复新闻数据');
             } catch (e) {
                 console.error('解析sessionStorage数据失败', e);
@@ -438,24 +514,41 @@ if (typeof NewsManager === 'undefined') {
         return '<p>' + html + '</p>';
     }
 
-    // 验证URL安全性
+    // 增强的URL验证
     isValidUrl(url) {
+        if (!url || typeof url !== 'string') return false;
+        
         try {
             const urlObj = new URL(url);
-            // 只允许http和https协议
-            if (!['http:', 'https:'].includes(urlObj.protocol)) {
+            
+            // 只允许HTTPS协议
+            if (urlObj.protocol !== 'https:') {
                 return false;
             }
-            // 检查域名白名单（可选）
+            
+            // 严格的白名单域名检查
             const allowedDomains = [
                 'luminolcraft-news.pages.dev',
-                'github.com',
                 'raw.githubusercontent.com',
-                this.SITE_DOMAIN
+                'github.com',
+                'cdn.jsdelivr.net',
+                'cdnjs.cloudflare.com',
+                'cdn-font.hyperos.mi.com'
             ];
             
-            return allowedDomains.some(domain => urlObj.hostname.includes(domain));
-        } catch {
+            // 检查域名是否在白名单中
+            if (!allowedDomains.includes(urlObj.hostname)) {
+                return false;
+            }
+            
+            // 检查路径是否安全（防止路径注入）
+            const dangerousPaths = ['../', './', '//', '\\'];
+            if (dangerousPaths.some(path => urlObj.pathname.includes(path))) {
+                return false;
+            }
+            
+            return true;
+        } catch (e) {
             return false;
         }
     }
@@ -507,8 +600,8 @@ if (typeof NewsManager === 'undefined') {
     // 将GitHub URL转换为Cloudflare URL
     convertGitHubUrlToCloudflare(contentUrl) {
         if (!contentUrl.startsWith('http')) {
-            // 相对路径，直接拼接Cloudflare基础URL
-            return `${this.GITHUB_RAW_BASE}${contentUrl}`;
+            // 相对路径，转换为Cloudflare URL
+            return `https://luminolcraft-news.pages.dev/${contentUrl}`;
         }
         
         if (contentUrl.includes('raw.githubusercontent.com/LuminolCraft/news.json')) {
@@ -551,8 +644,9 @@ if (typeof NewsManager === 'undefined') {
         }
 
         for (const item of newsData) {
+            let fullContentUrl = null;
             try {
-                const fullContentUrl = this.convertGitHubUrlToCloudflare(item.content);
+                fullContentUrl = this.convertGitHubUrlToCloudflare(item.content);
                 
                 debugLog(`📄 加载 Markdown[${item.id}]:`, {
                     title: item.title,
@@ -582,7 +676,7 @@ if (typeof NewsManager === 'undefined') {
             } catch (error) {
                 console.error(`❌ 预加载新闻 ${item.id} 失败:`, {
                     error: error.message,
-                    url: fullContentUrl,
+                    url: fullContentUrl || '未知URL',
                     title: item.title
                 });
                 item.markdownContent = '内容加载失败';
@@ -631,6 +725,32 @@ if (typeof NewsManager === 'undefined') {
         this.loadNews();
     }
 
+    // 安全的fetch请求（带超时控制）
+    async safeFetch(url, options = {}) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
+        
+        try {
+            const response = await fetch(url, {
+                ...options,
+                signal: controller.signal,
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    ...options.headers
+                }
+            });
+            
+            clearTimeout(timeoutId);
+            return response;
+        } catch (error) {
+            clearTimeout(timeoutId);
+            if (error.name === 'AbortError') {
+                throw new Error('请求超时');
+            }
+            throw error;
+        }
+    }
+
     // 初始化应用
     async initializeApp() {
         debugLog('检查 DOM 元素:', {
@@ -648,7 +768,7 @@ if (typeof NewsManager === 'undefined') {
                 cache: 'no-store'
             });
             
-            const response = await fetch(this.GITEJSON_URL, { cache: 'no-store' });
+            const response = await this.safeFetch(this.GITEJSON_URL, { cache: 'no-store' });
             
             debugLog('📡 API响应状态:', {
                 url: this.GITEJSON_URL,
@@ -800,23 +920,41 @@ if (typeof NewsManager === 'undefined') {
                 });
 
                 const title = document.createElement('h3');
-                title.innerHTML = item.pinned ? `📌 ${item.title}` : item.title;
+                // 安全的标题设置
+                const titleText = item.pinned ? `📌 ${item.title}` : item.title;
+                title.textContent = titleText;
 
                 const meta = document.createElement('div');
                 meta.className = 'news-meta';
-                meta.innerHTML = `
-                    <span class="news-date">${new Date(item.date).toLocaleDateString('zh-CN')}</span>
-                    <div class="news-tags">
-                        ${item.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                    </div>
-                `;
+                
+                // 安全的日期设置
+                const dateSpan = document.createElement('span');
+                dateSpan.className = 'news-date';
+                dateSpan.textContent = new Date(item.date).toLocaleDateString('zh-CN');
+                
+                // 安全的标签设置
+                const tagsDiv = document.createElement('div');
+                tagsDiv.className = 'news-tags';
+                item.tags.forEach(tag => {
+                    const tagSpan = document.createElement('span');
+                    tagSpan.className = 'tag';
+                    tagSpan.textContent = tag;
+                    tagsDiv.appendChild(tagSpan);
+                });
+                
+                meta.appendChild(dateSpan);
+                meta.appendChild(tagsDiv);
 
                 hasImage = false;
                 const imgContainer = document.createElement('div');
                 imgContainer.className = 'news-img';
                 if (item.image && item.image.trim() !== '' && item.image !== '""') {
-                    imgContainer.style.backgroundImage = `url('${item.image}')`;
-                    hasImage = true;
+                    // 安全的图片URL设置
+                    const imageUrl = item.image.replace(/['"]/g, ''); // 移除引号
+                    if (imageUrl.match(/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i)) {
+                        imgContainer.style.backgroundImage = `url('${imageUrl}')`;
+                        hasImage = true;
+                    }
                 }
                 if (!hasImage) {
                     newsItem.classList.add('no-image');
@@ -829,7 +967,8 @@ if (typeof NewsManager === 'undefined') {
                     : '暂无内容';
                 // 检查marked库是否可用，否则使用fallback
                 if (typeof marked !== 'undefined') {
-                    content.innerHTML = marked.parse(shortContent);
+                    const parsedContent = marked.parse(shortContent);
+                    this.setSafeInnerHTML(content, parsedContent);
                 } else {
                     content.innerHTML = this.simpleMarkdownRender(shortContent);
                 }
@@ -907,7 +1046,8 @@ if (typeof NewsManager === 'undefined') {
         contentDiv.className = 'news-content';
         // 检查marked库是否可用，否则使用fallback
         if (typeof marked !== 'undefined') {
-            contentDiv.innerHTML = marked.parse(newsItem.markdownContent || '');
+            const parsedContent = marked.parse(newsItem.markdownContent || '');
+            this.setSafeInnerHTML(contentDiv, parsedContent);
         } else {
             contentDiv.innerHTML = this.simpleMarkdownRender(newsItem.markdownContent || '');
         }

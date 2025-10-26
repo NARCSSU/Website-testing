@@ -1,9 +1,5 @@
 /* news-mobile.css - 新闻页面移动端样式 */
-/* 导入字体 */
-@import url("https://cdn-font.hyperos.mi.com/font/css?family=MiSans_Latin_VF:VF:Latin&display=swap");
-@import url("https://cdn-font.hyperos.mi.com/font/css?family=MiSans_VF:VF:Chinese_Simplify,Latin&display=swap");
-@import url("https://cdn-font.hyperos.mi.com/font/css?family=MiSans:100,200,300,400,450,500,600,650,700,900:Chinese_Simplify,Latin&display=swap");
-@import url("https://cdn-font.hyperos.mi.com/font/css?family=Misans_TC_VF:VF:Chinese_Traditional_TW&display=swap");
+/* 字体资源已移至 css/fonts.css */
 
 :root {
     --primary-color:#9e94d8;
@@ -37,7 +33,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'MiSans VF', sans-serif;
+    font-family: var(--font-primary);
 }
 
 body {
