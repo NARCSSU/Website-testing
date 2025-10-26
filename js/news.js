@@ -19,7 +19,11 @@ if (typeof NewsManager === 'undefined') {
         this.filteredNews = null;
         this.allNewsWithContent = [];
         this.NEWS_STORAGE_KEY = 'session_news_data';
-        this.CACHE_DURATION = 24 * 60 * 60 * 1000;
+        // 智能缓存策略：分层缓存时间
+        this.CACHE_DURATION = 2 * 60 * 60 * 1000; // 2小时基础缓存
+        this.STALE_DURATION = 30 * 60 * 1000; // 30分钟过期时间
+        this.BACKGROUND_REFRESH_INTERVAL = 10 * 60 * 1000; // 10分钟后台检查
+        this.USER_ACTIVE_THRESHOLD = 5 * 60 * 1000; // 5分钟用户活跃阈值
         // 动态配置API端点，优先使用本地路径（Netlify环境），回退到外部API
         this.GITHUB_RAW_BASE = this.isNetlifyEnvironment() ? '/' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/';
         this.GITEJSON_URL = this.isNetlifyEnvironment() ? '/news/news.json' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json';
@@ -27,6 +31,14 @@ if (typeof NewsManager === 'undefined') {
         this.GITEJSON_URL = 'https://luminolcraft-news.pages.dev/news.json';
         this.SITE_DOMAIN = window.location.hostname || '';
         this.errorLogged = new Set();
+        
+        // 缓存状态管理
+        this.cacheStatus = {
+            isStale: false,
+            lastUpdate: null,
+            backgroundRefreshTimer: null,
+            userActivityTimer: null
+        };
         
         this.init();
         
@@ -38,7 +50,10 @@ if (typeof NewsManager === 'undefined') {
             siteDomain: this.SITE_DOMAIN,
             itemsPerPage: this.itemsPerPage,
             cacheKey: this.NEWS_STORAGE_KEY,
-            cacheDuration: this.CACHE_DURATION / 1000 / 60 + ' minutes'
+            cacheDuration: this.CACHE_DURATION / 1000 / 60 + ' minutes',
+            staleDuration: this.STALE_DURATION / 1000 / 60 + ' minutes',
+            backgroundRefreshInterval: this.BACKGROUND_REFRESH_INTERVAL / 1000 / 60 + ' minutes',
+            userActiveThreshold: this.USER_ACTIVE_THRESHOLD / 1000 / 60 + ' minutes'
         });
     }
 
@@ -46,6 +61,307 @@ if (typeof NewsManager === 'undefined') {
         this.initFromStorage();
         this.initMarked();
         this.initEventListeners();
+        this.initSmartCache();
+    }
+
+    // 初始化智能缓存系统
+    initSmartCache() {
+        this.setupBackgroundRefresh();
+        this.setupUserActivityTracking();
+        this.updateCacheStatus();
+    }
+
+    // 设置后台刷新
+    setupBackgroundRefresh() {
+        if (this.cacheStatus.backgroundRefreshTimer) {
+            clearInterval(this.cacheStatus.backgroundRefreshTimer);
+        }
+        
+        this.cacheStatus.backgroundRefreshTimer = setInterval(() => {
+            this.checkAndRefreshCache();
+        }, this.BACKGROUND_REFRESH_INTERVAL);
+        
+        debugLog('🔄 后台刷新已启动，间隔:', this.BACKGROUND_REFRESH_INTERVAL / 1000 / 60 + '分钟');
+    }
+
+    // 设置用户活跃度跟踪
+    setupUserActivityTracking() {
+        const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+        
+        activityEvents.forEach(event => {
+            document.addEventListener(event, () => {
+                this.updateUserActivity();
+            }, { passive: true });
+        });
+        
+        debugLog('👤 用户活跃度跟踪已启动');
+    }
+
+    // 更新用户活跃度
+    updateUserActivity() {
+        this.cacheStatus.userActivityTimer = Date.now();
+        
+        // 如果用户活跃且缓存过期，触发刷新
+        if (this.cacheStatus.isStale) {
+            debugLog('👤 检测到用户活跃，缓存已过期，触发刷新');
+            this.refreshCacheInBackground();
+        }
+    }
+
+    // 检查并刷新缓存
+    async checkAndRefreshCache() {
+        const now = Date.now();
+        const lastUpdate = this.cacheStatus.lastUpdate || 0;
+        const timeSinceUpdate = now - lastUpdate;
+        
+        // 如果超过过期时间，标记为过期
+        if (timeSinceUpdate > this.STALE_DURATION) {
+            this.cacheStatus.isStale = true;
+            this.updateCacheStatusIndicator();
+            
+            // 如果用户最近活跃，立即刷新
+            const timeSinceActivity = now - (this.cacheStatus.userActivityTimer || 0);
+            if (timeSinceActivity < this.USER_ACTIVE_THRESHOLD) {
+                debugLog('🔄 用户活跃且缓存过期，立即刷新');
+                await this.refreshCacheInBackground();
+            }
+        }
+    }
+
+    // 后台刷新缓存
+    async refreshCacheInBackground() {
+        try {
+            debugLog('🔄 开始后台刷新缓存...');
+            const response = await fetch(this.GITEJSON_URL, { 
+                cache: 'no-store',
+                headers: {
+                    'User-Agent': 'LuminolCraft-News/1.0',
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                
+                // 安全验证：检查数据结构
+                if (this.validateNewsData(data)) {
+                    await this.preloadMarkdownContent(data);
+                    
+                    // 更新缓存状态
+                    this.cacheStatus.isStale = false;
+                    this.cacheStatus.lastUpdate = Date.now();
+                    
+                    // 更新localStorage
+                    localStorage.setItem('news-cache', JSON.stringify(data));
+                    localStorage.setItem('news-cache-timestamp', this.cacheStatus.lastUpdate.toString());
+                    
+                    this.updateCacheStatusIndicator();
+                    debugLog('✅ 后台缓存刷新成功');
+                } else {
+                    debugLog('❌ 数据验证失败，跳过缓存更新');
+                }
+            }
+        } catch (error) {
+            debugLog('❌ 后台缓存刷新失败:', error.message);
+        }
+    }
+
+    // 验证新闻数据安全性
+    validateNewsData(data) {
+        if (!Array.isArray(data)) {
+            debugLog('❌ 数据格式错误：不是数组');
+            return false;
+        }
+        
+        // 检查数据量限制（防止DoS攻击）
+        if (data.length > 1000) {
+            debugLog('❌ 数据量过大，可能存在攻击');
+            return false;
+        }
+        
+        // 验证每个新闻项的基本结构
+        for (const item of data) {
+            if (!item || typeof item !== 'object') {
+                debugLog('❌ 新闻项格式错误');
+                return false;
+            }
+            
+            // 检查必要字段
+            if (!item.id || !item.title || !item.content) {
+                debugLog('❌ 新闻项缺少必要字段');
+                return false;
+            }
+            
+            // 检查字段长度限制
+            if (item.title.length > 200 || item.content.length > 10000) {
+                debugLog('❌ 新闻项字段过长');
+                return false;
+            }
+            
+            // 检查内容是否包含潜在XSS
+            if (this.containsXSS(item.title) || this.containsXSS(item.content)) {
+                debugLog('❌ 检测到潜在XSS攻击');
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    // 简单的XSS检测
+    containsXSS(text) {
+        if (typeof text !== 'string') return false;
+        
+        const xssPatterns = [
+            /<script[^>]*>.*?<\/script>/gi,
+            /javascript:/gi,
+            /on\w+\s*=/gi,
+            /<iframe[^>]*>/gi,
+            /<object[^>]*>/gi,
+            /<embed[^>]*>/gi,
+            /<link[^>]*>/gi,
+            /<meta[^>]*>/gi
+        ];
+        
+        return xssPatterns.some(pattern => pattern.test(text));
+    }
+
+    // 更新缓存状态指示器
+    updateCacheStatusIndicator() {
+        const indicator = document.getElementById('cache-status-indicator');
+        if (!indicator) return;
+        
+        const now = Date.now();
+        const lastUpdate = this.cacheStatus.lastUpdate || 0;
+        const timeSinceUpdate = now - lastUpdate;
+        
+        if (this.cacheStatus.isStale) {
+            indicator.innerHTML = `
+                <span style="color: #ff6b6b;">⚠️ 数据可能不是最新</span>
+                <button onclick="newsManager.forceRefresh()" style="margin-left: 10px; padding: 2px 8px; font-size: 12px;">立即刷新</button>
+            `;
+        } else {
+            const minutesAgo = Math.floor(timeSinceUpdate / 60000);
+            indicator.innerHTML = `
+                <span style="color: #51cf66;">✅ 数据已更新 ${minutesAgo}分钟前</span>
+            `;
+        }
+    }
+
+    // 强制刷新
+    async forceRefresh() {
+        debugLog('🔄 用户触发强制刷新');
+        
+        // 显示刷新状态
+        const indicator = document.getElementById('cache-status-indicator');
+        if (indicator) {
+            indicator.innerHTML = `
+                <span style="color: #ffa500;">🔄 正在刷新数据...</span>
+            `;
+        }
+        
+        try {
+            this.cacheStatus.isStale = true;
+            await this.refreshCacheInBackground();
+            
+            // 重新加载新闻
+            if (this.allNewsWithContent.length > 0) {
+                await this.loadNews();
+            }
+            
+            debugLog('✅ 强制刷新完成');
+        } catch (error) {
+            debugLog('❌ 强制刷新失败:', error.message);
+            
+            // 如果刷新失败，提供页面刷新选项
+            if (indicator) {
+                indicator.innerHTML = `
+                    <span style="color: #ff6b6b;">❌ 数据刷新失败</span>
+                    <button onclick="window.location.reload()" style="margin-left: 10px; padding: 2px 8px; font-size: 12px;">刷新页面</button>
+                `;
+            }
+        }
+    }
+
+    // 重试数据加载
+    async retryDataLoad() {
+        debugLog('🔄 用户触发数据重试加载');
+        
+        // 显示加载状态
+        const indicator = document.getElementById('cache-status-indicator');
+        if (indicator) {
+            indicator.innerHTML = `
+                <span style="color: #ffa500;">🔄 正在重新加载数据...</span>
+            `;
+        }
+        
+        try {
+            // 清除旧缓存
+            localStorage.removeItem('news-cache');
+            localStorage.removeItem('news-cache-timestamp');
+            localStorage.removeItem('news-full-cache');
+            localStorage.removeItem('news-full-cache-timestamp');
+            sessionStorage.removeItem(this.NEWS_STORAGE_KEY);
+            
+            // 重置状态
+            this.allNewsWithContent = [];
+            this.filteredNews = null;
+            this.currentPage = 0;
+            
+            debugLog('🧹 缓存已清除，状态已重置');
+            
+            // 重新初始化
+            await this.initializeApp();
+            
+            debugLog('📊 初始化完成，数据量:', this.allNewsWithContent.length);
+            
+            // 重新加载新闻显示
+            await this.loadNews();
+            
+            debugLog('🖼️ 新闻显示完成');
+            
+            // 重新初始化标签和搜索
+            this.initTagSelect();
+            
+            debugLog('✅ 数据重试加载完成');
+        } catch (error) {
+            debugLog('❌ 数据重试加载失败:', error.message);
+            
+            // 如果重试失败，提供页面刷新选项
+            if (indicator) {
+                indicator.innerHTML = `
+                    <span style="color: #ff6b6b;">❌ 重试失败，建议刷新页面</span>
+                    <button onclick="window.location.reload()" style="margin-left: 10px; padding: 2px 8px; font-size: 12px;">刷新页面</button>
+                `;
+            }
+        }
+    }
+
+    // 初始化标签选择器
+    initTagSelect() {
+        const tagSelect = document.getElementById('tag-select');
+        if (tagSelect && this.allNewsWithContent.length > 0) {
+            const uniqueTags = this.getUniqueTags(this.allNewsWithContent);
+            tagSelect.innerHTML = '<option value="">所有标签</option>';
+            uniqueTags.forEach(tag => {
+                const option = document.createElement('option');
+                option.value = tag;
+                option.textContent = tag;
+                tagSelect.appendChild(option);
+            });
+            debugLog('标签下拉菜单重新填充完成:', uniqueTags);
+        }
+    }
+
+    // 更新缓存状态
+    updateCacheStatus() {
+        const timestamp = localStorage.getItem('news-cache-timestamp');
+        if (timestamp) {
+            this.cacheStatus.lastUpdate = parseInt(timestamp);
+            const now = Date.now();
+            const timeSinceUpdate = now - this.cacheStatus.lastUpdate;
+            this.cacheStatus.isStale = timeSinceUpdate > this.STALE_DURATION;
+        }
     }
 
     // 检测是否运行在Netlify环境中
@@ -88,8 +404,18 @@ if (typeof NewsManager === 'undefined') {
     simpleMarkdownRender(text) {
         if (!text) return '';
         
-        // 基础转换
-        let html = text
+        // 安全处理：转义HTML特殊字符
+        const escapeHtml = (unsafe) => {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        };
+        
+        // 基础转换（安全版本）
+        let html = escapeHtml(text)
             .replace(/^### (.*$)/gim, '<h3>$1</h3>')
             .replace(/^## (.*$)/gim, '<h2>$1</h2>')
             .replace(/^# (.*$)/gim, '<h1>$1</h1>')
@@ -99,12 +425,39 @@ if (typeof NewsManager === 'undefined') {
             .replace(/\n\n/g, '</p><p>')
             .replace(/\n/g, '<br>')
             .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, text, href) => {
+                // 验证URL安全性
+                if (!this.isValidUrl(href)) {
+                    return escapeHtml(text); // 如果URL不安全，只显示文本
+                }
+                
                 const isExternal = !href.startsWith('/') && !href.includes(this.SITE_DOMAIN) && !href.startsWith('#');
                 const svgIcon = isExternal ? '<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4 ml-1 align-sub" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path></svg>' : '';
-                return `<a href="${href}" class="${isExternal ? 'external-link' : ''}">${text}${svgIcon}</a>`;
+                return `<a href="${escapeHtml(href)}" class="${isExternal ? 'external-link' : ''}" ${isExternal ? 'rel="noopener noreferrer"' : ''}>${escapeHtml(text)}${svgIcon}</a>`;
             });
             
         return '<p>' + html + '</p>';
+    }
+
+    // 验证URL安全性
+    isValidUrl(url) {
+        try {
+            const urlObj = new URL(url);
+            // 只允许http和https协议
+            if (!['http:', 'https:'].includes(urlObj.protocol)) {
+                return false;
+            }
+            // 检查域名白名单（可选）
+            const allowedDomains = [
+                'luminolcraft-news.pages.dev',
+                'github.com',
+                'raw.githubusercontent.com',
+                this.SITE_DOMAIN
+            ];
+            
+            return allowedDomains.some(domain => urlObj.hostname.includes(domain));
+        } catch {
+            return false;
+        }
     }
 
     // 初始化marked库
@@ -284,7 +637,8 @@ if (typeof NewsManager === 'undefined') {
             newsGrid: !!document.querySelector('#news-grid'),
             paginationContainer: !!document.querySelector('#news-pagination'),
             tagSelect: !!document.getElementById('tag-select'),
-            searchInput: !!document.getElementById('news-search-input')
+            searchInput: !!document.getElementById('news-search-input'),
+            cacheIndicator: !!document.getElementById('cache-status-indicator')
         });
 
         try {
@@ -311,6 +665,12 @@ if (typeof NewsManager === 'undefined') {
                 throw new Error(`无法加载 news.json: ${response.status} - ${response.statusText}`);
             }
             const data = await response.json();
+            
+            // 安全验证：检查数据结构
+            if (!this.validateNewsData(data)) {
+                throw new Error('数据验证失败，可能存在安全风险');
+            }
+            
             debugLog('✅ news.json 加载成功:', {
                 itemCount: data.length,
                 firstItem: data[0]?.title || '无数据',
@@ -319,6 +679,12 @@ if (typeof NewsManager === 'undefined') {
             debugLog('news.json 加载成功:', data);
             localStorage.setItem('news-cache', JSON.stringify(data));
             localStorage.setItem('news-cache-timestamp', new Date().getTime().toString());
+            
+            // 更新缓存状态
+            this.cacheStatus.lastUpdate = Date.now();
+            this.cacheStatus.isStale = false;
+            this.updateCacheStatusIndicator();
+            
             await this.preloadMarkdownContent(data);
             debugLog('allNewsWithContent:', this.allNewsWithContent);
         } catch (error) {
@@ -326,10 +692,19 @@ if (typeof NewsManager === 'undefined') {
             const newsGrid = document.querySelector('#news-grid');
             if (newsGrid) {
                 newsGrid.innerHTML = `
-                    <p class="error-message">
-                        无法加载新闻数据，请检查网络或稍后重试
-                        <button onclick="newsManager.initializeApp(); newsManager.loadNews();">重试</button>
-                    </p>`;
+                    <div class="error-message">
+                        <h3>❌ 无法加载新闻数据</h3>
+                        <p>请检查网络连接，然后点击上方的"重试"按钮</p>
+                    </div>`;
+            }
+            
+            // 更新缓存状态为错误
+            const indicator = document.getElementById('cache-status-indicator');
+            if (indicator) {
+                indicator.innerHTML = `
+                    <span style="color: #ff6b6b;">❌ 数据加载失败</span>
+                    <button onclick="newsManager.retryDataLoad()" style="margin-left: 10px; padding: 2px 8px; font-size: 12px;">重试</button>
+                `;
             }
         }
     }
@@ -383,14 +758,19 @@ if (typeof NewsManager === 'undefined') {
         const newsGrid = document.querySelector('#news-grid');
         if (!newsGrid) return;
         
+        debugLog('🖼️ 开始加载新闻，当前数据量:', this.allNewsWithContent.length);
+        
         this.initFromStorage();
         
         if (!this.allNewsWithContent || this.allNewsWithContent.length === 0) {
+            debugLog('📡 数据为空，重新初始化...');
             await this.initializeApp();
         }
 
         try {
             let newsData = this.filteredNews !== null ? this.filteredNews : this.allNewsWithContent;
+            
+            debugLog('📊 准备显示新闻，数据量:', newsData.length);
 
             // 排序逻辑
             newsData = newsData.sort((a, b) => {
@@ -463,8 +843,10 @@ if (typeof NewsManager === 'undefined') {
             });
 
             this.updatePagination(newsData.length);
+            debugLog('✅ 新闻显示完成，共显示', paginatedData.length, '条新闻');
         } catch (error) {
             console.error('加载新闻失败:', error);
+            debugLog('❌ 加载新闻失败:', error.message);
             newsGrid.innerHTML = '<p class="error-message">加载新闻失败，请重试</p>';
         }
     }

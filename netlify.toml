@@ -42,6 +42,7 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn-font.hyperos.mi.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://cdn-font.hyperos.mi.com; connect-src 'self' https://luminolcraft-news.pages.dev https://raw.githubusercontent.com; frame-ancestors 'none';"
 
 # 开发环境设置
 [context.deploy-preview]
