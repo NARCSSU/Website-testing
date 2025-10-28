@@ -665,27 +665,7 @@ a {
     
 /* 导航栏样式已移至 navigation.css */
     
-    :root:not(.dark-theme) footer {
-        background: linear-gradient(135deg, #0a0f1c 0%, #1a1f2e 100%) !important;
-        border-top: 1px solid rgba(71, 85, 105, 0.3) !important;
-    }
-    
-    :root:not(.dark-theme) .footer-column h3 {
-        color: #c4b5fd !important;
-    }
-    
-    :root:not(.dark-theme) .footer-column a {
-        color: #cbd5e1 !important;
-    }
-    
-    :root:not(.dark-theme) .footer-column a:hover {
-        color: #c4b5fd !important;
-    }
-    
-    :root:not(.dark-theme) .copyright-info {
-        border-top: 1px solid rgba(71, 85, 105, 0.3) !important;
-        color: #94a3b8 !important;
-    }
+/* Footer系统深色主题样式已移至 footer.css */
     
     /* 新闻卡片深色主题 */
     :root:not(.dark-theme) .news-item {

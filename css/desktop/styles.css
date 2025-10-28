@@ -51,22 +51,6 @@
         border: 1px solid rgba(71, 85, 105, 0.45) !important;
     }
     
-    :root:not(.dark-theme) footer {
-        background: linear-gradient(135deg, #0a0f1c 0%, #1a1f2e 100%) !important;
-        border-top: 1px solid rgba(71, 85, 105, 0.3) !important;
-    }
-    
-    :root:not(.dark-theme) .footer-column h3 {
-        color: #c4b5fd !important;
-    }
-    
-    :root:not(.dark-theme) .footer-column a {
-        color: #cbd5e1 !important;
-    }
-    
-    :root:not(.dark-theme) .footer-column a:hover {
-        color: #c4b5fd !important;
-    }
     
     :root:not(.dark-theme) .copyright-info {
         border-top: 1px solid rgba(71, 85, 105, 0.3) !important;
@@ -100,27 +84,6 @@
 /* 导航栏样式已移至 navigation.css */
 
 /* Footer 在深色主题下的适配 */
-.dark-theme footer {
-    background: linear-gradient(135deg, #0a0f1c 0%, #1a1f2e 100%);
-    border-top: 1px solid rgba(71, 85, 105, 0.3);
-}
-
-.dark-theme .footer-column h3 {
-    color: #c4b5fd;
-}
-
-.dark-theme .footer-column a {
-    color: #cbd5e1;
-}
-
-.dark-theme .footer-column a:hover {
-    color: #c4b5fd;
-}
-
-.dark-theme .copyright-info {
-    border-top: 1px solid rgba(71, 85, 105, 0.3);
-    color: #94a3b8;
-}
 
 
 * {
@@ -769,18 +732,9 @@ header {
     box-shadow: 0 8px 18px rgba(0,0,0,0.2);
 }
 */
-/* 页脚 */
-footer {
-    padding: 60px 20px 30px;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    color: var(--text-color);
-    text-align: center;
-    position: relative;
-    border-top: 1px solid var(--glass-border);
-}
-footer p {
-    text-align: center;
-}
+/* Footer过渡区域样式已移至 footer.css */
+
+/* Footer样式已移至 footer.css */
 
 .social-links {
     margin-bottom: 25px;
@@ -898,118 +852,7 @@ footer p {
 }
 
 
-/* 页脚链接样式 */
-.footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    margin: 30px 0;
-    flex-wrap: wrap;
-}
-
-.footer-column h3 {
-    color: var(--primary-color);
-    margin-bottom: 15px;
-    font-size: 1.2em;
-}
-
-.footer-column ul {
-    list-style: none;
-    padding: 0;
-}
-
-.footer-column li {
-    margin-bottom: 8px;
-}
-
-.footer-column a {
-    color: #ddd;
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-.footer-column a:hover {
-    color: var(--primary-color);
-}
-.footer-column svg{
-    width: 18px;
-    height: 18px;
-    margin-left: 8px;
-}
-/*版权*/
-.copyright-info {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    font-size: 0.9em;
-    color: #aaa;
-}
-
-.copyright-info p {
-    margin: 8px 0;
-}
-
-.copyright-info a:any-link {
-    color: #aaa;
-}
-
-.copyright-info a:hover {
-    color: var(--primary-color);
-}
-
-.copyright-info svg {
-    width: 12px;
-    height: 12px;
-    margin-left: 8px;
-}
-
-/* 网站状态信息样式 */
-.website-status-info {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin: 25px 0 15px 0;
-    flex-wrap: wrap;
-    opacity: 0.8;
-    font-size: 0.9em;
-}
-
-.status-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #ccc;
-    transition: all 0.3s ease;
-    padding: 8px 12px;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.status-item:hover {
-    color: var(--primary-color);
-    background: rgba(158, 148, 216, 0.1);
-    transform: translateY(-2px);
-}
-
-.status-item i {
-    font-size: 14px;
-    color: var(--primary-color);
-    opacity: 0.8;
-}
-
-.status-item span {
-    font-family: var(--font-primary);
-    font-weight: 500;
-}
-
-.status-item span span {
-    font-family: var(--font-mono);
-    font-weight: 600;
-    color: #fff;
-    opacity: 0.9;
-}
+/* Footer链接样式已移至 footer.css */
 
 /* 响应式设计 */
 /* 移动端样式已移至 mobile.css */
@@ -1022,6 +865,11 @@ footer p {
     align-items: center;
     position: relative;
     overflow: hidden;
+    background: linear-gradient(180deg, 
+        rgba(0, 0, 0, 0.3) 0%, 
+        rgba(0, 0, 0, 0.2) 70%, 
+        rgba(0, 0, 0, 0.1) 90%, 
+        transparent 100%);
 }
 
 /* 背景轮播样式 */
@@ -1262,10 +1110,77 @@ footer p {
     color: var(--online-color);
 }
 
-/* 特色区域 */
+/* 移除所有过渡效果，让header和features-section直接连接 */
+
+.wave-divider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    z-index: 1;
+}
+
+.wave-divider svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* 深色主题过渡区域适配 */
+.dark-theme .transition-shape {
+    background: var(--background-color);
+}
+
+/* 系统深色主题过渡区域适配 */
+@media (prefers-color-scheme: dark) {
+    :root:not(.dark-theme) .transition-section {
+        background: transparent !important;
+    }
+    
+    :root:not(.dark-theme) .transition-shape {
+        background: var(--background-color) !important;
+    }
+}
+
+/* 新的柔和动画效果 */
+@keyframes gentleShift {
+    0%, 100% { 
+        opacity: 0.8;
+        transform: translateY(0px);
+    }
+    50% { 
+        opacity: 1;
+        transform: translateY(-2px);
+    }
+}
+
+/* 特色区域 - 强自发光分隔效果 */
 .features-section {
     padding: 100px 0;
     background: var(--background-color);
+    position: relative;
+}
+
+.features-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(158, 148, 216, 1) 20%, 
+        rgba(158, 148, 216, 1) 50%, 
+        rgba(158, 148, 216, 1) 80%, 
+        transparent 100%);
+    box-shadow: 
+        0 0 20px rgba(158, 148, 216, 0.8),
+        0 0 40px rgba(158, 148, 216, 0.6),
+        0 0 60px rgba(158, 148, 216, 0.4),
+        0 0 80px rgba(158, 148, 216, 0.2);
+    z-index: 10;
 }
 
 .features-container {

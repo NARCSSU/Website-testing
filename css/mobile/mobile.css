@@ -47,6 +47,24 @@
     grid-template-columns: 1fr;
 }
 
+/* 移动端过渡区域样式 */
+.transition-section {
+    height: 120px;
+}
+
+.wave-divider {
+    height: 120px;
+}
+
+/* 移动端Footer过渡区域样式 */
+.footer-transition-section {
+    height: 100px;
+}
+
+.footer-wave-divider {
+    height: 100px;
+}
+
 /* 移动端团队布局优化 */
 .team-section {
     padding: 60px 0;
@@ -200,22 +218,9 @@ a {
     text-decoration: none;
 }
 
-/* 导航栏样式已移至 navigation.css */
-
-/* 导航栏样式已移至 navigation.css */
-
-/* 导航栏样式已移至 navigation.css */
-
-/* 导航栏样式已移至 navigation.css */
-}
-/* 导航栏样式已移至 navigation.css */
-
-
 header {
     padding-top: 200px;
 }
-
-/* 导航栏样式已移至 navigation-mobile.css */
 
 .logo-and-text {
     display: flex;
@@ -228,16 +233,7 @@ header {
         padding: 40px 16px;
         margin-top: 12px;
     }
-/* 导航栏样式已移至 navigation.css */
 }
-
-/* 导航栏样式已移至 navigation.css */
-
-/* 导航栏样式已移至 navigation.css */
-/* 导航栏样式已移至 navigation.css */
-}
-
-/* 导航栏样式已移至 navigation.css */
 
 .LuminolMC {
     display: inline-flex;
