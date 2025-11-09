@@ -94,7 +94,9 @@ craft.luminolsuki.moe/
 ```
 
 ## 🚀 Quick Start
+## 🚀 Quick Start
 
+### Local Development
 ### Local Development
 
 1. **Clone Repository**
@@ -109,6 +111,7 @@ cd craft.luminolsuki.moe
 # Or any local HTTP server
 ```
 
+### Netlify Deployment
 ### Netlify Deployment
 
 1. **Connect to GitHub Repository**
@@ -167,6 +170,7 @@ Use GitHub Issues to report problems, please include:
 - Screenshots (if applicable)
 
 ## 📞 Contact Us
+## 📞 Contact Us
 
 ### 💬 Community
 - **QQ Group**: Available through website homepage
@@ -193,9 +197,11 @@ This project is licensed under the GNU Affero General Public License v3.0 (AGPL-
 ## ⭐ Star History
 
 If your star could make this project more popular, that would be amazing!
+If your star could make this project more popular, that would be amazing!
 
 ---
 
+**🌟 If you think this project is great, please give us a Star!**
 **🌟 If you think this project is great, please give us a Star!**
 
 Made with ❤️ by LuminolCraft Team
