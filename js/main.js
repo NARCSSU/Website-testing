@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 检查是否使用了统一调试管理器
     if (!window.DebugManager) {
         // 如果没有统一调试管理器，使用旧的调试系统
-    if (debugMode) {
+        if (debugMode) {
             const isLiteMode = localStorage.getItem('debugMode') === 'true' && 
                               !localStorage.getItem('debugFullMode');
             
@@ -32,14 +32,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('输入 debugLite() 可关闭调试模式');
             } else {
                 console.log('🐛 完整调试模式已开启 - 显示所有调试信息');
-        console.log('当前页面:', window.location.pathname);
-        console.log('输入 fuckbug() 可关闭调试模式');
+                console.log('当前页面:', window.location.pathname);
+                console.log('输入 fuckbug() 可关闭调试模式');
             }
         }
     }
     
-    // 创建模块调试器
-    const debug = debugModule('main');
+    // 创建模块调试器 - 使用统一调试管理器，如果没有则使用旧系统
+    const debug = window.DebugManager ? window.DebugManager.module('main') : debugModule('main');
     debug.info('DOM加载完成，开始初始化各模块');
     
     // 延迟初始化，确保所有元素都已加载
@@ -82,7 +82,7 @@ window.addEventListener('load', function() {
 
 // 初始化通用模块
 function initCommonModules() {
-    const debug = debugModule('main');
+    const debug = window.DebugManager ? window.DebugManager.module('main') : debugModule('main');
     
     // 初始化导航管理器
     navigationManager = new NavigationManager();
@@ -95,7 +95,7 @@ function initCommonModules() {
 
 // 根据页面类型初始化特定功能
 function initPageSpecificFeatures() {
-    const debug = debugModule('main');
+    const debug = window.DebugManager ? window.DebugManager.module('main') : debugModule('main');
     const currentPath = window.location.pathname;
     const currentFile = window.location.pathname.split('/').pop();
     
@@ -122,7 +122,7 @@ function initPageSpecificFeatures() {
 
 // 初始化主页
 function initHomePage() {
-    const debug = debugModule('main');
+    const debug = window.DebugManager ? window.DebugManager.module('main') : debugModule('main');
     debug.info('✅ 初始化主页功能');
     
     // 初始化背景轮播
@@ -140,7 +140,7 @@ function initHomePage() {
 
 // 初始化新闻页面
 function initNewsPage() {
-    const debug = debugModule('main');
+    const debug = window.DebugManager ? window.DebugManager.module('main') : debugModule('main');
     debug.info('✅ 初始化新闻页面功能');
     
     // 初始化新闻管理器
@@ -152,7 +152,7 @@ function initNewsPage() {
 
 // 初始化新闻页面功能
 async function initNewsPageFeatures() {
-    const debug = debugModule('news');
+    const debug = window.DebugManager ? window.DebugManager.module('news') : debugModule('news');
     debug.info('DOM 加载完成，开始初始化新闻页面');
     debug.info('当前域名 (SITE_DOMAIN):', newsManager.SITE_DOMAIN);
     
@@ -196,7 +196,7 @@ async function initNewsPageFeatures() {
 
 // 初始化新闻详情页面
 function initNewsDetailPage() {
-    const debug = debugModule('main');
+    const debug = window.DebugManager ? window.DebugManager.module('main') : debugModule('main');
     debug.info('初始化新闻详情页面功能');
     
     // 初始化新闻管理器
@@ -208,7 +208,7 @@ function initNewsDetailPage() {
 
 // 初始化新闻详情页面功能
 async function initNewsDetailPageFeatures() {
-    const debug = debugModule('news');
+    const debug = window.DebugManager ? window.DebugManager.module('news') : debugModule('news');
     debug.info('DOM 加载完成，开始初始化新闻详情页面');
     debug.info('当前域名 (SITE_DOMAIN):', newsManager.SITE_DOMAIN);
     
@@ -224,7 +224,7 @@ async function initNewsDetailPageFeatures() {
 
 // 初始化支持页面
 function initSupportPage() {
-    const debug = debugModule('main');
+    const debug = window.DebugManager ? window.DebugManager.module('main') : debugModule('main');
     debug.info('✅ 初始化支持页面功能');
     
     // 为按钮添加节流
@@ -233,7 +233,7 @@ function initSupportPage() {
 
 // 初始化监控页面
 function initMonitoringPage() {
-    const debug = debugModule('main');
+    const debug = window.DebugManager ? window.DebugManager.module('main') : debugModule('main');
     debug.info('✅ 初始化监控页面功能');
     
     // 监控页面特定功能
@@ -278,7 +278,7 @@ function initSupportPageThrottling() {
 // 页面显示事件处理（用于处理浏览器缓存恢复）
 window.addEventListener('pageshow', async function(event) {
     if (event.persisted) {
-        const debug = debugModule('news');
+        const debug = window.DebugManager ? window.DebugManager.module('news') : debugModule('news');
         debug.info('从缓存恢复页面，重新加载新闻');
     }
     if (window.location.pathname.includes('news.html')) {
@@ -304,335 +304,286 @@ window.addEventListener('pageshow', async function(event) {
     }
 });
 
-// 简化调试系统 - 只保留基础功能
-// 避免重复声明
-if (typeof debugMode === 'undefined') {
-    var debugMode = false;
-}
+// 只保留基本的调试兼容性函数，但不定义完整的调试系统
+// 这样可以确保与debug-manager.js兼容
 
-// 只有在开发环境或明确开启时才允许调试模式
-// 避免重复声明
-if (typeof isLocalDev === 'undefined') {
-    var isLocalDev = window.location.hostname.includes('localhost') || 
-                     window.location.hostname.includes('127.0.0.1');
-}
-if (typeof savedDebugMode === 'undefined') {
-    var savedDebugMode = localStorage.getItem('debugMode') === 'true';
-}
+// 如果没有DebugManager，才定义旧的调试系统
+if (!window.DebugManager) {
+    // 简化调试系统 - 只保留基础功能
+    // 避免重复声明
+    if (typeof debugMode === 'undefined') {
+        var debugMode = false;
+    }
 
-// 只有在本地开发环境或明确启用调试时才开启调试模式
-if (isLocalDev) {
-    debugMode = savedDebugMode;
-} else {
-    // 生产环境默认关闭调试模式
-    debugMode = false;
-}
+    // 只有在开发环境或明确开启时才允许调试模式
+    // 避免重复声明
+    if (typeof isLocalDev === 'undefined') {
+        var isLocalDev = window.location.hostname.includes('localhost') || 
+                         window.location.hostname.includes('127.0.0.1');
+    }
+    if (typeof savedDebugMode === 'undefined') {
+        var savedDebugMode = localStorage.getItem('debugMode') === 'true';
+    }
 
-// 确保localStorage中保存正确的状态
-localStorage.setItem('debugMode', debugMode.toString());
-window.debugMode = debugMode; // 全局访问
+    // 只有在本地开发环境或明确启用调试时才开启调试模式
+    if (isLocalDev) {
+        debugMode = savedDebugMode;
+    } else {
+        // 生产环境默认关闭调试模式
+        debugMode = false;
+    }
 
-// 轻量级调试日志函数 - 显示用户友好信息
-function debugLog(...args) {
-    if (debugMode) {
-        // 检查是否是轻量级模式
-        const isLiteMode = localStorage.getItem('debugMode') === 'true' && 
-                          !localStorage.getItem('debugFullMode');
-        
-        if (isLiteMode) {
-            // 轻量级模式：显示用户友好的重要信息
-            const message = args.join(' ');
-            if (message.includes('❌') || message.includes('⚠️') || 
-                message.includes('错误') || message.includes('失败') || 
-                message.includes('警告') || message.includes('不支持') ||
-                message.includes('初始化完成') || message.includes('加载成功') ||
-                message.includes('页面加载') || message.includes('功能已启用') ||
-                message.includes('网络环境') || message.includes('连接状态') ||
-                message.includes('设备信息') || message.includes('浏览器信息')) {
+    // 确保localStorage中保存正确的状态
+    localStorage.setItem('debugMode', debugMode.toString());
+    window.debugMode = debugMode; // 全局访问
+
+    // 轻量级调试日志函数 - 显示用户友好信息
+    function debugLog(...args) {
+        if (debugMode) {
+            // 检查是否是轻量级模式
+            const isLiteMode = localStorage.getItem('debugMode') === 'true' && 
+                              !localStorage.getItem('debugFullMode');
+            
+            if (isLiteMode) {
+                // 轻量级模式：显示用户友好的重要信息
+                const message = args.join(' ');
+                if (message.includes('❌') || message.includes('⚠️') || 
+                    message.includes('错误') || message.includes('失败') || 
+                    message.includes('警告') || message.includes('不支持') ||
+                    message.includes('初始化完成') || message.includes('加载成功') ||
+                    message.includes('页面加载') || message.includes('功能已启用') ||
+                    message.includes('网络环境') || message.includes('连接状态') ||
+                    message.includes('设备信息') || message.includes('浏览器信息')) {
+                    console.log(...args);
+                }
+            } else {
+                // 完整模式：显示所有信息
                 console.log(...args);
             }
-        } else {
-            // 完整模式：显示所有信息
-        console.log(...args);
+        }
     }
-    }
-}
 
-// 简化的模块化调试函数
-function debugModule(moduleName) {
-    return {
-        info: (...args) => {
-            if (debugMode) {
-                // 检查是否是轻量级模式
-                const isLiteMode = localStorage.getItem('debugMode') === 'true' && 
-                                  !localStorage.getItem('debugFullMode');
-                
-                if (isLiteMode) {
-                    // 轻量级模式：只显示用户友好的重要信息
-                    const message = args.join(' ');
-                    if (message.includes('🎉 网站加载成功，所有功能已启用') ||
-                        message.includes('✅ 通用模块初始化完成') ||
-                        message.includes('✅ 所有模块初始化完成') ||
-                        message.includes('❌') || message.includes('⚠️') || 
-                        message.includes('错误') || message.includes('失败') || 
-                        message.includes('警告') || message.includes('不支持') ||
-                        message.includes('🌐 网络环境信息') || 
-                        message.includes('📱 设备信息') || 
-                        message.includes('🌐 浏览器信息') ||
-                        message.includes('📶 连接类型') ||
-                        message.includes('⬇️ 下载速度') ||
-                        message.includes('⏱️ 延迟') ||
-                        message.includes('🔗 在线状态') ||
-                        message.includes('📱 设备类型') ||
-                        message.includes('🖥️ 屏幕分辨率') ||
-                        message.includes('👁️ 视口大小') ||
-                        message.includes('🔍 像素密度') ||
-                        message.includes('🔧 浏览器') ||
-                        message.includes('🌍 语言') ||
-                        message.includes('⏰ 时区')) {
+    // 简化的模块化调试函数
+    function debugModule(moduleName) {
+        return {
+            info: (...args) => {
+                if (debugMode) {
+                    // 检查是否是轻量级模式
+                    const isLiteMode = localStorage.getItem('debugMode') === 'true' && 
+                                      !localStorage.getItem('debugFullMode');
+                    
+                    if (isLiteMode) {
+                        // 轻量级模式：只显示用户友好的重要信息
+                        const message = args.join(' ');
+                        if (message.includes('🎉 网站加载成功，所有功能已启用') ||
+                            message.includes('✅ 通用模块初始化完成') ||
+                            message.includes('✅ 所有模块初始化完成') ||
+                            message.includes('❌') || message.includes('⚠️') || 
+                            message.includes('错误') || message.includes('失败') || 
+                            message.includes('警告') || message.includes('不支持') ||
+                            message.includes('🌐 网络环境信息') || 
+                            message.includes('📱 设备信息') || 
+                            message.includes('🌐 浏览器信息') ||
+                            message.includes('📶 连接类型') ||
+                            message.includes('⬇️ 下载速度') ||
+                            message.includes('⏱️ 延迟') ||
+                            message.includes('🔗 在线状态') ||
+                            message.includes('📱 设备类型') ||
+                            message.includes('🖥️ 屏幕分辨率') ||
+                            message.includes('👁️ 视口大小') ||
+                            message.includes('🔍 像素密度') ||
+                            message.includes('🔧 浏览器') ||
+                            message.includes('🌍 语言') ||
+                            message.includes('⏰ 时区')) {
+                            console.log(`[${moduleName}]`, ...args);
+                        }
+                    } else {
+                        // 完整模式：显示所有信息
                         console.log(`[${moduleName}]`, ...args);
                     }
-                } else {
-                    // 完整模式：显示所有信息
-                    console.log(`[${moduleName}]`, ...args);
+                }
+            },
+            warn: (...args) => {
+                if (debugMode) {
+                    console.log(`[${moduleName}] ⚠️`, ...args);
+                }
+            },
+            error: (...args) => {
+                if (debugMode) {
+                    console.log(`[${moduleName}] ❌`, ...args);
                 }
             }
-        },
-        warn: (...args) => {
-            if (debugMode) {
-                console.log(`[${moduleName}] ⚠️`, ...args);
-            }
-        },
-        error: (...args) => {
-            if (debugMode) {
-                console.log(`[${moduleName}] ❌`, ...args);
-            }
-        }
-    };
-}
+        };
+    }
 
-// 简化的系统信息调试
-function debugSystemInfo() {
-    if (!debugMode) return;
-    
-    debugLog('=== 系统信息 ===');
-    debugLog('浏览器:', navigator.userAgent);
-    debugLog('语言:', navigator.language);
-    debugLog('屏幕:', `${screen.width}x${screen.height}`);
-    debugLog('视口:', `${window.innerWidth}x${window.innerHeight}`);
-    debugLog('在线状态:', navigator.onLine);
-    debugLog('=== 系统信息结束 ===');
-}
+    // 简化的系统信息调试
+    function debugSystemInfo() {
+        if (!debugMode) return;
+        
+        debugLog('=== 系统信息 ===');
+        debugLog('浏览器:', navigator.userAgent);
+        debugLog('语言:', navigator.language);
+        debugLog('屏幕:', `${screen.width}x${screen.height}`);
+        debugLog('视口:', `${window.innerWidth}x${window.innerHeight}`);
+        debugLog('在线状态:', navigator.onLine);
+        debugLog('=== 系统信息结束 ===');
+    }
 
-// 用户友好的网络环境检测
-function debugUserEnvironment() {
-    if (!debugMode) return;
-    
-    const debug = debugModule('user');
-    
-    // 网络连接信息 - 兼容多种浏览器
-    const connection = navigator.connection || 
-                      navigator.mozConnection || 
-                      navigator.webkitConnection ||
-                      navigator.msConnection;
-    
-    debug.info('🌐 网络环境信息:');
-    debug.info(`🔗 在线状态: ${navigator.onLine ? '✅ 已连接' : '❌ 离线'}`);
-    
-    if (connection) {
-        // 兼容不同浏览器的属性名
-        const networkType = connection.effectiveType || 
-                           connection.type || 
-                           connection.effectiveConnectionType || 
+    // 用户友好的网络环境检测
+    function debugUserEnvironment() {
+        if (!debugMode) return;
+        
+        const debug = debugModule('user');
+        
+        // 网络连接信息 - 兼容多种浏览器
+        const connection = navigator.connection || 
+                          navigator.mozConnection || 
+                          navigator.webkitConnection ||
+                          navigator.msConnection;
+        
+        debug.info('🌐 网络环境信息:');
+        debug.info(`🔗 在线状态: ${navigator.onLine ? '✅ 已连接' : '❌ 离线'}`);
+        
+        if (connection) {
+            // 兼容不同浏览器的属性名
+            const networkType = connection.effectiveType || 
+                               connection.type || 
+                               connection.effectiveConnectionType || 
+                               '未知';
+            const downlink = connection.downlink || 
+                           connection.downlinkMax || 
                            '未知';
-        const downlink = connection.downlink || 
-                       connection.downlinkMax || 
+            const rtt = connection.rtt || 
+                       connection.roundTripTime || 
                        '未知';
-        const rtt = connection.rtt || 
-                   connection.roundTripTime || 
-                   '未知';
-        const saveData = connection.saveData || false;
-        
-        debug.info(`📶 连接类型: ${networkType}`);
-        if (downlink !== '未知') {
-            debug.info(`⬇️ 下载速度: ${downlink} Mbps`);
+            const saveData = connection.saveData || false;
+            
+            debug.info(`📶 连接类型: ${networkType}`);
+            if (downlink !== '未知') {
+                debug.info(`⬇️ 下载速度: ${downlink} Mbps`);
+            }
+            if (rtt !== '未知') {
+                debug.info(`⏱️ 延迟: ${rtt} ms`);
+            }
+            debug.info(`💾 省流量模式: ${saveData ? '开启' : '关闭'}`);
+        } else {
+            // 尝试通过其他方式获取网络信息
+            const userAgent = navigator.userAgent;
+            let browserInfo = '未知浏览器';
+            let apiSupport = '不支持';
+            
+            if (userAgent.includes('Chrome')) {
+                browserInfo = 'Chrome';
+                apiSupport = '支持';
+            } else if (userAgent.includes('Firefox')) {
+                browserInfo = 'Firefox';
+                apiSupport = '不支持（实验性功能）';
+            } else if (userAgent.includes('Safari')) {
+                browserInfo = 'Safari';
+                apiSupport = '部分支持';
+            } else if (userAgent.includes('Edge')) {
+                browserInfo = 'Edge';
+                apiSupport = '支持';
+            }
+            
+            debug.info(`🌐 浏览器: ${browserInfo}`);
+            debug.info(`📡 网络连接API: ${apiSupport}`);
+            debug.info('💡 这是正常现象，不影响网站使用');
         }
-        if (rtt !== '未知') {
-            debug.info(`⏱️ 延迟: ${rtt} ms`);
-        }
-        debug.info(`💾 省流量模式: ${saveData ? '开启' : '关闭'}`);
-    } else {
-        // 尝试通过其他方式获取网络信息
-        const userAgent = navigator.userAgent;
-        let browserInfo = '未知浏览器';
-        let apiSupport = '不支持';
         
-        if (userAgent.includes('Chrome')) {
-            browserInfo = 'Chrome';
-            apiSupport = '支持';
-        } else if (userAgent.includes('Firefox')) {
-            browserInfo = 'Firefox';
-            apiSupport = '不支持（实验性功能）';
-        } else if (userAgent.includes('Safari')) {
-            browserInfo = 'Safari';
-            apiSupport = '部分支持';
-        } else if (userAgent.includes('Edge')) {
-            browserInfo = 'Edge';
-            apiSupport = '支持';
-        }
+        // 设备信息
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isTablet = /iPad|Android(?=.*Mobile)/i.test(navigator.userAgent);
+        const deviceType = isTablet ? '平板' : isMobile ? '手机' : '电脑';
         
-        debug.info(`🌐 浏览器: ${browserInfo}`);
-        debug.info(`📡 网络连接API: ${apiSupport}`);
-        debug.info('💡 这是正常现象，不影响网站使用');
+        debug.info('📱 设备信息:');
+        debug.info(`📱 设备类型: ${deviceType}`);
+        debug.info(`🖥️ 屏幕分辨率: ${screen.width}x${screen.height}`);
+        debug.info(`👁️ 视口大小: ${window.innerWidth}x${window.innerHeight}`);
+        debug.info(`🔍 像素密度: ${window.devicePixelRatio}x`);
+        
+        // 浏览器信息
+        const browserInfo = getBrowserInfo();
+        debug.info('🌐 浏览器信息:');
+        debug.info(`🔧 浏览器: ${browserInfo.name} ${browserInfo.version}`);
+        debug.info(`🌍 语言: ${navigator.language}`);
+        debug.info(`⏰ 时区: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`);
     }
-    
-    // 设备信息
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const isTablet = /iPad|Android(?=.*Mobile)/i.test(navigator.userAgent);
-    const deviceType = isTablet ? '平板' : isMobile ? '手机' : '电脑';
-    
-    debug.info('📱 设备信息:');
-    debug.info(`📱 设备类型: ${deviceType}`);
-    debug.info(`🖥️ 屏幕分辨率: ${screen.width}x${screen.height}`);
-    debug.info(`👁️ 视口大小: ${window.innerWidth}x${window.innerHeight}`);
-    debug.info(`🔍 像素密度: ${window.devicePixelRatio}x`);
-    
-    // 浏览器信息
-    const browserInfo = getBrowserInfo();
-    debug.info('🌐 浏览器信息:');
-    debug.info(`🔧 浏览器: ${browserInfo.name} ${browserInfo.version}`);
-    debug.info(`🌍 语言: ${navigator.language}`);
-    debug.info(`⏰ 时区: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`);
-}
 
-// 获取浏览器信息
-function getBrowserInfo() {
-    const ua = navigator.userAgent;
-    let browserName = '未知';
-    let browserVersion = '未知';
-    
-    if (ua.includes('Chrome')) {
-        browserName = 'Chrome';
-        browserVersion = ua.match(/Chrome\/(\d+)/)?.[1] || '未知';
-    } else if (ua.includes('Firefox')) {
-        browserName = 'Firefox';
-        browserVersion = ua.match(/Firefox\/(\d+)/)?.[1] || '未知';
-    } else if (ua.includes('Safari') && !ua.includes('Chrome')) {
-        browserName = 'Safari';
-        browserVersion = ua.match(/Version\/(\d+)/)?.[1] || '未知';
-    } else if (ua.includes('Edge')) {
-        browserName = 'Edge';
-        browserVersion = ua.match(/Edge\/(\d+)/)?.[1] || '未知';
-    }
-    
-    return { name: browserName, version: browserVersion };
-}
-
-// 简化的性能调试
-function debugPerformance() {
-    if (!debugMode) return;
-    
-    debugLog('=== 性能信息 ===');
-    debugLog('页面加载时间:', performance.timing.loadEventEnd - performance.timing.navigationStart + 'ms');
-    debugLog('资源数量:', performance.getEntriesByType('resource').length);
-    debugLog('=== 性能信息结束 ===');
-}
-
-// 简化的调试模式切换
-window.fuckbug = function() {
-    if (debugMode) {
-        // 检查当前模式
-        const isFullMode = localStorage.getItem('debugFullMode') === 'true';
+    // 获取浏览器信息
+    function getBrowserInfo() {
+        const ua = navigator.userAgent;
+        let browserName = '未知';
+        let browserVersion = '未知';
         
-        if (isFullMode) {
-            // 如果已经是完整模式，则关闭调试
-            debugMode = false;
+        if (ua.includes('Chrome')) {
+            browserName = 'Chrome';
+            browserVersion = ua.match(/Chrome\/(\d+)/)?.[1] || '未知';
+        } else if (ua.includes('Firefox')) {
+            browserName = 'Firefox';
+            browserVersion = ua.match(/Firefox\/(\d+)/)?.[1] || '未知';
+        } else if (ua.includes('Safari') && !ua.includes('Chrome')) {
+            browserName = 'Safari';
+            browserVersion = ua.match(/Version\/(\d+)/)?.[1] || '未知';
+        } else if (ua.includes('Edge')) {
+            browserName = 'Edge';
+            browserVersion = ua.match(/Edge\/(\d+)/)?.[1] || '未知';
+        }
+        
+        return { name: browserName, version: browserVersion };
+    }
+
+    // 简化的性能调试
+    function debugPerformance() {
+        if (!debugMode) return;
+        
+        debugLog('=== 性能信息 ===');
+        debugLog('页面加载时间:', performance.timing.loadEventEnd - performance.timing.navigationStart + 'ms');
+        debugLog('资源数量:', performance.getEntriesByType('resource').length);
+        debugLog('=== 性能信息结束 ===');
+    }
+
+    // 轻量级调试模式 - 用户友好版本
+    window.debugLite = function() {
+        if (debugMode) {
+            // 如果已经是轻量级模式，则关闭调试
+            const isFullMode = localStorage.getItem('debugFullMode') === 'true';
+            if (!isFullMode) {
+                debugMode = false;
+                window.debugMode = debugMode;
+                localStorage.setItem('debugMode', 'false');
+                console.log('🐛 轻量级调试模式已关闭');
+                return;
+            }
+            
+            // 如果是从完整模式切换到轻量级模式
+            debugMode = true;
             window.debugMode = debugMode;
-            localStorage.setItem('debugMode', 'false');
-            localStorage.removeItem('debugFullMode');
-            console.log('🐛 完整调试模式已关闭');
+            localStorage.setItem('debugMode', 'true');
+            localStorage.removeItem('debugFullMode'); // 切换到轻量级模式
+            
+            console.log('🐛 已切换到轻量级调试模式');
+            console.log('📱 用户友好模式 - 只显示重要信息');
             console.log('🔄 正在刷新页面以应用调试设置...');
             
-            // 自动刷新页面
+            // 延迟刷新，让用户有时间看到信息
             setTimeout(() => {
+                console.log('🔄 页面即将刷新...');
                 window.location.reload();
             }, 1000);
             
             return debugMode;
-        } else {
-            // 如果是从轻量级模式切换到完整模式
-            debugMode = true;
-            window.debugMode = debugMode;
-            localStorage.setItem('debugMode', 'true');
-            localStorage.setItem('debugFullMode', 'true'); // 切换到完整模式
-            
-            console.log('🐛 已切换到完整调试模式');
-            console.log('🔧 开发者模式 - 显示所有调试信息');
-            console.log('🌐 当前页面:', window.location.pathname);
-            console.log('🔄 正在刷新页面以应用调试设置...');
-            
-            // 显示系统信息
-            debugSystemInfo();
-            debugPerformance();
-            
-        // 延迟刷新，让用户有时间看到信息
-        setTimeout(() => {
-            console.log('🔄 页面即将刷新...');
-            window.location.reload();
-        }, 3000);
-            
-            return debugMode;
-        }
-    }
-    
-    // 如果调试模式未开启，则开启完整调试模式
-    debugMode = true;
-    window.debugMode = debugMode;
-    localStorage.setItem('debugMode', 'true');
-    localStorage.setItem('debugFullMode', 'true'); // 标记为完整模式
-    
-    console.log('🐛 完整调试模式已开启！');
-    console.log('🔧 开发者模式 - 显示所有调试信息');
-    console.log('💻 适合开发者使用，信息详细全面');
-    console.log('🌐 当前页面:', window.location.pathname);
-    console.log('🔄 正在刷新页面以应用调试设置...');
-    
-    // 显示系统信息
-    debugSystemInfo();
-    debugPerformance();
-    
-    // 延迟刷新，让用户有时间看到信息
-    setTimeout(() => {
-        console.log('🔄 页面即将刷新...');
-        window.location.reload();
-    }, 3000);
-    
-    return debugMode;
-};
-
-// 删除复杂的调试指令，只保留基础功能
-
-// 轻量级调试模式 - 用户友好版本
-window.debugLite = function() {
-    if (debugMode) {
-        // 如果已经是轻量级模式，则关闭调试
-        const isFullMode = localStorage.getItem('debugFullMode') === 'true';
-        if (!isFullMode) {
-        debugMode = false;
-        window.debugMode = debugMode;
-        localStorage.setItem('debugMode', 'false');
-            console.log('🐛 轻量级调试模式已关闭');
-            return;
         }
         
-        // 如果是从完整模式切换到轻量级模式
+        // 如果调试模式未开启，则开启轻量级模式
         debugMode = true;
         window.debugMode = debugMode;
         localStorage.setItem('debugMode', 'true');
-        localStorage.removeItem('debugFullMode'); // 切换到轻量级模式
+        localStorage.removeItem('debugFullMode'); // 确保不是完整模式
         
-        console.log('🐛 已切换到轻量级调试模式');
+        console.log('🐛 轻量级调试模式已开启');
         console.log('📱 用户友好模式 - 只显示重要信息');
+        console.log('💡 适合普通用户使用，信息简洁易懂');
         console.log('🔄 正在刷新页面以应用调试设置...');
         
         // 延迟刷新，让用户有时间看到信息
@@ -642,102 +593,128 @@ window.debugLite = function() {
         }, 1000);
         
         return debugMode;
-    }
-    
-    // 如果调试模式未开启，则开启轻量级模式
-    debugMode = true;
-    window.debugMode = debugMode;
-    localStorage.setItem('debugMode', 'true');
-    localStorage.removeItem('debugFullMode'); // 确保不是完整模式
-    
-    console.log('🐛 轻量级调试模式已开启');
-    console.log('📱 用户友好模式 - 只显示重要信息');
-    console.log('💡 适合普通用户使用，信息简洁易懂');
-    console.log('🔄 正在刷新页面以应用调试设置...');
-    
-    // 延迟刷新，让用户有时间看到信息
-    setTimeout(() => {
-        console.log('🔄 页面即将刷新...');
+    };
+
+    // 手动刷新控制
+    window.debugRefresh = function() {
+        console.log('🔄 手动刷新页面...');
         window.location.reload();
-    }, 1000);
-    
-    return debugMode;
-};
+    };
 
-// 手动刷新控制
-window.debugRefresh = function() {
-    console.log('🔄 手动刷新页面...');
-    window.location.reload();
-};
+    // 取消自动刷新
+    window.debugCancelRefresh = function() {
+        console.log('❌ 已取消自动刷新');
+        // 清除所有定时器
+        for (let i = 1; i < 99999; i++) {
+            clearTimeout(i);
+        }
+    };
 
-// 取消自动刷新
-window.debugCancelRefresh = function() {
-    console.log('❌ 已取消自动刷新');
-    // 清除所有定时器
-    for (let i = 1; i < 99999; i++) {
-        clearTimeout(i);
-    }
-};
+    // 简化的帮助信息
+    window.fuckhelp = function() {
+        console.log('🐛 调试系统帮助:');
+        console.log('debugLite() - 轻量级调试（用户友好，只显示重要信息）');
+        console.log('fuckbug() - 完整调试（开发者模式，显示所有信息）');
+        console.log('debugRefresh() - 手动刷新页面');
+        console.log('debugCancelRefresh() - 取消自动刷新');
+        console.log('fuckhelp() - 显示此帮助信息');
+        console.log('');
+        console.log('🔄 模式切换:');
+        console.log('• 完整模式 → debugLite() → 轻量级模式');
+        console.log('• 轻量级模式 → fuckbug() → 完整模式');
+        console.log('• 再次调用相同指令 → 关闭调试');
+        console.log('');
+        console.log('📝 使用建议:');
+        console.log('• 普通用户遇到问题: debugLite()');
+        console.log('• 开发者调试代码: fuckbug()');
+        console.log('• 查看帮助信息: fuckhelp()');
+    };
 
-// 简化的帮助信息
-window.fuckhelp = function() {
-    console.log('🐛 调试系统帮助:');
-    console.log('debugLite() - 轻量级调试（用户友好，只显示重要信息）');
-    console.log('fuckbug() - 完整调试（开发者模式，显示所有信息）');
-    console.log('debugRefresh() - 手动刷新页面');
-    console.log('debugCancelRefresh() - 取消自动刷新');
-    console.log('fuckhelp() - 显示此帮助信息');
-    console.log('');
-    console.log('🔄 模式切换:');
-    console.log('• 完整模式 → debugLite() → 轻量级模式');
-    console.log('• 轻量级模式 → fuckbug() → 完整模式');
-    console.log('• 再次调用相同指令 → 关闭调试');
-    console.log('');
-    console.log('📝 使用建议:');
-    console.log('• 普通用户遇到问题: debugLite()');
-    console.log('• 开发者调试代码: fuckbug()');
-    console.log('• 查看帮助信息: fuckhelp()');
-};
-
-// 重新初始化所有模块（显示真实调试信息）
-window.reinitAll = function() {
-    if (!debugMode) {
-        console.log('请先开启调试模式：fuckbug()');
-        return;
+    // 重新初始化所有模块（显示真实调试信息）
+    window.reinitAll = function() {
+        if (!debugMode) {
+            console.log('请先开启调试模式：fuckbug()');
+            return;
+        }
+        
+        console.log('--- 重新初始化所有模块 ---');
+        
+        // 重新初始化版本管理器
+        if (versionManager) {
+            console.log('重新初始化 VersionManager...');
+            versionManager.getWebsiteVersion();
+            versionManager.calculateUptime();
+            versionManager.setupVersionClickHandler();
+        }
+        
+        // 重新初始化新闻管理器
+        if (newsManager) {
+            console.log('重新初始化 NewsManager...');
+            // 这里可以重新触发新闻相关的调试信息
+        }
+        
+        // 重新初始化背景轮播
+        if (backgroundSlider) {
+            console.log('重新初始化 BackgroundSlider...');
+            // 这里可以重新触发背景轮播的调试信息
+        }
+        
+        // 重新初始化动画
+        console.log('重新初始化动画系统...');
+        initAnimations();
+        
+        console.log('--- 重新初始化完成 ---');
+    };
+} else {
+    // 如果DebugManager已存在，确保兼容性函数可用
+    // 但不覆盖DebugManager中定义的函数
+    if (typeof window.debugLite === 'undefined') {
+        window.debugLite = function() {
+            if (window.DebugManager) {
+                window.DebugManager.setLiteMode();
+                console.log('🔄 轻量级调试模式已设置，刷新页面以应用更改');
+            } else {
+                console.log('调试管理器未初始化');
+            }
+        };
     }
     
-    console.log('--- 重新初始化所有模块 ---');
-    
-    // 重新初始化版本管理器
-    if (versionManager) {
-        console.log('重新初始化 VersionManager...');
-        versionManager.getWebsiteVersion();
-        versionManager.calculateUptime();
-        versionManager.setupVersionClickHandler();
+    if (typeof window.fuckbug === 'undefined') {
+        window.fuckbug = function() {
+            if (window.DebugManager) {
+                window.DebugManager.setFullMode();
+                console.log('🔄 完整调试模式已设置，刷新页面以应用更改');
+            } else {
+                console.log('调试管理器未初始化');
+            }
+        };
     }
     
-    // 重新初始化新闻管理器
-    if (newsManager) {
-        console.log('重新初始化 NewsManager...');
-        // 这里可以重新触发新闻相关的调试信息
+    if (typeof window.debugOff === 'undefined') {
+        window.debugOff = function() {
+            if (window.DebugManager) {
+                window.DebugManager.turnOff();
+                console.log('🔄 调试模式已关闭，刷新页面以应用更改');
+            } else {
+                console.log('调试管理器未初始化');
+            }
+        };
     }
     
-    // 重新初始化背景轮播
-    if (backgroundSlider) {
-        console.log('重新初始化 BackgroundSlider...');
-        // 这里可以重新触发背景轮播的调试信息
+    if (typeof window.fuckhelp === 'undefined') {
+        window.fuckhelp = function() {
+            if (window.DebugManager) {
+                window.DebugManager.showHelp();
+            } else {
+                console.log('调试管理器未初始化');
+            }
+        };
     }
-    
-    // 重新初始化动画
-    console.log('重新初始化动画系统...');
-    initAnimations();
-    
-    console.log('--- 重新初始化完成 ---');
-};
+}
 
 // 初始化滚动动画效果
 function initAnimations() {
-    const debug = debugModule('main');
+    const debug = window.DebugManager ? window.DebugManager.module('main') : debugModule('main');
     debug.info('开始初始化滚动动画...');
     
     // 先检查元素是否存在
@@ -892,3 +869,6 @@ window.navigationManager = navigationManager;
 window.newsManager = newsManager;
 window.backgroundSlider = backgroundSlider;
 window.versionManager = versionManager;
+
+
+
