@@ -205,7 +205,7 @@ if (typeof VersionManager === 'undefined') {
     setupVersionClickHandler() {
         const versionStatusItem = document.getElementById('website-version');
         if (!versionStatusItem) {
-            console.error('未找到版本状态项元素 website-version');
+            console.error('未找到版本状态项元素 #website-version');
             return;
         }
 
