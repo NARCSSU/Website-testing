@@ -24,9 +24,11 @@ if (typeof NewsManager === 'undefined') {
         this.STALE_DURATION = 30 * 60 * 1000; // 30分钟过期时间
         this.BACKGROUND_REFRESH_INTERVAL = 10 * 60 * 1000; // 10分钟后台检查
         this.USER_ACTIVE_THRESHOLD = 5 * 60 * 1000; // 5分钟用户活跃阈值
-        // 动态配置API端点，强制使用Cloudflare Pages（原始配置）
-        this.GITHUB_RAW_BASE = 'https://luminolcraft-news.pages.dev/';
-        this.GITEJSON_URL = 'https://luminolcraft-news.pages.dev/news.json';
+        // 动态配置API端点，强制使用EdgeOne作为主要，CF作为备用
+        this.PRIMARY_BASE = 'https://news-json.zh-cn.edgeone.run/';
+        this.FALLBACK_BASE = 'https://luminolcraft-news.pages.dev/';
+        this.PRIMARY_JSON = this.PRIMARY_BASE + 'news.json';
+        this.FALLBACK_JSON = this.FALLBACK_BASE + 'news.json';
         this.SITE_DOMAIN = window.location.hostname || '';
         this.errorLogged = new Set();
         
@@ -42,9 +44,11 @@ if (typeof NewsManager === 'undefined') {
         
         // 输出初始化配置信息
         debugLog('🚀 NewsManager 初始化配置:', {
-            environment: 'Cloudflare Pages (强制)',
-            newsJsonUrl: this.GITEJSON_URL,
-            contentBaseUrl: this.GITHUB_RAW_BASE,
+            environment: 'EdgeOne Pages (主要), Cloudflare Pages (备用)',
+            primaryJsonUrl: this.PRIMARY_JSON,
+            fallbackJsonUrl: this.FALLBACK_JSON,
+            primaryBaseUrl: this.PRIMARY_BASE,
+            fallbackBaseUrl: this.FALLBACK_BASE,
             siteDomain: this.SITE_DOMAIN,
             itemsPerPage: this.itemsPerPage,
             cacheKey: this.NEWS_STORAGE_KEY,
@@ -144,7 +148,7 @@ if (typeof NewsManager === 'undefined') {
     async refreshCacheInBackground() {
         try {
             debugLog('🔄 开始后台刷新缓存...');
-            const response = await fetch(this.GITEJSON_URL, { 
+            const response = await this.fetchWithFallback([this.PRIMARY_JSON, this.FALLBACK_JSON], { 
                 cache: 'no-store',
                 headers: {
                     'User-Agent': 'LuminolCraft-News/1.0',
@@ -176,6 +180,24 @@ if (typeof NewsManager === 'undefined') {
         } catch (error) {
             debugLog('❌ 后台缓存刷新失败:', error.message);
         }
+    }
+
+    // 带备用机制的fetch
+    async fetchWithFallback(urls, options) {
+        for (const url of urls) {
+            try {
+                const response = await this.safeFetch(url, options);
+                if (response.ok) {
+                    debugLog(`✅ 使用了源 ${url} 加载成功`);
+                    return response;
+                } else {
+                    debugLog(`⚠️ 从 ${url} 加载失败，状态: ${response.status}`);
+                }
+            } catch (error) {
+                debugLog(`❌ 从 ${url} 加载失败: ${error.message}`);
+            }
+        }
+        throw new Error('所有备用源加载失败');
     }
 
     // 验证新闻数据安全性
@@ -445,9 +467,9 @@ if (typeof NewsManager === 'undefined') {
         debugLog('🌐 环境检测结果:', {
             hostname: hostname,
             isNetlifyEnvironment: isNetlify,
-            apiMode: isNetlify ? 'Netlify Function' : 'GitHub Raw',
-            newsJsonUrl: isNetlify ? '/.netlify/functions/news' : 'https://raw.githubusercontent.com/LuminolCraft/news.json/main/news.json',
-            contentBaseUrl: 'https://luminolcraft-news.pages.dev/'
+            apiMode: isNetlify ? 'Netlify Function' : 'EdgeOne with CF fallback',
+            newsJsonUrl: isNetlify ? '/.netlify/functions/news' : `${this.PRIMARY_JSON} (primary), ${this.FALLBACK_JSON} (fallback)`,
+            contentBaseUrl: `${this.PRIMARY_BASE} (primary), ${this.FALLBACK_BASE} (fallback)`
         });
         
         return isNetlify;
@@ -528,6 +550,7 @@ if (typeof NewsManager === 'undefined') {
             
             // 严格的白名单域名检查
             const allowedDomains = [
+                'news-json.zh-cn.edgeone.run',
                 'luminolcraft-news.pages.dev',
                 'raw.githubusercontent.com',
                 'github.com',
@@ -597,36 +620,43 @@ if (typeof NewsManager === 'undefined') {
         }
     }
 
-    // 将GitHub URL转换为Cloudflare URL
-    convertGitHubUrlToCloudflare(contentUrl) {
-        if (!contentUrl.startsWith('http')) {
-            // 相对路径，转换为Cloudflare URL
-            return `https://luminolcraft-news.pages.dev/${contentUrl}`;
+    // 获取内容URL
+    getContentUrl(base, contentPath) {
+        if (!contentPath.startsWith('http')) {
+            // 相对路径，转换为指定base URL，并确保在News-content/文件夹下
+            if (!contentPath.startsWith('News-content/')) {
+                contentPath = `News-content/${contentPath}`;
+            }
+            return `${base}${contentPath}`;
         }
         
-        if (contentUrl.includes('raw.githubusercontent.com/LuminolCraft/news.json')) {
-            // GitHub URL，转换为Cloudflare URL
-            const path = contentUrl.split('raw.githubusercontent.com/LuminolCraft/news.json')[1];
-            const cleanPath = path.replace('/refs/heads/main', '');
-            return `https://luminolcraft-news.pages.dev${cleanPath}`;
+        if (contentPath.includes('raw.githubusercontent.com/LuminolCraft/news.json')) {
+            // GitHub URL，转换为指定base URL
+            const path = contentPath.split('raw.githubusercontent.com/LuminolCraft/news.json')[1];
+            let cleanPath = path.replace('/refs/heads/main', '');
+            if (!cleanPath.startsWith('/News-content/')) {
+                cleanPath = `/News-content${cleanPath}`;
+            }
+            return `${base}${cleanPath}`;
         }
         
         // 处理其他GitHub URL格式
-        if (contentUrl.includes('raw.githubusercontent.com/LuminolMC/Luminol')) {
+        if (contentPath.includes('raw.githubusercontent.com/LuminolMC/Luminol')) {
             // 这是另一个GitHub仓库的URL，需要特殊处理
-            debugLog('检测到LuminolMC仓库URL，跳过加载:', contentUrl);
+            debugLog('检测到LuminolMC仓库URL，跳过加载:', contentPath);
             return null; // 返回null表示跳过这个URL
         }
         
         // 其他情况，直接返回原URL
-        return contentUrl;
+        return contentPath;
     }
 
     // 预加载Markdown内容
     async preloadMarkdownContent(newsData) {
         debugLog('📚 预加载 Markdown 内容...', {
             itemCount: newsData.length,
-            baseUrl: this.GITHUB_RAW_BASE,
+            primaryBaseUrl: this.PRIMARY_BASE,
+            fallbackBaseUrl: this.FALLBACK_BASE,
             environment: this.isNetlifyEnvironment() ? 'Netlify' : 'External'
         });
         
@@ -644,42 +674,67 @@ if (typeof NewsManager === 'undefined') {
         }
 
         for (const item of newsData) {
-            let fullContentUrl = null;
+            let fullContentUrl = this.getContentUrl(this.PRIMARY_BASE, item.content);
+            
+            debugLog(`📄 加载 Markdown[${item.id}]:`, {
+                title: item.title,
+                originalPath: item.content,
+                primaryUrl: fullContentUrl,
+                isAbsoluteUrl: item.content.startsWith('http')
+            });
+            
+            // 如果返回null，跳过这个条目
+            if (fullContentUrl === null) {
+                debugLog(`跳过新闻 ${item.id}: 不支持的URL格式`);
+                item.markdownContent = '内容不可用';
+                continue;
+            }
+            
             try {
-                fullContentUrl = this.convertGitHubUrlToCloudflare(item.content);
-                
-                debugLog(`📄 加载 Markdown[${item.id}]:`, {
-                    title: item.title,
-                    originalPath: item.content,
-                    fullUrl: fullContentUrl,
-                    isAbsoluteUrl: item.content.startsWith('http')
-                });
-                
-                // 如果返回null，跳过这个条目
-                if (fullContentUrl === null) {
-                    debugLog(`跳过新闻 ${item.id}: 不支持的URL格式`);
-                    item.markdownContent = '内容不可用';
-                    continue;
-                }
-                
-                debugLog(`加载 Markdown: ${fullContentUrl}`);
+                debugLog(`加载 Primary Markdown: ${fullContentUrl}`);
                 const response = await fetch(fullContentUrl, { cache: 'no-store' });
                 if (!response.ok) throw new Error(`无法加载: ${fullContentUrl} (状态: ${response.status})`);
                 const markdownContent = await response.text();
                 item.markdownContent = markdownContent || '暂无内容';
                 item.additionalImages = item.additionalImages?.filter(url => url && url.trim() !== '') || [];
                 
-                debugLog(`✅ Markdown[${item.id}] 加载成功:`, {
+                debugLog(`✅ 使用了源 ${fullContentUrl} (Primary) 加载成功`);
+                debugLog(`✅ Primary Markdown[${item.id}] 加载成功:`, {
                     contentLength: markdownContent.length + ' chars',
                     additionalImages: item.additionalImages.length
                 });
             } catch (error) {
-                console.error(`❌ 预加载新闻 ${item.id} 失败:`, {
-                    error: error.message,
-                    url: fullContentUrl || '未知URL',
-                    title: item.title
-                });
-                item.markdownContent = '内容加载失败';
+                debugLog(`❌ Primary 预加载新闻 ${item.id} 失败: ${error.message}`);
+                
+                // 尝试备用
+                fullContentUrl = this.getContentUrl(this.FALLBACK_BASE, item.content);
+                
+                if (fullContentUrl === null) {
+                    item.markdownContent = '内容加载失败';
+                    continue;
+                }
+                
+                try {
+                    debugLog(`加载 Fallback Markdown: ${fullContentUrl}`);
+                    const response = await fetch(fullContentUrl, { cache: 'no-store' });
+                    if (!response.ok) throw new Error(`无法加载: ${fullContentUrl} (状态: ${response.status})`);
+                    const markdownContent = await response.text();
+                    item.markdownContent = markdownContent || '暂无内容';
+                    item.additionalImages = item.additionalImages?.filter(url => url && url.trim() !== '') || [];
+                    
+                    debugLog(`✅ 使用了源 ${fullContentUrl} (Fallback) 加载成功`);
+                    debugLog(`✅ Fallback Markdown[${item.id}] 加载成功:`, {
+                        contentLength: markdownContent.length + ' chars',
+                        additionalImages: item.additionalImages.length
+                    });
+                } catch (fallbackError) {
+                    console.error(`❌ Fallback 预加载新闻 ${item.id} 失败:`, {
+                        error: fallbackError.message,
+                        url: fullContentUrl || '未知URL',
+                        title: item.title
+                    });
+                    item.markdownContent = '内容加载失败';
+                }
             }
         }
         this.allNewsWithContent = newsData;
@@ -763,15 +818,16 @@ if (typeof NewsManager === 'undefined') {
 
         try {
             debugLog('📡 正在加载新闻数据...', {
-                url: this.GITEJSON_URL,
+                primaryUrl: this.PRIMARY_JSON,
+                fallbackUrl: this.FALLBACK_JSON,
                 method: 'fetch',
                 cache: 'no-store'
             });
             
-            const response = await this.safeFetch(this.GITEJSON_URL, { cache: 'no-store' });
+            const response = await this.fetchWithFallback([this.PRIMARY_JSON, this.FALLBACK_JSON], { cache: 'no-store' });
             
             debugLog('📡 API响应状态:', {
-                url: this.GITEJSON_URL,
+                url: response.url, // response.url 会显示实际成功的URL
                 status: response.status,
                 statusText: response.statusText,
                 ok: response.ok,
