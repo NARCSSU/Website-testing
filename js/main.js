@@ -87,8 +87,22 @@ function initCommonModules() {
     // 初始化导航管理器
     navigationManager = new NavigationManager();
     
-    // 初始化版本管理器
-    versionManager = new VersionManager();
+    // 初始化版本管理器 - 检查是否类已定义
+    if (typeof VersionManager !== 'undefined') {
+        versionManager = new VersionManager();
+        debug.info('✅ 版本管理器初始化成功');
+    } else {
+        debug.warn('❌ 版本管理器未定义，可能脚本加载顺序有问题');
+        // 尝试延迟初始化
+        setTimeout(() => {
+            if (typeof VersionManager !== 'undefined') {
+                versionManager = new VersionManager();
+                debug.info('✅ 延迟版本管理器初始化成功');
+            } else {
+                debug.error('❌ 版本管理器仍然未定义');
+            }
+        }, 1000);
+    }
     
     debug.info('✅ 通用模块初始化完成');
 }
@@ -126,7 +140,12 @@ function initHomePage() {
     debug.info('✅ 初始化主页功能');
     
     // 初始化背景轮播
-    backgroundSlider = new BackgroundSlider();
+    if (typeof BackgroundSlider !== 'undefined') {
+        backgroundSlider = new BackgroundSlider();
+        debug.info('✅ 背景轮播初始化成功');
+    } else {
+        debug.warn('❌ 背景轮播未定义');
+    }
     
     // 初始化服务器状态监控（暂时注释掉，因为函数未实现）
     // initServerStatusMonitoring();
@@ -144,7 +163,12 @@ function initNewsPage() {
     debug.info('✅ 初始化新闻页面功能');
     
     // 初始化新闻管理器
-    newsManager = new NewsManager();
+    if (typeof NewsManager !== 'undefined') {
+        newsManager = new NewsManager();
+        debug.info('✅ 新闻管理器初始化成功');
+    } else {
+        debug.warn('❌ 新闻管理器未定义');
+    }
     
     // 初始化新闻页面功能
     initNewsPageFeatures();
@@ -156,10 +180,14 @@ async function initNewsPageFeatures() {
     debug.info('DOM 加载完成，开始初始化新闻页面');
     debug.info('当前域名 (SITE_DOMAIN):', newsManager.SITE_DOMAIN);
     
-    newsManager.initFromStorage();
-    
-    newsManager.tryInitializeMarked();
-    await newsManager.initializeApp();
+    if (newsManager) {
+        newsManager.initFromStorage();
+        
+        if (newsManager.tryInitializeMarked) {
+            newsManager.tryInitializeMarked();
+        }
+        await newsManager.initializeApp();
+    }
 
     const tagSelect = document.getElementById('tag-select');
     const searchInput = document.getElementById('news-search-input');
@@ -184,10 +212,12 @@ async function initNewsPageFeatures() {
 
     // 确保页面加载时自动触发一次筛选（显示所有新闻）
     if (window.location.pathname.includes('news.html')) {
-        await newsManager.loadNews();
-        // 初始状态无筛选条件时显示全部
-        if (newsManager.filteredNews === null) {
-            newsManager.filterNews();
+        if (newsManager) {
+            await newsManager.loadNews();
+            // 初始状态无筛选条件时显示全部
+            if (newsManager.filteredNews === null) {
+                newsManager.filterNews();
+            }
         }
     }
 
@@ -200,7 +230,12 @@ function initNewsDetailPage() {
     debug.info('初始化新闻详情页面功能');
     
     // 初始化新闻管理器
-    newsManager = new NewsManager();
+    if (typeof NewsManager !== 'undefined') {
+        newsManager = new NewsManager();
+        debug.info('✅ 新闻管理器初始化成功');
+    } else {
+        debug.warn('❌ 新闻管理器未定义');
+    }
     
     // 初始化新闻详情页面功能
     initNewsDetailPageFeatures();
@@ -212,11 +247,17 @@ async function initNewsDetailPageFeatures() {
     debug.info('DOM 加载完成，开始初始化新闻详情页面');
     debug.info('当前域名 (SITE_DOMAIN):', newsManager.SITE_DOMAIN);
     
-    newsManager.tryInitializeMarked();
-    await newsManager.initializeApp();
+    if (newsManager) {
+        if (newsManager.tryInitializeMarked) {
+            newsManager.tryInitializeMarked();
+        }
+        await newsManager.initializeApp();
+    }
     
     if (window.location.pathname.includes('news-detail.html')) {
-        await newsManager.renderNewsDetail();
+        if (newsManager) {
+            await newsManager.renderNewsDetail();
+        }
     }
     
     debug.info('✅ 新闻详情页面初始化完成');
