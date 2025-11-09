@@ -28,12 +28,15 @@
             
             // 只有在本地开发环境或明确启用调试时才开启调试模式
             const savedDebugMode = localStorage.getItem('debugMode') === 'true';
+            const savedFullMode = localStorage.getItem('debugFullMode') === 'true';
             this.debugMode = isLocalDev || savedDebugMode;
-            this.isLiteMode = this.debugMode && !localStorage.getItem('debugFullMode');
-            this.isFullMode = this.debugMode && localStorage.getItem('debugFullMode') === 'true';
+            this.isLiteMode = this.debugMode && !savedFullMode;
+            this.isFullMode = this.debugMode && savedFullMode;
             
             // 设置全局变量
             window.debugMode = this.debugMode;
+            window.debugFullMode = this.isFullMode;
+            window.debugLiteMode = this.isLiteMode;
             
             this.isInitialized = true;
         }
@@ -127,6 +130,8 @@
             window.debugMode = this.debugMode;
             this.isLiteMode = true;
             this.isFullMode = false;
+            window.debugLiteMode = true;
+            window.debugFullMode = false;
             console.log('🐛 轻量级调试模式已开启 - 显示重要信息');
         }
         
@@ -138,6 +143,8 @@
             window.debugMode = this.debugMode;
             this.isLiteMode = false;
             this.isFullMode = true;
+            window.debugLiteMode = false;
+            window.debugFullMode = true;
             console.log('🐛 完整调试模式已开启 - 显示所有调试信息');
         }
         
@@ -149,6 +156,8 @@
             window.debugMode = this.debugMode;
             this.isLiteMode = false;
             this.isFullMode = false;
+            window.debugLiteMode = false;
+            window.debugFullMode = false;
             console.log('🐛 调试模式已关闭');
         }
         
@@ -172,17 +181,20 @@
     // 调试命令
     window.debugLite = () => {
         window.DebugManager.setLiteMode();
-        setTimeout(() => window.location.reload(), 1000);
+        // 不再自动刷新页面，让状态保持在localStorage中
+        console.log('🔄 轻量级调试模式已设置，刷新页面以应用更改');
     };
     
     window.fuckbug = () => {
         window.DebugManager.setFullMode();
-        setTimeout(() => window.location.reload(), 1000);
+        // 不再自动刷新页面，让状态保持在localStorage中
+        console.log('🔄 完整调试模式已设置，刷新页面以应用更改');
     };
     
     window.debugOff = () => {
         window.DebugManager.turnOff();
-        setTimeout(() => window.location.reload(), 1000);
+        // 不再自动刷新页面，让状态保持在localStorage中
+        console.log('🔄 调试模式已关闭，刷新页面以应用更改');
     };
     
     window.fuckhelp = () => window.DebugManager.showHelp();
@@ -329,3 +341,6 @@
     };
     
 })();
+
+
+
