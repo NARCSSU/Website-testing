@@ -44,9 +44,9 @@ if (typeof VersionManager === 'undefined') {
 
     // 获取网站版本信息
     getWebsiteVersion() {
-        const versionElement = document.getElementById('version-status-item');
+        const versionElement = document.getElementById('website-version');
         if (!versionElement) {
-            debugLog('未找到版本元素 #version-status-item');
+            debugLog('未找到版本元素 #website-version');
             return;
         }
 
@@ -203,9 +203,9 @@ if (typeof VersionManager === 'undefined') {
 
     // 设置版本号点击事件处理器
     setupVersionClickHandler() {
-        const versionStatusItem = document.getElementById('version-status-item');
+        const versionStatusItem = document.getElementById('website-version');
         if (!versionStatusItem) {
-            console.error('未找到版本状态项元素 #version-status-item');
+            console.error('未找到版本状态项元素 #website-version');
             return;
         }
 
