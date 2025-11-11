@@ -328,7 +328,7 @@ header {
 
 .online {
     position: relative;
-    padding-left: 22px;
+    padding-left: px;
     color: var(--online-color);
     font-weight: bold;
 }
@@ -337,8 +337,8 @@ header {
     content: '';
     position: absolute;
     left: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 10%;
+    transform: translateY(-50%); 
     width: 13px;
     height: 13px;
     background: var(--online-color);
@@ -1062,13 +1062,52 @@ header {
 }
 
 .status-dot {
+    display: inline-block;
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background: var(--online-color);
+    position: relative;
+  }
+  .status-dot::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 50%;
     animation: pulse 2s infinite;
-}
-
+    z-index: -1;
+  }
+  
+  /* 在线状态 - 绿色 */
+  .status-dot.online {
+    background-color: #00BFA6; /* 或 var(--online-color) */
+  }
+  .status-dot.online::before {
+    background-color: rgba(0, 191, 166, 0.3);
+  }
+  
+  /* 离线状态 - 红色 */
+  .status-dot.offline {
+    background-color: #dc3545; /* Bootstrap 风格的红色，也可用 #ff4444 */
+  }
+  .status-dot.offline::before {
+    background-color: rgba(220, 53, 69, 0.3);
+  }
+  
+  /* 脉冲动画 */
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.6;
+      transform: scale(1.2);
+    }
+  }
+  
 @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }

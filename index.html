@@ -26,6 +26,7 @@
     <script src="js/background.js?v=20250119"></script>
     <script src="js/version.js?v=20250119"></script>
     <script src="js/news.js?v=20250119"></script>
+    <script src="js/server-status.js?v=20250119"></script>
     <script src="js/main.js?v=20250119"></script>
 
     <meta name='description' content='LuminolCraft 是 LuminolMC 附属的 Minecraft 服务器，拥有综合生存与纯净生存两个子服，管理活跃，欢迎加入我们！'>
@@ -103,18 +104,23 @@
             <div class="hero-visual">
                 <div class="server-status-card">
                     <div class="status-indicator">
-                        <div class="status-dot"></div>
-                        <div class="status-text">服务器在线</div>
+                        <div class="status-dot" id="server-status-dot"></div>
+                        <div class="status-text" id="server-status-text">状态查询中...</div>
                     </div>
                     
                     <div class="server-info-grid">
                         <div class="info-item">
                             <div class="info-label">在线玩家</div>
-                            <span class="info-value player-nub" ip="lc.lolicon.fit">加载中...</span>
+                            <span class="info-value" id="online-players">加载中...</span>
                         </div>
+                        
+                        <!-- <div class="info-item">
+                            <div class="info-label">服务器版本</div>
+                            <div class="info-value" id="server-version">加载中...</div>
+                        </div> -->
                         <div class="info-item">
                             <div class="info-label">服务器版本</div>
-                            <div class="info-value">1.21.7/8</div>
+                            <div class="info-value" id="info-version">1.21.7/8</div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">服务器类型</div>
@@ -122,17 +128,14 @@
                         </div>
                         <div class="info-item">
                             <div class="info-label">运行状态</div>
-                            <div class="info-value">稳定运行</div>
-                            <!-- <div class="info-value" id="server-status">
-                                <span class="status-indicator loading">检查中...</span>
-                            </div> -->
+                            <div class="info-value" id="server-status">检查中...</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <script src="https://list.mczfw.cn/mczfw.js" async=""></script>
+        
         
     </header>
 
