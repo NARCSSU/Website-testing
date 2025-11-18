@@ -3,7 +3,7 @@
   command = ""
   # 发布目录是项目根目录
   publish = "."
-  # 函数目录
+  # 函数目录（指向 netlify/functions）
   functions = "netlify/functions"
 
 [build.environment]
@@ -42,7 +42,7 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn-font.hyperos.mi.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://cdn-font.hyperos.mi.com https://cdn-file.hyperos.mi.com https://cdnjs.cloudflare.com; connect-src 'self' https://luminolcraft-news.pages.dev https://raw.githubusercontent.com https://cors-anywhere.herokuapp.com; frame-ancestors 'none';"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn-font.hyperos.mi.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://cdn-font.hyperos.mi.com https://cdn-file.hyperos.mi.com https://cdnjs.cloudflare.com; connect-src 'self' https://luminolcraft-news.pages.dev https://raw.githubusercontent.com https://cors-anywhere.herokuapp.com https://api.github.com https://api.mcsrvstat.us https://api.allorigins.win https://mcapi.us; frame-ancestors 'none';"
 
 # 开发环境设置
 [context.deploy-preview]
